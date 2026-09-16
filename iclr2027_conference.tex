@@ -1,0 +1,104 @@
+
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2027_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{xcolor}
+% --- bulleted paragraph bodies -----------------------------------------
+\newenvironment{pb}{\begin{itemize}\setlength\itemsep{2pt}%
+  \setlength\parskip{0pt}\setlength\topsep{2pt}\setlength\partopsep{0pt}}%
+  {\end{itemize}}
+
+\usetikzlibrary{positioning,fit,backgrounds,arrows.meta,calc,shapes.geometric}
+
+% ---- method-figure palette ----
+\definecolor{accent}{HTML}{0F8F86}
+\definecolor{sone}{HTML}{3F6BD6}
+\definecolor{stwo}{HTML}{9A5A2B}
+\definecolor{ink}{HTML}{1B2026}
+\definecolor{sonebg}{HTML}{E8EEFB}
+\definecolor{stwobg}{HTML}{F6EDE1}
+\definecolor{accbg}{HTML}{E2F4F1}
+\definecolor{greyb}{HTML}{F1F3F6}
+\definecolor{store}{HTML}{4A5360}
+\definecolor{dltgreen}{HTML}{1F7A4A}
+% tab:stage2swap 的增量下标:比正常下标再小一档;均值列那一格用绿色
+\newcommand{\dlt}[1]{$_{\scriptscriptstyle#1}$}
+\newcommand{\dltg}[1]{$_{\scriptscriptstyle\textcolor{dltgreen}{#1}}$}
+
+% ---- theorem environments (appendix theory) ----
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+\newcommand{\Mten}{\mathrm{M}}
+
+% ======================================================================
+% DRAFT v1 (2026-08-14). Skeleton / bullet outline, not committed prose.
+% Framing: "An Effective / Practical Way to X" (breadth + robustness,
+% not single-point SOTA); ICLR-leaning intro (discrimination is already
+% in frozen features; aggregation can be READ, not learned).
+% Table 1 numbers are PEAK backbone/operator per set = upper bound.
+% [TODO] = load-bearing pending work.
+% ======================================================================
+
+\title{Patches Are Enough: Simple and Effective \\ Training-Free Visual Place Recognition}
+
+\author{Anonymous authors \\ Paper under double-blind review}
+
+%\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+% 浮动体参数放宽:表多且大,默认参数会把浮动体推到文末
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{5}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Visual Place Recognition (VPR) asks where a photograph was taken by retrieving the most similar image from a geo-tagged database. Training a representation for it calls for a place-labelled corpus running to tens of millions of images, produces features that shift with the domain, and ties the result to the one backbone it was trained on. Methods built on frozen foundation models avoid all three and need no place label, yet they still trail supervised ones. They choose what to keep from an image by salience, which is not the property that separates places. In this paper we remove that criterion and let the patches of the two images being compared supply every quantity in the pipeline. Two tables of patch-to-patch similarity carry it: the self-similarity of one image weights each patch by how many of that image's own patches resemble it, in closed form; the cross-similarity of the pair is reduced two ways, one factoring into a per-image covariance that scans a database, the other not factoring and re-ranking a shortlist. Nothing is fitted between the frozen network and the ranking. Across thirteen benchmarks spanning urban streets, seasonal railways, and degraded, subterranean, indoor, aerial and underwater imagery, one fixed configuration reaches the highest mean Recall@1, and it is level with the strongest supervised method on the urban benchmarks its supervision targets. As a drop-in scoring rule, it also improves published two-stage pipelines when it replaces their own re-ranker and single-stage ones when it is added to them.
+\end{abstract}
+
+\input{sections/01_intro}
+
+\input{sections/02_related}
+
+\input{sections/03_method}
+
+\input{sections/04_exp_setup}
+
+
+\input{sections/06_exp_trained}
+
+\input{sections/09_conclusion}
+
+\clearpage
+
+\bibliography{iclr2027_conference}
+\bibliographystyle{iclr2027_conference}
+
+\clearpage
+
+\appendix
+
+
+\input{sections/10_appendix_tables}
+\input{sections/08_exp_hyperparams}
+
+\end{document}

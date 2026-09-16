@@ -1,0 +1,85 @@
+% 对比对象是传统 VLAD(Jégou et al.),不是 NetVLAD —— 两者的锚点 c_k 都是固定的
+% 几何聚类中心,从不移动;真正的差异在**簇内怎么处理扎堆的 patch**。
+% 传统 VLAD:所有 patch 等权求和,intra-norm 只在求和**之后**把整簇拉回单位范数——
+%           它能压回幅度,压不回方向,扎堆的多数派仍然把簇的合向量拉向自己。
+% 我们:每个 patch 求和**之前**先按 w_p=1/d_p 缩放,扎堆的 patch 各自被削弱,
+%      合向量的方向不再被"谁重复得多"主导。
+\begin{tikzpicture}[
+  font=\small, text=ink, >=Stealth,
+  cellline/.style={draw=ink!40, line width=0.6pt},
+  ptB/.style={circle, fill=stwo!55, draw=ink!45, line width=0.4pt, minimum size=5.5pt, inner sep=0},
+  ptU/.style={circle, fill=sone, draw=ink!50, line width=0.5pt, minimum size=6pt, inner sep=0},
+  ctr/.style={cross out, draw=ink, line width=1.1pt, minimum size=5pt, inner sep=0pt},
+  res/.style={-{Stealth[length=4.5pt]}, draw=ink!35, line width=0.55pt},
+  sumC/.style={-{Stealth[length=7pt]}, draw=stwo, line width=1.4pt},
+  sumO/.style={-{Stealth[length=7pt]}, draw=sone, line width=1.4pt},
+  lbl/.style={font=\scriptsize, text=ink!75},
+  tag/.style={font=\scriptsize\itshape, text=ink!60},
+  panel/.style={font=\bfseries\scriptsize, text=ink!85},
+]
+
+% ====================== 左:传统 VLAD ======================
+\begin{scope}
+\draw[cellline] (-2.3,1.4) -- (-0.6,2.1) -- (1.3,1.75);
+\draw[cellline] (-2.3,1.4) -- (-2.6,-0.2) -- (-1.9,-1.9);
+\draw[cellline] (1.3,1.75) -- (1.6,0.2) -- (0.9,-1.8);
+\draw[cellline] (-1.9,-1.9) -- (-0.4,-2.2) -- (0.9,-1.8);
+
+\node[ctr] (ckC) at (-0.5,-0.2) {};
+\node[lbl, below=2pt of ckC] {$c_k$};
+
+% 扎堆的 4 个近重复 patch(同一种纹理,比如雪地)
+\node[ptB] (b1) at (0.15,1.05) {};
+\node[ptB] (b2) at (0.55,1.35) {};
+\node[ptB] (b3) at (0.35,0.65) {};
+\node[ptB] (b4) at (0.75,0.95) {};
+% 1 个独特 patch
+\node[ptU] (u1) at (-1.75,0.55) {};
+
+\foreach \b in {b1,b2,b3,b4} {\draw[res] (ckC) -- (\b);}
+\draw[res] (ckC) -- (u1);
+
+% 传统:等权求和 -> 合向量被 4 个近重复拉向右上
+\draw[sumC] (ckC) -- (0.65,1.15) node[pos=1, right=2pt, stwo, font=\scriptsize] {$r_k^{\text{classic}}$};
+
+\node[tag, above=2pt of b2, xshift=6pt] {4 near-duplicates};
+\node[tag, left=1pt of u1] {1 unique};
+\node[panel, below=42pt of ckC] {(a) traditional VLAD: equal weight, then intra-norm};
+\node[lbl, below=54pt of ckC, text width=5.3cm, align=center]
+ {All 5 residuals summed with weight 1. Intra-norm rescales
+ $r_k$'s \emph{magnitude} to unit length afterward, but cannot undo
+ the \emph{direction}: the sum still points toward the 4 duplicates.};
+\end{scope}
+
+% ====================== 右:我们 ======================
+\begin{scope}[xshift=7.4cm]
+\draw[cellline] (-2.3,1.4) -- (-0.6,2.1) -- (1.3,1.75);
+\draw[cellline] (-2.3,1.4) -- (-2.6,-0.2) -- (-1.9,-1.9);
+\draw[cellline] (1.3,1.75) -- (1.6,0.2) -- (0.9,-1.8);
+\draw[cellline] (-1.9,-1.9) -- (-0.4,-2.2) -- (0.9,-1.8);
+
+\node[ctr] (ckO) at (-0.5,-0.2) {};
+\node[lbl, below=2pt of ckO] {$c_k$ \scriptsize(same anchor)};
+
+\node[ptB] (c1) at (0.15,1.05) {};
+\node[ptB] (c2) at (0.55,1.35) {};
+\node[ptB] (c3) at (0.35,0.65) {};
+\node[ptB] (c4) at (0.75,0.95) {};
+\node[ptU] (v1) at (-1.75,0.55) {};
+
+% 扎堆的每个:w=0.25(虚淡),独特的:w=1(实)
+\foreach \b in {c1,c2,c3,c4} {\draw[res, stwo!35, densely dotted] (ckO) -- (\b);}
+\draw[res] (ckO) -- (v1);
+
+% 我们:合向量更平衡,偏向独特 patch 那侧
+\draw[sumO] (ckO) -- (-0.75,0.55) node[pos=1, above left=-3pt and 1pt, sone, font=\scriptsize] {$r_k^{\text{ours}}$};
+
+\node[tag, above=2pt of c2, xshift=6pt] {$w{=}0.25$ each};
+\node[tag, left=1pt of v1] {$w{=}1$};
+\node[panel, below=42pt of ckO] {(b) ours: shrink before summing, no intra-norm};
+\node[lbl, below=54pt of ckO, text width=5.3cm, align=center]
+ {Each duplicate is downweighted by $w_p{=}1/d_p$ \emph{before}
+ the sum. The direction of $r_k$ is fixed at the source, not
+ patched up afterward.};
+\end{scope}
+\end{tikzpicture}

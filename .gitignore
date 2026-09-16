@@ -1,0 +1,24 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.pdf
+
+# ...but figures are source, not build output
+!figures/*.pdf
+
+scratch_figs/
+main.pdf
+main.aux
+main.log
+main.out
+main.fls
+main.fdb_latexmk
+main.bbl
+main.blg

@@ -1,0 +1,75 @@
+% 二阶(covD)版对比,跟 w_vlad_fig.tex 是一对——同一个故事,换成外积聚合。
+% 一阶故事:近重复 patch 的残差等权求和,intra-norm 修幅度修不了方向。
+% 二阶故事:G = sum_p w_p x_p x_p^T 是把每个 patch 的"方向"记成一个外积再叠加。
+%   扎堆的近重复 patch 会在同一个方向反复"投票",把 G 的主特征值撑得特别大,
+%   画出来就是一个被拉长的椭圆,长轴指向扎堆的方向。
+%   传统方法:谱指数 Sigma^0.5 把特征值压扁(椭圆变圆),但特征*向量*不变——
+%            长轴还是指向那堆近重复,只是没那么夸张了(压幅度,不改方向)。
+%   我们:求和之前就把每个近重复的 x_p x_p^T 按 w_p 缩小,G 本身就不会被
+%        撑向重复方向,不需要再做谱压缩(alpha=1 即可)。
+\begin{tikzpicture}[
+  font=\small, text=ink, >=Stealth,
+  ray/.style={-{Stealth[length=4.5pt]}, draw=ink!35, line width=0.55pt},
+  rayD/.style={-{Stealth[length=4.5pt]}, draw=stwo!45, line width=0.55pt, densely dotted},
+  ptB/.style={circle, fill=stwo!55, draw=ink!45, line width=0.4pt, minimum size=5.5pt, inner sep=0},
+  ptU/.style={circle, fill=sone, draw=ink!50, line width=0.5pt, minimum size=6pt, inner sep=0},
+  org/.style={cross out, draw=ink, line width=1.1pt, minimum size=5pt, inner sep=0pt},
+  lbl/.style={font=\scriptsize, text=ink!75},
+  tag/.style={font=\scriptsize\itshape, text=ink!60},
+  panel/.style={font=\bfseries\scriptsize, text=ink!85},
+]
+
+% ====================== 左:传统 covD ======================
+\begin{scope}
+\node[org] (oC) at (-0.3,-0.1) {};
+\node[lbl, below=2pt of oC] {origin};
+
+\node[ptB] (b1) at (0.65,1.15) {};
+\node[ptB] (b2) at (1.05,1.45) {};
+\node[ptB] (b3) at (0.85,0.75) {};
+\node[ptB] (b4) at (1.25,1.05) {};
+\node[ptU] (u1) at (-1.55,0.65) {};
+\foreach \b in {b1,b2,b3,b4} {\draw[ray] (oC) -- (\b);}
+\draw[ray] (oC) -- (u1);
+
+% 椭圆:长轴指向扎堆方向(谱压缩后仍偏,只是没那么夸张)
+\draw[stwo, line width=1.1pt, rotate around={40:(oC)}]
+  ($(oC)+(0,0)$) ellipse [x radius=1.55, y radius=0.55];
+\node[stwo, font=\scriptsize] at (1.55,0.35) {$G^{0.5}$};
+
+\node[tag, above=2pt of b2, xshift=6pt] {4 near-duplicates};
+\node[tag, left=1pt of u1] {1 unique};
+\node[panel, below=40pt of oC] {(a) traditional covD: sum, then $\Sigma^{0.5}$};
+\node[lbl, below=52pt of oC, text width=5.5cm, align=center]
+ {$G=\sum_p x_px_p^\top$ is stretched toward the 4 duplicates
+ (they vote for the same direction 4$\times$). $\Sigma^{0.5}$ shrinks the
+ \emph{eccentricity} but the major axis still points at the duplicates.};
+\end{scope}
+
+% ====================== 右:我们 ======================
+\begin{scope}[xshift=7.6cm]
+\node[org] (oO) at (-0.3,-0.1) {};
+\node[lbl, below=2pt of oO] {origin \scriptsize(same)};
+
+\node[ptB] (c1) at (0.65,1.15) {};
+\node[ptB] (c2) at (1.05,1.45) {};
+\node[ptB] (c3) at (0.85,0.75) {};
+\node[ptB] (c4) at (1.25,1.05) {};
+\node[ptU] (v1) at (-1.55,0.65) {};
+\foreach \b in {c1,c2,c3,c4} {\draw[rayD] (oO) -- (\b);}
+\draw[ray] (oO) -- (v1);
+
+% 椭圆:更圆,不再偏向堆方向
+\draw[sone, line width=1.1pt, rotate around={5:(oO)}]
+  ($(oO)+(-0.1,0.05)$) ellipse [x radius=1.05, y radius=0.85];
+\node[sone, font=\scriptsize] at (1.0,1.0) {$G$ ($\alpha{=}1$)};
+
+\node[tag, above=2pt of c2, xshift=6pt] {$w{=}0.25$ each};
+\node[tag, left=1pt of v1] {$w{=}1$};
+\node[panel, below=40pt of oO] {(b) ours: shrink before the outer product};
+\node[lbl, below=52pt of oO, text width=5.5cm, align=center]
+ {$G=\sum_p w_p\,x_px_p^\top$: each duplicate's vote is cut to $1/d_p$
+ \emph{before} it reinforces $G$. No spectral fix needed afterward ---
+ the axis was never biased to begin with.};
+\end{scope}
+\end{tikzpicture}

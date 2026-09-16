@@ -1,0 +1,267 @@
+% ============================================================================
+%  method_fig_v2 --- LaVer-style layout (legend box, solid module blocks,
+%  dashed token sequences, wide left panel + stacked right detail panels):
+%    (a) the pipeline: one frozen forward -> one weight -> two reductions
+%    (b) selfw, read off the image's own self-Gram
+%    (c) what selfw predicts: it bites iff the degrees are unequal
+%  Colours come from the main preamble (ink, sone, stwo, accent, ...).
+% ============================================================================
+\providecommand{\tokw}[3]{% #1 = anchor coord, #2 = index, #3 = opacity
+  \fill[sone!#3, draw=sone!70, line width=0.3pt, rounded corners=0.7pt]
+    ($#1+(#2*4.6pt,0)$) rectangle ++(4pt,4pt);}
+
+\begin{tikzpicture}[
+  font=\small, text=ink, >=Stealth,
+  mod/.style   ={fill=sone!88, text=white, rounded corners=2.5pt, align=center,
+                 inner sep=5pt, font=\small\bfseries},
+  s1box/.style ={draw=sone!55, fill=sonebg, rounded corners=2.5pt, align=center,
+                 inner sep=4pt, minimum height=10mm, font=\small},
+  s2box/.style ={draw=stwo!60, fill=stwobg, rounded corners=2.5pt, align=center,
+                 inner sep=4pt, minimum height=10mm, font=\small},
+  shbox/.style ={draw=accent, line width=1pt, fill=accbg, rounded corners=2.5pt,
+                 align=center, inner sep=5pt, font=\small},
+  seq/.style   ={draw=ink!45, dashed, rounded corners=3pt, inner sep=3.5pt},
+  ar/.style    ={-{Stealth[length=5pt]}, draw=ink!70, line width=0.6pt},
+  accar/.style ={-{Stealth[length=5pt]}, draw=accent, line width=0.9pt, dashed},
+  lbl/.style   ={font=\scriptsize\itshape, text=ink!70},
+  note/.style  ={font=\scriptsize, text=ink!75, align=center},
+  dim/.style   ={font=\scriptsize, text=ink!55, inner sep=1pt},
+  sub/.style   ={font=\small, text=ink!85, align=center},
+]
+
+% =====================================================================
+% LEGEND (top-left key box, LaVer-style)
+% =====================================================================
+\node[draw=ink!30, rounded corners=2.5pt, fill=white, inner sep=5pt,
+      anchor=north west, align=left, font=\scriptsize] at (0,5.25)
+  {\begin{tabular}{@{}l@{\;}l@{\quad}l@{\;}l@{}}
+     \tikz\fill[sone!35,draw=sone!70,rounded corners=0.6pt](0,0)rectangle(1.5mm,1.5mm);
+       & patch token &
+     \tikz\fill[sone!85,draw=sone!70,rounded corners=0.6pt](0,0)rectangle(1.5mm,1.5mm);
+       & high $w_p$ \\[1.5pt]
+     \tikz\fill[stwo!40,draw=stwo!70,rounded corners=0.6pt](0,0)rectangle(1.5mm,1.5mm);
+       & candidate token &
+     \tikz\fill[sone!12,draw=sone!70,rounded corners=0.6pt](0,0)rectangle(1.5mm,1.5mm);
+       & low $w_p$ (bursty) \\[1.5pt]
+     \tikz[baseline=-0.5ex]{\foreach \a in {0,60,120}{\draw[accent,line width=0.6pt]
+       (\a:1.4pt)--(\a+180:1.4pt);}} & frozen, no gradient &
+     \tikz[baseline=-0.5ex]{\draw[accent,dashed,line width=0.8pt,
+       -{Stealth[length=3.5pt]}](0,0)--(3.5mm,0);} & shared read \\
+   \end{tabular}};
+
+% =====================================================================
+% (a)  MAIN PIPELINE
+% =====================================================================
+
+% ---- input image with patch grid ----
+\node[draw=ink!45, fill=sone!6, minimum width=13mm, minimum height=12mm,
+      inner sep=0, rounded corners=1pt] (img) at (1.0,0) {};
+\draw[fill=ink!14, draw=ink!35, line width=0.35pt]
+  ($(img.south west)+(1.5pt,0)$) rectangle ($(img.south west)+(4.5pt,7.5pt)$);
+\draw[fill=ink!20, draw=ink!35, line width=0.35pt]
+  ($(img.south west)+(4.5pt,0)$) rectangle ($(img.south west)+(9pt,11pt)$);
+\draw[fill=ink!14, draw=ink!35, line width=0.35pt]
+  ($(img.south west)+(9pt,0)$) rectangle ($(img.south west)+(12pt,6pt)$);
+\foreach \i in {1,...,4}{\draw[accent!40,line width=0.25pt]
+  ($(img.south west)+(\i*13/5*1mm,0)$)--($(img.north west)+(\i*13/5*1mm,0)$);}
+\foreach \j in {1,...,3}{\draw[accent!40,line width=0.25pt]
+  ($(img.south west)+(0,\j*12/4*1mm)$)--($(img.south east)+(0,\j*12/4*1mm)$);}
+\node[note, below=2pt of img] {query / DB image};
+
+% ---- frozen backbone ----
+\node[mod, right=5mm of img, minimum height=14mm, minimum width=24mm] (bb)
+  {Frozen ViT\\[1.5pt]
+   {\scriptsize\mdseries DINOv2-G\,\textbar\,DINOv3-L\,\textbar\,7B}\\[0.5pt]
+   {\scriptsize\mdseries value facet, one block}};
+\coordinate (sf) at ($(bb.north east)+(-4.5pt,-4.5pt)$);
+\foreach \a in {0,60,120}{\draw[white,line width=0.8pt]
+  ($(sf)+(\a:3pt)$)--($(sf)+(\a+180:3pt)$);}
+\draw[ar] (img) -- (bb);
+
+% ---- token sequence (dashed group) ----
+\coordinate (tk) at (5.92,-0.28);
+\foreach \i in {0,...,7}{\tokw{(tk)}{\i}{35}}
+\node[seq, fit={($(tk)+(-1.5pt,-1.5pt)$) ($(tk)+(37pt,5.5pt)$)}] (seqA) {};
+\node[dim, anchor=south] at ($(seqA.north)+(0,1pt)$) {$F\in\mathbb R^{N\times C}$};
+\node[note, anchor=north, text=ink!60] at ($(seqA.south)+(0,-1pt)$)
+  {\scriptsize $N{\approx}2.3$k\\[-1pt]\scriptsize PCA $C\!\to\!1024$};
+\draw[ar] (bb) -- (seqA);
+
+% ---- selfw block (the shared op; expanded in panel b) ----
+\node[shbox, right=6mm of seqA, minimum width=24mm, minimum height=14mm] (sw)
+  {\textbf{selfw}\\[2pt]
+   $w_p=1/d_p$\\[1pt]
+   {\scriptsize $d_p=\#\{p'\!:\langle f_p,f_{p'}\rangle>\tau\}$}\\[1pt]
+   {\scriptsize\itshape this image alone}};
+\draw[ar] (seqA) -- (sw);
+\node[note, anchor=north, text=accent] at ($(sw.south)+(0,-2pt)$) {\scriptsize see (b)};
+
+% ---- weighted token sequence ----
+\coordinate (tw) at (12.35,-0.28);
+\foreach \i/\o in {0/80,1/18,2/70,3/15,4/14,5/88,6/30,7/62}{\tokw{(tw)}{\i}{\o}}
+\node[seq, draw=accent!60, fit={($(tw)+(-1.5pt,-1.5pt)$) ($(tw)+(37pt,5.5pt)$)}] (seqW) {};
+\node[dim, anchor=south, text=accent] at ($(seqW.north)+(0,1pt)$) {weighted tokens};
+\draw[ar] (sw) -- (seqW);
+
+% =====================================================================
+% STAGE 1 band (top)
+% =====================================================================
+\node[s1box, anchor=west, minimum width=24mm] (c1) at (14.2,3.50)
+  {assign to $K{=}32$ cells\\ {\scriptsize $k$-means, 300 unlab.\ imgs}};
+\node[s1box, right=5mm of c1, minimum width=24mm] (c2)
+  {weighted residual sums\\ {\scriptsize $+$ power law $\rho(v){=}\mathrm{sign}(v)\sqrt{|v|}$}};
+\node[s1box, right=5mm of c2, minimum width=21mm] (c3)
+  {desc-PCA $\to1024$\\ {\scriptsize ${\approx}2$\,KB $\cdot$ $32\times$ smaller}};
+\node[s1box, right=5mm of c3, minimum width=21mm] (c4)
+  {inner-product scan\\ {\scriptsize\itshape whole database}};
+\draw[ar] (c1) -- (c2);
+\draw[ar] (c2) -- node[dim,above]{$32768$} (c3);
+\draw[ar] (c3) -- node[dim,above]{$1024$} (c4);
+\node[anchor=west, font=\footnotesize\bfseries, text=sone] at (14.2,5.05)
+  {Stage 1 $\cdot$ coarse retrieval
+   \textnormal{\scriptsize\mdseries (decomposable $\Rightarrow$ one vector per image)}};
+
+% =====================================================================
+% STAGE 2 band (bottom)
+% =====================================================================
+\coordinate (mm) at (14.95,-5.15);
+\foreach \i in {0,...,5}{\fill[sone!45,draw=sone!70,line width=0.3pt,rounded corners=0.6pt]
+  ($(mm)+(-14pt,\i*7pt)$) rectangle ++(5pt,5pt);}
+\foreach \j in {0,...,5}{\fill[stwo!40,draw=stwo!70,line width=0.3pt,rounded corners=0.6pt]
+  ($(mm)+(\j*7pt,38pt)$) rectangle ++(5pt,5pt);}
+\foreach \i/\r in {0/22,1/64,2/16,3/38,4/12,5/30}{%
+  \foreach \j/\c in {0/9,1/14,2/11,3/8,4/13,5/10}{%
+    \pgfmathtruncatemacro{\v}{(\r+\c*2)/2}
+    \fill[accent!\v, draw=ink!12, line width=0.2pt]
+      ($(mm)+(\j*7pt,\i*7pt)$) rectangle ++(5pt,5pt);}}
+\foreach \i/\j in {0/1,1/4,2/0,3/3,4/5,5/2}{%
+  \draw[stwo, line width=0.8pt, rounded corners=0.6pt]
+    ($(mm)+(\j*7pt-0.6pt,\i*7pt-0.6pt)$) rectangle ++(6.2pt,6.2pt);}
+\node[dim, anchor=south, text=sone] at ($(mm)+(-11.5pt,38pt)$) {query};
+\node[dim, anchor=south, text=stwo] at ($(mm)+(17pt,44pt)$) {candidate};
+\node[note, anchor=north, text=ink!65] at ($(mm)+(17pt,-3pt)$)
+  {\scriptsize $S_{ij}{=}\langle a_i,b_j\rangle$\\[-1pt]\scriptsize boxed $=$ row max};
+
+\node[s2box, anchor=west, minimum width=40mm] (r2) at (18.30,-4.30)
+  {gated weighted \textsc{MaxSim}\\[2pt]
+   $\displaystyle\mathrm{score}=\sum_i w_i\big[m_i>\tau_{\mathrm c}\big]m_i,
+    \;\; m_i{=}\max_j S_{ij}$\\[1pt]
+   {\scriptsize a row counts only if $m_i>0.65$}};
+\node[s2box, right=5mm of r2, minimum width=21mm] (r3)
+  {re-ranked list\\ {\scriptsize R@1 / R@5 / R@10}};
+\draw[ar] ($(mm)+(45pt,17pt)$) -- (r2);
+\draw[ar] (r2) -- (r3);
+\node[anchor=west, font=\footnotesize\bfseries, text=stwo] at (14.2,-2.55)
+  {Stage 2 $\cdot$ re-ranking
+   \textnormal{\scriptsize\mdseries (per-row max $\Rightarrow$ never decomposable, shortlist only)}};
+
+% ---- the two shared reads + the shortlist hand-off ----
+\draw[accar] (seqW.north) to[out=90,in=180]
+  node[lbl,above,pos=0.6]{read 1} (c1.west);
+\draw[accar] (seqW.south) to[out=-90,in=180]
+  node[lbl,below,pos=0.6]{read 2} ($(mm)+(-17pt,17pt)$);
+\draw[ar] (c4.south) to[out=-90,in=90] (r2.north);
+\node[lbl, anchor=west] at (22.7,0.15) {top-$K$ candidates};
+
+% ---- storage strip ----
+\node[anchor=west, draw=store!50, dashed, rounded corners=2.5pt, inner sep=5pt,
+      font=\scriptsize, align=left, text=store] at (0,-6.75)
+  {\textbf{STORED / image:}\;\; global descriptor $1024$-d ${\approx}\mathbf{2}$\,\textbf{KB}
+   (scans the full DB) \;\;$\vert$\;\;
+   weighted tokens $512{\times}512\approx\mathbf{0.52}$\,\textbf{MB} (shortlist only)};
+
+% ---- band tints ----
+\begin{scope}[on background layer]
+  \node[fill=sonebg!50, rounded corners=4pt, fit=(c1)(c4), inner sep=7pt] {};
+  \node[fill=stwobg!50, rounded corners=4pt,
+        fit={($(mm)+(-20pt,-9pt)$) ($(mm)+(46pt,47pt)$) (r2) (r3)}, inner sep=7pt] {};
+\end{scope}
+
+% =====================================================================
+% (b)  selfw --- right column, top
+% =====================================================================
+\begin{scope}[shift={(28.15,1.55)}]
+  \node[anchor=north west, font=\small\bfseries, text=accent] at (0,3.05)
+    {selfw: a weight read off the image itself};
+
+  % --- tokens of one image, repeated facade shaded ---
+  \foreach \i in {0,...,4}\foreach \j in {0,...,4}{%
+    \fill[sone!22, draw=sone!55, line width=0.3pt, rounded corners=0.6pt]
+      (\j*6.5pt,\i*6.5pt) rectangle ++(5.5pt,5.5pt);}
+  \foreach \i in {1,2}\foreach \j in {1,2,3}{%
+    \fill[sone!62, draw=sone!75, line width=0.3pt, rounded corners=0.6pt]
+      (\j*6.5pt,\i*6.5pt) rectangle ++(5.5pt,5.5pt);}
+  \node[note, anchor=north, text=ink!65] at (16pt,-3pt)
+    {\scriptsize tokens of\\[-1pt]\scriptsize one image};
+
+  % --- self-Gram ---
+  \coordinate (G) at (2.25,0);
+  \foreach \i in {0,...,4}\foreach \j in {0,...,4}{%
+    \pgfmathtruncatemacro{\v}{ifthenelse((\i>0)&&(\i<3)&&(\j>0)&&(\j<3),70,14)}
+    \fill[accent!\v, draw=ink!15, line width=0.2pt]
+      ($(G)+(\j*6.5pt,\i*6.5pt)$) rectangle ++(5.5pt,5.5pt);}
+  \node[dim, anchor=south] at ($(G)+(16pt,33pt)$) {self-Gram $G_{pp'}$};
+  \node[note, anchor=north, text=ink!65] at ($(G)+(16pt,-3pt)$)
+    {\scriptsize repeats\\[-1pt]\scriptsize cluster};
+  \draw[ar] (34pt,16pt) -- ($(G)+(-4pt,16pt)$);
+
+  % --- thresholded degree ---
+  \coordinate (D) at (4.75,0);
+  \foreach \i/\len in {0/6,1/22,2/22,3/6,4/5}{%
+    \fill[accent!55, rounded corners=0.6pt]
+      ($(D)+(0,\i*6.5pt+1pt)$) rectangle ++(\len pt,3.5pt);}
+  \node[dim, anchor=south] at ($(D)+(11pt,33pt)$) {degree $d_p$};
+  \node[note, anchor=north, text=ink!65] at ($(D)+(11pt,-3pt)$)
+    {\scriptsize above $\tau$ only,\\[-1pt]\scriptsize not a row sum};
+  \draw[ar] ($(G)+(34pt,16pt)$) -- node[dim,above]{$>\tau$} ($(D)+(-3pt,16pt)$);
+
+  % --- weights ---
+  \coordinate (W) at (7.35,0);
+  \foreach \i/\o in {0/85,1/18,2/18,3/85,4/90}{%
+    \fill[sone!\o, draw=sone!70, line width=0.3pt, rounded corners=0.6pt]
+      ($(W)+(0,\i*6.5pt)$) rectangle ++(5.5pt,5.5pt);}
+  \node[dim, anchor=south] at ($(W)+(3pt,33pt)$) {$w_p{=}1/d_p$};
+  \node[note, anchor=north, text=ink!65] at ($(W)+(3pt,-3pt)$)
+    {\scriptsize repeats pay\\[-1pt]\scriptsize each other};
+  \draw[ar] ($(D)+(25pt,16pt)$) -- ($(W)+(-3pt,16pt)$);
+
+  \node[anchor=north west, note, text=ink!70, align=left] at (0,-1.30)
+    {\scriptsize No corpus, no labels, nothing fitted: $w$ is a functional of this\\[-1pt]
+     \scriptsize image's own token set, which is why it transfers unchanged.};
+\end{scope}
+
+% =====================================================================
+% (c)  when selfw bites, when it cancels --- right column, bottom
+% =====================================================================
+\begin{scope}[shift={(28.15,-4.95)}]
+  \node[anchor=north west, font=\small\bfseries, text=accent] at (0,2.30)
+    {what it predicts};
+
+  \foreach \i/\len in {0/26,1/7,2/24,3/6,4/22}{%
+    \fill[sone!60, rounded corners=0.6pt] (0,\i*6.5pt) rectangle ++(\len pt,4.5pt);}
+  \node[dim, anchor=south] at (14pt,33pt) {dispersed $\{d_p\}$};
+  \node[note, anchor=north, text=ink!70] at (14pt,-3pt)
+    {\scriptsize frozen features:\\[-1pt]\scriptsize $w$ does real work};
+
+  \foreach \i/\len in {0/15,1/16,2/15,3/16,4/15}{%
+    \fill[ink!28, rounded corners=0.6pt] (3.3,\i*6.5pt) rectangle ++(\len pt,4.5pt);}
+  \node[dim, anchor=south] at (3.3cm+14pt,33pt) {flat $\{d_p\}$};
+  \node[note, anchor=north, text=ink!70] at (3.3cm+14pt,-3pt)
+    {\scriptsize trained features: $w$ becomes\\[-1pt]\scriptsize a scalar and cancels};
+
+  \node[anchor=north west, note, text=ink!70, align=left] at (0,-1.55)
+    {\scriptsize The weight does exactly as much work as the degrees are unequal.\\[-1pt]
+     \scriptsize A prediction, not an interpretation --- it is measured in \S\ref{sec:exp}.};
+\end{scope}
+
+% =====================================================================
+% DIVIDERS + SUBCAPTIONS
+% =====================================================================
+\draw[ink!25, dashed, line width=0.5pt] (27.45,-7.2) -- (27.45,5.4);
+\draw[ink!25, dashed, line width=0.5pt] (28.15,-1.55) -- (37.0,-1.55);
+
+\node[sub] at (12.6,-7.75) {(a) One frozen forward, one weight, two reductions.};
+\node[sub] at (32.3,-2.15) {(b) How selfw is computed.};
+\node[sub] at (32.3,-7.75) {(c) What selfw predicts.};
+
+\end{tikzpicture}

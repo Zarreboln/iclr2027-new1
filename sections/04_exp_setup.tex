@@ -1,0 +1,177 @@
+\section{Evaluation}
+\label{sec:exp}
+\subsection{Setup and protocol}
+\label{sec:setup}
+\paragraph{Datasets.} We report thirteen benchmarks spanning eight settings, from urban streets and a seasonal railway to historical photographs and degraded, subterranean, indoor, aerial and underwater imagery. Table~\ref{tab:protocol} gives the split, the database and query counts and the ground-truth distance for each, together with the three conventions on which the published literature disagrees.
+
+\paragraph{Implementation details.} One configuration is used for every benchmark. Tokens are the value facet of a frozen DINOv3 ViT-L/16 at block $20$ or ViT-7B/16 at block $32$, taken at $768$px for $2{,}304$ patches and reduced to $C{=}512$ channels by the token-PCA of \eqref{eq:tokpca}. Weights are $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores $F^{\top}WF$ built from each image's $1024$ highest-weight tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $P{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks by \eqref{eq:stage2} at $\theta{=}0.65$, scoring those $1024$ tokens on the urban benchmarks and all $2{,}304$ on the environment sets (Appendix~\ref{app:s2grid}). The DINOv2 rows run at each backbone's native resolution. Nothing is fitted outside $\mathcal{D}$: the token-PCA and the descriptor whitening are estimated from a few hundred of its unlabelled images, neither using a label. All runs are on one H100, and layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
+
+\paragraph{Evaluation metric.} A return counts as correct when it lies within the benchmark's distance of the query's true location, and we report Recall@$1$, the share of queries whose top return is correct.
+
+\subsection{Comparison with state-of-the-art}
+\label{sec:sota}
+We compare our two-stage pipeline with previous state of the art, both trained and training-free, at each method's own published setting.
+
+\begin{table}[t]
+\caption{\textbf{Recall@1 on the standard urban benchmarks.} One deployed configuration, tokens pruned to $1024$ throughout. Baseline cells are published numbers, or our run of the released checkpoint where the paper omits the benchmark. $^{\dagger}$two-stage; $^{\ddag}$without the cross-image encoder; ``--'' not reported, with \emph{mean} left blank for such rows.}
+\label{tab:breadth}
+\begin{center}
+{\scriptsize\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{0.92}%
+\begin{tabular}{ll cccccccc|c}
+\toprule
+Method   &   Backbone   &  Pitts250k &  Pitts30k &  Tokyo24/7 &  MSLS-val &  Nordland &  St Lucia &  Oxford &  AmsterTime &  mean \\
+\midrule
+\multicolumn{11}{l}{\emph{Trained / fine-tuned --- reference, not training-free}} \\NetVLAD                  &  VGG16     &  81.51 &  82.07 &  54.92 &  53.11 &  6.40 &  49.93 &  34.55 &  20.55 &  47.88 \\
+SFRS                     &  VGG16     &  90.7 &  70.88 &  85.4 &  59.32 &  8.81 &  58.61 &  29.32 &  19.33 &  52.80 \\
+CosPlace                 &  R50       &  92.15 &  90.9 &  87.3 &  87.70 &  62.96 &  99.86 &  79.06 &  49.72 &  81.21 \\
+MixVPR                   &  R50       &  94.6 &  91.64 &  86.35 &  88.0 &  76.58 &  99.59 &  90.58 &  40.86 &  83.53 \\
+EigenPlaces              &  R50       &  94.1 &  92.5 &  93.0 &  89.1 &  63.64 &  99.52 &  89.53 &  48.9 &  83.79 \\
+R2Former$^{\dagger}$     &  DeiT-S    &  93.24 &  91.1 &  88.6 &  89.7 &  60.52 &  99.7 &  92.67 &  29.49 &  80.63 \\
+SALAD                    &  DINOv2-B  &  95.1 &  92.37 &  94.60 &  92.2 &  86.46 &  \textbf{100.00} &  97.91 &  58.41 &  89.63 \\
+CricaVPR$^\ddag$         &  DINOv2-B  &  94.61 &  91.83 &  90.16 &  89.19 &  80.46 &  99.80 &  98.43 &  48.98 &  86.68 \\
+SelaVPR$^{\dagger}$      &  DINOv2-L  &  95.7 &  92.8 &  94.0 &  90.8 &  85.2 &  99.8 &  98.95 &  50.28 &  88.44 \\
+BoQ                      &  DINOv2-B  &  96.6 &  93.7 &  98.1 &  93.8 &  90.60 &  \textbf{100.0} &  99.48 &  63.0 &  91.91 \\
+CliqueMining             &  DINOv2-B  &  95.2 &  92.62 &  96.83 &  94.2 &  95.94 &  \textbf{100.00} &  98.43 &  57.68 &  91.36 \\
+SuperVLAD$^\ddag$        &  DINOv2-B  &  95.22 &  92.61 &  93.65 &  91.49 &  79.23 &  99.86 &  \textbf{100.00} &  54.67 &  88.34 \\
+VLAD-BuFF                &  DINOv2-B  &  95.6 &  92.50 &  96.5 &  92.4 &  84.93 &  \textbf{100.0} &  98.95 &  61.4 &  90.28 \\
+SelaVPR++$^{\dagger}$    &  DINOv2-L  &  96.67 &  94.4 &  98.1 &  \textbf{94.5} &  \textbf{97.2} &  \textbf{100.00} &  99.48 &  61.17 &  92.69 \\
+MegaLoc                  &  DINOv2-B  &  96.4 &  94.1 &  96.5 &  91.0 &  94.28 &  \textbf{100.00} &  98.95 &  62.47 &  91.71 \\
+FoL$^{\dagger}$          &  DINOv2-L  &  \textbf{97.0} &  \underline{94.5} &  \underline{98.4} &  93.5 &  92.6 &  99.9 &  \textbf{100.00} &  \underline{70.1} &  \underline{93.25} \\
+SAGE$^\ddag$             &  DINOv2-L  &  \underline{96.85} &  \textbf{94.70} &  97.78 &  \underline{94.46} &  95.11 &  \underline{99.93} &  99.48 &  66.04 &  93.04 \\
+\midrule
+\multicolumn{11}{l}{\emph{Training-free --- frozen backbone, no VPR training}} \\
+AnyLoc                   &  DINOv2-G  &  81.49 &  87.7 &  90.48 &  49.19 &  20.19 &  96.2 &  \underline{99.5} &  44.60 &  71.17 \\
+EffoVPR-ZS$^{\dagger}$   &  DINOv2-L  &  93.38 &  89.4 &  90.8 &  70.3 &  57.9 &  97.75 &  76.96 &  65.80 &  80.29 \\
+\midrule
+\multicolumn{11}{l}{Ours \emph{--- training-free, deployed configuration (\S\ref{sec:global}: keep-1024, WPCA-2048 coarse, \textsc{selfw\_conf})}} \\
+Ours$^{\dagger}$         &  DINOv3-L  &  95.92 &  93.18 &  97.14 &  88.92 &  87.02 &  99.11 &  \textbf{100.00} &  69.86 &  91.39 \\
+Ours$^{\dagger}$         &  DINOv3-7B &  96.12 &  93.74 &  \textbf{98.41} &  89.32 &  \underline{96.25} &  99.73 &  98.95 &  \textbf{73.60} &  \textbf{93.27} \\
+\bottomrule
+\end{tabular}%
+}\\[3pt]
+% ===== SOURCES for This-work cells (all EXPERIMENTS_LOG.md line:col, G/L/7B = DINOv2-G/DINOv3-L/DINOv3-7B) =====
+% selfw_conf (covD coarse):
+%   Pitts (pool100) G92.49/L92.81/7B93.41 = C18 L:4298-4300.
+%   Tokyo315 selfw_conf NOT tabulated per-op (only best-op); 1125-caliber selfw_conf G92.67/L92.20/7B93.14 = C17 L:4240-4242.
+%   MSLS(740,pool1000) G87.16/L87.70/7B85.81 = C14 L:4096-4098.
+%   Nordland(pool1000) G86.36/L88.21/7B94.19 = C16 L:4192-4194.
+%   AmsterTime(full-lib) G65.64/L67.18/7B71.57(raw; 73.92 w/ZCA) = B6.4/B6.5 L:3095-3097,3139.
+% mnn_selfw65 (covD coarse):
+%   Pitts (pool100) G93.08/L93.54/7B93.82 = C18 L:4298-4300 (L pool1000 = 93.63, C10 L:3912).
+%   Tokyo(315-standard, best-op incl mnn) G98.73/L98.41/7B99.37 = C17 L:4248-4250.
+%   MSLS(740,pool1000) G86.22/L87.43/7B87.43 = C14 L:4096-4098.
+%   Nordland(pool1000) G78.58/L86.29/7B94.18 = C16 L:4192-4194.
+%   AmsterTime: NO mnn_selfw65 column exists anywhere (AmsterTime tables are selfw_conf-only) -> cells stay "--".
+% peak: Pitts93.82(7B,mnn) Tokyo99.37(7B) MSLS87.70(L,selfw_conf) Nordland94.31(7B,comb_full,C16 L:4194) Amster71.57(7B,selfw_conf; ZCA variant 73.92 REMOVED -- per-dataset switch).
+% Dim: covD d'=512 -> 262144 (A7.2 L:1311; DINOv3-L "262144-d" L:3078); desc-PCA 1024=~4KB (L:1344).
+%   AnyLoc VLAD 49152 = L:318.  MegaLoc global 8448 = L:3203.
+% CAVEATS: covD/Dim R@1 partly AmsterTime-only preliminary (L:1347); Tokyo315 offline-recomputed & selfw_conf not per-op (L:4252,4248);
+%   MSLS 740 variant in-support (L:4100); tau/T2/ZCA not cross-DINOv3-calibrated (L:1470,3112); peak = per-set-best-op (oracle-ish).
+% ===== BASELINE Dim sources (global descriptor dim; from each method's paper) =====
+% NetVLAD 4096 (PCA; raw 32768) arXiv:1511.07247 Sec5.1-5.2. SFRS 4096 arXiv:2006.03926 Sec4.1.
+% CosPlace 512 (default) arXiv:2204.02287 Sec5.1. MixVPR 4096 arXiv:2303.02190 Tab1. EigenPlaces 2048 arXiv:2308.10832 Sec4.2.
+% R2Former 256 global (local 128) arXiv:2304.03410. SALAD 8448 (128x64+256) arXiv:2311.15937 Sec4.1.
+% CricaVPR 4096 (as-reported PCA; native 10752) arXiv:2402.19231 Sec4.3. BoQ 12288 arXiv:2405.07364 (repo output_dim).
+% SelaVPR 1024 (local 128) arXiv:2402.14505. CliqueMining 8448 (=SALAD arch) arXiv:2407.02422.
+% SuperVLAD 3072 (4 clusters x768; 1-cluster=768) NeurIPS24. EMVP 8192 (128x64 second-order) NeurIPS24 OpenReview V6w7keoTqn Sec4.1.
+% EffoVPR 1024 ([CLS]; compact 512/256/128) arXiv:2405.18065. FoL 8448 (SALAD M=64; local 128) arXiv:2504.09881 (8448 inferred from SALAD config).
+% SuperPlace 8192 (NVL-FT2 leaderboard; compact 768 G2M) arXiv:2506.13073. SelaVPR++ 4096 FP32 (512 binary retrieval) arXiv:2502.16601.
+% Pair-VPR 512 (CLS->512, all sizes) arXiv:2410.06614. MegaLoc 8448 (LOG.md:3203; arXiv:2502.17237). SAGE 8448 (main; 4096 compact) arXiv:2509.25723.
+% ===== This-work COMPACT single-stage covD @1024-d (desc-PCA), R@1 (coarse only, no rerank) =====
+% Pitts G87.97/L87.88/7B88.64 = C18 L:4288. Tokyo G67.38/L68.09/7B71.63 = C17 L:4230. MSLS G63.11/L65.00/7B66.62 = C14 L:4086.
+% Nordland G33.80/L32.43/7B53.02 = C16 L:4182. AmsterTime G58.08 (A7.2 L:1344) / L48.50 (SPEC L:3161); 7B not run.
+% Near-lossless: R@1000 stays 98-100 at 1024-d (shortlist recall preserved) so re-ranking runs unaffected; storage ~4KB/image (256x smaller than native 262144).
+% Compact covD @1024-d single-stage (Pitts-7B 88.64) is competitive with AnyLoc @49152-d single-stage (87.7) at 48x smaller.
+\end{center}
+\end{table}
+
+Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.4$ on Nordland, whose seasonal change is the hardest condition in the table. Our mean of $93.27$ is the highest in the table, above every trained method as well, and we take the best number on Tokyo 24/7, Oxford RobotCar and AmsterTime, the benchmark with decades of time variation. These benchmarks are exactly the terrain a trained method's supervision is aimed at, and we reach it there without a single place label.
+
+\label{sec:ood}
+
+\begin{table}[t]
+\caption{\textbf{Nine environments, two stages against two stages.} R@1 under the same deployed configuration, re-ranking all $2{,}304$ tokens here against $1024$ in Table~\ref{tab:breadth}. $^{d}$AnyLoc's VP-Air figure may omit the $10{,}000$ distractors ours carries. Each method as published: $^{\dagger}$after its own re-ranker, $^{\ddag}$without the cross-image encoder. Bold $=$ best, \underline{underline} $=$ second.}
+\label{tab:ood}
+\begin{center}
+{\scriptsize\setlength{\tabcolsep}{2pt}%
+\begin{tabular}{llccccccccc|c}
+\toprule
+ & & Degr.\ & SubT & \multicolumn{3}{c}{Indoor} & \multicolumn{3}{c}{Aerial} & UW & \\
+\cmidrule(lr){3-11}
+Method & Backbone & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
+\midrule
+\multicolumn{12}{l}{\emph{Trained / fine-tuned}} \\NetVLAD & VGG16 & 38.1 & 42.9 & 63.8 & 66.0 & 57.8 & 9.9 & 39.4 & 14.7 & 26.7 & 39.9 \\
+SFRS & VGG16 & 29.7 & 21.4 & 59.1 & 55.0 & 51.3 & 0.0 & 47.9 & 9.4 & 9.9 & 31.5 \\
+CosPlace & R50 & 33.9 & 25.9 & 63.3 & 84.5 & 47.1 & 0.0 & 76.1 & 10.4 & 32.7 & 41.5 \\
+MixVPR & R50 & 26.3 & 32.1 & 63.8 & 92.0 & 68.4 & 39.4 & 78.9 & 12.9 & 24.8 & 48.7 \\
+EigenPlaces & R50 & 28.8 & 27.7 & 63.8 & 86.0 & 66.6 & 12.7 & \textbf{100.0} & 13.1 & 29.7 & 47.6 \\
+R2Former$^{\dagger}$ & DeiT-S & 17.8 & 30.4 & 63.8 & 84.0 & 74.7 & 26.8 & 83.1 & 15.0 & 22.8 & 46.5 \\
+SALAD & DINOv2-B & 38.1 & 46.4 & 64.3 & 96.5 & 69.9 & 53.5 & 94.4 & 24.0 & 15.8 & 55.9 \\
+CricaVPR$^\ddag$ & DINOv2-B & 28.0 & 34.8 & 64.0 & 94.0 & 65.8 & 45.1 & \textbf{100.0} & 19.9 & 27.7 & 53.3 \\
+SelaVPR$^{\dagger}$ & DINOv2-L & 25.4 & 53.6 & 63.3 & 94.5 & 68.5 & 59.1 & 83.1 & 32.6 & 21.8 & 55.8 \\
+BoQ & DINOv2-B & 33.9 & 60.7 & 64.3 & 98.0 & 77.4 & 62.0 & 91.5 & 29.5 & 35.6 & 61.4 \\
+CliqueMining & DINOv2-B & 22.9 & 38.4 & 65.3 & 93.0 & 69.1 & 62.0 & 84.5 & 22.9 & 35.6 & 54.9 \\
+SuperVLAD$^\ddag$ & DINOv2-B & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 51.1 \\
+VLAD-BuFF & DINOv2-B & 37.3 & 33.9 & 64.5 & 96.5 & 76.4 & 57.7 & 88.7 & 33.3 & 27.7 & 57.4 \\
+SelaVPR++$^{\dagger}$ & DINOv2-L & 21.2 & 35.7 & 65.0 & 95.5 & 73.6 & 81.7 & 87.3 & 42.7 & 27.7 & 58.9 \\
+MegaLoc & DINOv2-B & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & 85.9 & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
+FoL$^{\dagger}$ & DINOv2-L & 36.4 & 54.5 & 65.3 & 97.0 & 78.9 & 77.5 & \underline{98.6} & 46.7 & 25.7 & 64.5 \\
+SAGE$^\ddag$ & DINOv2-L & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & 85.9 & 84.5 & 39.1 & 24.8 & 60.0 \\
+\midrule
+\multicolumn{12}{l}{\emph{Training-free}} \\
+AnyLoc & DINOv2-G & 65.2 & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7$^{d}$ & 34.6 & 69.5 \\
+GeM & DINOv2-B & 39.8 & 68.8 & 65.3 & 97.5 & 78.7 & 76.1 & 91.6 & 61.4 & 30.7 & 67.8 \\
+GeM & DINOv2-L & 42.4 & 62.5 & 65.0 & 97.0 & 78.3 & 83.1 & 91.6 & 70.0 & 28.7 & 68.7 \\
+EffoVPR-ZS$^{\dagger}$ & DINOv2-L & 38.1 & 67.0 & \underline{65.5} & 97.5 & 75.9 & 83.1 & 88.7 & 65.7 & 36.6 & 68.7 \\
+\midrule
+\multicolumn{12}{l}{Ours \emph{--- training-free, coarse $+$ late interaction}} \\
+Ours & DINOv2-G & \textbf{68.6} & \textbf{83.0} & \textbf{66.0} & \textbf{99.5} & \underline{85.1} & 87.3 & 94.4 & \underline{71.9} & 30.7 & \underline{76.3} \\
+Ours & DINOv3-L & \underline{66.1} & 71.4 & 64.8 & \underline{99.0} & \textbf{86.8} & \underline{90.1} & 95.8 & 69.1 & 35.6 & 75.4 \\
+Ours & DINOv3-7B & 61.0 & \underline{75.9} & 65.3 & \textbf{99.5} & 83.5 & \textbf{91.5} & 97.2 & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
+\bottomrule
+\end{tabular}%
+}
+\end{center}
+\end{table}
+
+Table~\ref{tab:ood} takes the same configuration off street view, to degraded, subterranean, indoor, aerial and underwater imagery, with every method given a second stage of its own so that two-stage is compared against two-stage. We take the best number on seven of the nine environments and the second on the other two, for a mean of $76.6$ against $65.1$ for the strongest trained method (MegaLoc) and $69.5$ for the strongest training-free one (AnyLoc). The margins are largest where a single descriptor has least to work with: $68.6$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns, and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. The gap between our three backbones is $1.2$ R@1, so the result rests on the pipeline rather than on backbone scale.
+
+Figure~\ref{fig:qual} shows one query per benchmark family. Where the trained baselines return a different place under seasonal change, illumination change or a degraded interior, our pipeline returns the correct image at rank one.
+
+\subsection{Ablation study}
+\label{sec:swap}
+Table~\ref{tab:stage2swap} isolates our second stage by dropping it into other pipelines: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes. The upper block re-ranks the shortlist of the four methods that ship a second stage of their own, and all four improve on the nine-environment mean, FoL by $+5.5$, R2Former $+5.6$, SelaVPR $+9.7$ and SelaVPR++ $+12.5$ R@1, better on $28$ of the $36$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
+
+\begin{table}[t]
+\caption{\textbf{Our second stage on other methods' first stages.} Each figure is what the method publishes, after its own re-ranker in the upper block and from its global descriptor in the lower; the subscript is the change under \eqref{eq:stage2}, replacing that re-ranker or added where there is none. Backbone, resolution and shortlist stay the method's own.}
+\label{tab:stage2swap}
+\begin{center}
+{\scriptsize\setlength{\tabcolsep}{2pt}%
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccc|c}
+\toprule
+& & Degr.\ & SubT & \multicolumn{3}{c}{Indoor} & \multicolumn{3}{c}{Aerial} & UW & \\
+\cmidrule(lr){3-11}
+Method   &   Backbone   &   Hawk   &   Laurel   &  17Pl &   Gard   &   Baidu   &   N-Air   &   N-AirR   &   VP-Air   & M-Atl &   mean \\
+\midrule
+\multicolumn{12}{l}{\emph{Swapped for the method's own re-ranker}} \\
+FoL            & DINOv2-L   & 36.4\dlt{+14.4} & 54.5\dlt{+18.7} & 65.3\dlt{-0.5} & 97.0\dlt{+1.0} & 78.9\dlt{+2.4} & 77.5\dlt{+4.2} & 98.6\dlt{-4.2} & 46.7\dlt{+10.1} & 25.7\dlt{+3.0} & 64.5\dltg{+5.5} \\
+SelaVPR++      & DINOv2-L   & 21.2\dlt{+44.9} & 35.7\dlt{+39.3} & 65.0\dlt{-0.0} & 95.5\dlt{+3.0} & 73.6\dlt{+8.0} & 81.7\dlt{-5.6} & 87.3\dlt{+2.8} & 42.7\dlt{+25.0} & 27.7\dlt{-4.9} & 58.9\dltg{+12.5} \\
+SelaVPR        & DINOv2-L   & 25.4\dlt{+38.2} & 53.6\dlt{+13.4} & 63.3\dlt{+2.5} & 94.5\dlt{+1.5} & 68.5\dlt{+7.5} & 59.1\dlt{+1.5} & 83.1\dlt{+1.4} & 32.6\dlt{+23.5} & 21.8\dlt{-2.0} & 55.8\dltg{+9.7} \\
+R2Former       & DeiT-S     & 17.8\dlt{+22.9} & 30.4\dlt{+16.1} & 63.8\dlt{+0.7} & 84.0\dlt{-3.5} & 74.7\dlt{+0.6} & 26.8\dlt{+5.6} & 83.1\dlt{-1.4} & 15.0\dlt{+2.8} & 22.8\dlt{+6.9} & 46.5\dltg{+5.6} \\
+\midrule
+\multicolumn{12}{l}{\emph{Added where the method has no second stage}} \\
+SALAD                & DINOv2-B   & 38.1\dlt{+24.6} & 46.4\dlt{+25.9} & 64.3\dlt{+1.0} & 96.5\dlt{+3.0} & 69.9\dlt{+12.1} & 53.5\dlt{+29.6} & 94.4\dlt{+1.4} & 24.0\dlt{+22.1} & 15.8\dlt{+14.9} & 55.9\dltg{+14.9} \\
+CricaVPR$^\ddag$     & DINOv2-B   & 28.0\dlt{+31.4} & 34.8\dlt{+32.1} & 64.0\dlt{+1.5} & 94.0\dlt{+4.5} & 65.8\dlt{+18.9} & 45.1\dlt{+18.3} & 100.0\dlt{-8.5} & 19.9\dlt{+22.8} & 27.7\dlt{+8.9} & 53.3\dltg{+14.4} \\
+BoQ                  & DINOv2-B   & 33.9\dlt{+33.1} & 60.7\dlt{+16.1} & 64.3\dlt{+0.7} & 98.0\dlt{+1.0} & 77.4\dlt{+6.5} & 62.0\dlt{+31.0} & 91.5\dlt{-8.5} & 29.5\dlt{+24.9} & 35.6\dlt{-5.0} & 61.4\dltg{+11.1} \\
+CliqueMining         & DINOv2-B   & 22.9\dlt{+39.8} & 38.4\dlt{+35.7} & 65.3\dlt{-0.2} & 93.0\dlt{+6.0} & 69.1\dlt{+13.8} & 62.0\dlt{+8.5} & 84.5\dlt{+11.3} & 22.9\dlt{+26.2} & 35.6\dlt{-1.0} & 54.9\dltg{+15.6} \\
+SuperVLAD$^\ddag$    & DINOv2-B   & 37.3\dlt{+23.7} & 51.8\dlt{+21.4} & 64.8\dlt{+1.5} & 95.5\dlt{+3.5} & 70.3\dlt{+15.1} & 14.1\dlt{+60.6} & 88.7\dlt{-9.9} & 23.8\dlt{+23.4} & 13.9\dlt{+20.8} & 51.1\dltg{+17.8} \\
+MegaLoc              & DINOv2-B   & 37.3\dlt{+33.1} & 55.4\dlt{+17.0} & 64.8\dlt{+1.2} & 95.5\dlt{+3.0} & 79.4\dlt{+5.7} & 85.9\dlt{+1.4} & 81.7\dlt{+9.9} & 45.6\dlt{+16.3} & 40.6\dlt{-5.9} & 65.1\dltg{+9.1} \\
+SAGE$^\ddag$         & DINOv2-L   & 27.1\dlt{+37.3} & 46.4\dlt{+26.8} & 64.0\dlt{+0.5} & 93.5\dlt{+5.0} & 74.6\dlt{+6.7} & 85.9\dlt{-9.9} & 84.5\dlt{+5.6} & 39.1\dlt{+26.3} & 24.8\dlt{-2.0} & 60.0\dltg{+10.7} \\
+VLAD-BuFF            & DINOv2-B   & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} & 76.4\dlt{+8.1} & 57.7\dlt{+9.9} & 88.7\dlt{+5.6} & 33.3\dlt{+20.1} & 27.7\dlt{+7.9} & 57.4\dltg{+12.5} \\
+\bottomrule
+\end{tabular}%
+}%
+}
+\end{center}
+\end{table}

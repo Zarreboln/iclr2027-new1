@@ -1,0 +1,135 @@
+\begin{tikzpicture}[
+  font=\small, text=ink, >=Stealth,
+  box/.style={draw=ink!35, fill=greyb, rounded corners=2pt, align=center,
+    inner sep=4.5pt, minimum height=9mm, font=\small},
+  shbox/.style={draw=accent, line width=1pt, fill=accbg, rounded corners=2pt,
+    align=center, inner sep=5pt, font=\small},
+  s1box/.style={draw=sone!65, line width=0.7pt, fill=sonebg, rounded corners=2pt,
+    align=center, inner sep=4.5pt, minimum height=11mm, font=\small},
+  s2box/.style={draw=stwo!70, line width=0.7pt, fill=stwobg, rounded corners=2pt,
+    align=center, inner sep=4.5pt, minimum height=11mm, font=\small},
+  ar/.style={-{Stealth[length=5pt]}, draw=ink!65, line width=0.6pt},
+  accar/.style={-{Stealth[length=5pt]}, draw=accent, line width=1pt, dashed},
+  dimlbl/.style={font=\scriptsize, text=ink!60, fill=white, inner sep=1pt},
+  lbl/.style={font=\scriptsize\itshape, text=ink!70},
+  note/.style={font=\scriptsize, text=ink!75, align=center},
+]
+
+% ================= INPUT IMAGE + PATCH GRID =================
+\node[draw=ink!45, fill=blue!4, minimum width=17mm, minimum height=15mm,
+      inner sep=0, rounded corners=1pt] (imgN) at (0,0) {};
+\draw[fill=ink!12, draw=ink!35, line width=0.4pt] ($(imgN.south west)+(2pt,0)$) rectangle ($(imgN.south west)+(6pt,9pt)$);
+\draw[fill=ink!18, draw=ink!35, line width=0.4pt] ($(imgN.south west)+(6pt,0)$) rectangle ($(imgN.south west)+(11pt,13pt)$);
+\draw[fill=ink!12, draw=ink!35, line width=0.4pt] ($(imgN.south west)+(11pt,0)$) rectangle ($(imgN.south west)+(15pt,7pt)$);
+\foreach \i in {1,...,5}{\draw[accent!45,line width=0.3pt] ($(imgN.south west)+(\i*17/6*1mm,0)$)--($(imgN.north west)+(\i*17/6*1mm,0)$);}
+\foreach \j in {1,...,4}{\draw[accent!45,line width=0.3pt] ($(imgN.south west)+(0,\j*3mm)$)--($(imgN.south east)+(0,\j*3mm)$);}
+\node[note, below=1pt of imgN] {query / DB image + patch grid};
+
+% ================= FROZEN BACKBONE =================
+\node[box, right=7mm of imgN, minimum height=17mm, minimum width=31mm] (bb)
+  {\textbf{Frozen ViT}\\[2pt]
+   {\scriptsize\begin{tabular}{@{}ll@{}} DINOv2-G & blk 31\\ DINOv3-L & blk 20\\ DINOv3-7B & blk 32\end{tabular}}\\[1pt]
+   {\scriptsize value facet $\cdot$ \emph{no gradient}}};
+\coordinate (sf) at ($(bb.north east)+(-4pt,-4pt)$);
+\foreach \a in {0,60,120}{\draw[accent,line width=0.7pt] ($(sf)+(\a:3.4pt)$)--($(sf)+(\a+180:3.4pt)$);}
+
+% ================= TOKEN SLAB =================
+\node[right=9mm of bb, inner sep=0] (tokanchor) {};
+\fill[greyb, draw=ink!35, line width=0.5pt] ($(tokanchor.center)+(-4pt,4pt)$) rectangle ($(tokanchor.center)+(14pt,20pt)$);
+\fill[white, draw=ink!35, line width=0.5pt] ($(tokanchor.center)+(0,0)$) rectangle ($(tokanchor.center)+(18pt,16pt)$);
+\foreach \k in {1,2,3}{\draw[ink!20,line width=0.3pt] ($(tokanchor.center)+(0,\k*4pt)$) -- ($(tokanchor.center)+(18pt,\k*4pt)$);}
+\node[dimlbl, anchor=south] at ($(tokanchor.center)+(7pt,25pt)$) {patch tokens $F$, $N{\times}C$};
+\node[note, text=ink!60, anchor=north] (tokdims) at ($(tokanchor.center)+(7pt,-8pt)$)
+  {\scriptsize G $2401{\times}1536$\\ L $2304{\times}1024$\\ 7B $2304{\times}4096$};
+
+\draw[ar] (imgN) -- (bb);
+\draw[ar] (bb) -- ($(tokanchor.center)+(-6pt,8pt)$);
+
+% ================= SHARED OPS =================
+\node[shbox, right=11mm of tokanchor, minimum width=35mm] (sh)
+  {\textbf{shared read-invariant ops}\\[3pt]
+   \begin{tabular}{@{}l@{}}
+   $\bullet$ token-PCA $\;C\!\to\!1024$ \;{\scriptsize(300 unlabelled DB imgs)}\\[3pt]
+   $\bullet$ burst weight $w_p=1/d_p$\\
+   \quad{\scriptsize $d_p=\#\{p'\!:\langle f_p,f_{p'}\rangle>\tau\}$ --- thresholded, not a raw row-sum}
+   \end{tabular}};
+\draw[ar] ($(tokanchor.center)+(9pt,8pt)$) -- (sh);
+
+% ================= STAGE 1 (TOP) =================
+\node[s1box, minimum width=28mm, anchor=west] (c1) at ($(sh.east)+(3.0,3.4)$)
+  {assign to $K{=}32$ cells\\[1pt] {\scriptsize $k$-means on 300}\\ {\scriptsize unlabelled DB images}};
+\node[s1box, right=7mm of c1, minimum width=25mm] (c2)
+  {burst-weighted residual\\ sums $+$ power law\\ {\scriptsize $\rho(v)\!=\!\mathrm{sign}(v)\sqrt{|v|}$}};
+\node[s1box, right=7mm of c2, minimum width=28mm] (c3)
+  {desc-PCA $\to 1024$\\ {\scriptsize $\sim$2\,KB $\cdot$ $32\times$ smaller}\\ {\scriptsize costs $0.3$--$3.7$ R@100$^\dagger$}};
+\node[s1box, right=7mm of c3, minimum width=27mm] (c4)
+  {inner-product scan\\ \emph{whole database}\\ {\scriptsize $\to$ top-$K$ shortlist}};
+\draw[ar] (c1) -- (c2);
+\draw[ar] (c2) -- node[dimlbl,above]{$32768$} (c3);
+\draw[ar] (c3) -- node[dimlbl,above]{$1024$} (c4);
+
+\coordinate (bandmid) at ($(c1.west)!0.5!(c4.east)$);
+\node[anchor=west, font=\footnotesize\bfseries, text=sone] at (c1.west |- 0,4.75)
+  {Stage 1 $\cdot$ coarse retrieval \textnormal{\scriptsize(polynomial kernel $\Rightarrow$ decomposable)}};
+\node[anchor=north, note, draw=ink!25, fill=white, rounded corners=2pt, inner sep=3pt]
+  at (bandmid |- 0,2.05)
+  {\scriptsize top-$K$ = 100 (Pitts) $\cdot$ 1000 (Tokyo, MSLS, SF, Nordland) $\cdot$ full DB (AmsterTime)};
+
+% ================= STAGE 2 (BOTTOM) =================
+% MaxSim mini visual (zero-size anchor at its left)
+\coordinate (mm) at ($(sh.east)+(3.15,-3.4)$);
+\foreach \i in {0,1,2}\foreach \j in {0,1,2}{\fill[sonebg,draw=sone!50,line width=0.3pt] ($(mm)+(\i*3.5pt,\j*3.5pt)$) rectangle ($(mm)+(\i*3.5pt+3.5pt,\j*3.5pt+3.5pt)$);}
+\foreach \i in {0,1,2}\foreach \j in {0,1,2}{\fill[stwobg,draw=stwo!50,line width=0.3pt] ($(mm)+(30pt+\i*3.5pt,\j*3.5pt)$) rectangle ($(mm)+(30pt+\i*3.5pt+3.5pt,\j*3.5pt+3.5pt)$);}
+\draw[stwo,line width=0.5pt,-{Stealth[length=3pt]}] ($(mm)+(9pt,9pt)$) -- ($(mm)+(31pt,5pt)$);
+\draw[stwo,line width=0.5pt,-{Stealth[length=3pt]}] ($(mm)+(9pt,2pt)$) -- ($(mm)+(35pt,9pt)$);
+\draw[stwo,line width=0.5pt,-{Stealth[length=3pt]}] ($(mm)+(5pt,5pt)$) -- ($(mm)+(37pt,2pt)$);
+\node[note, text=ink!60, anchor=north] at ($(mm)+(20pt,-3pt)$) {\scriptsize query $\to$ candidate\\[-1pt]\scriptsize max-sim patch};
+\node[note, text=sone, anchor=south, font=\scriptsize] at ($(mm)+(5pt,12pt)$) {query};
+\node[note, text=stwo, anchor=south, font=\scriptsize] at ($(mm)+(35pt,12pt)$) {cand.};
+
+\node[s2box, minimum width=44mm, anchor=west] (r2) at ($(mm)+(58pt,0)$)
+  {weighted \textsc{MaxSim} $+$ confidence gate\\[2pt]
+   $\displaystyle \mathrm{score}=\sum_i w_i\,\big[\max_j\langle a_i,b_j\rangle>\tau\big]\max_j\langle a_i,b_j\rangle$\\[2pt]
+   {\scriptsize gate: keep the term only if $\max_j\langle a_i,b_j\rangle>0.65$}};
+\node[s2box, right=7mm of r2, minimum width=24mm] (r3)
+  {re-ranked list\\ {\scriptsize $\to$ R@1 / R@5 / R@10}};
+\draw[ar] ($(mm)+(40pt,4pt)$) -- (r2);
+\draw[ar] (r2) -- (r3);
+
+\node[anchor=west, font=\footnotesize\bfseries, text=stwo] at (c1.west |- 0,-1.95)
+  {Stage 2 $\cdot$ re-ranking \textnormal{\scriptsize(per-row max $\Rightarrow$ never decomposable)}};
+
+% 说明:原本这里有一个 "optional (AmsterTime only) ZCA whitening" 方框,已删除 ——
+% 那是逐数据集开关,与 \S\ref{sec:transfer} 主张的"没有逐集开关"直接冲突。
+\node[draw=stwo!55, dashed, rounded corners=2pt, fill=stwobg!40, inner sep=5pt,
+      font=\scriptsize, align=left, text=ink!80, anchor=north] (zca) at (r2.south |- 0,-5.0)
+  {$\diamond$\; \textbf{one configuration everywhere}\\
+   same layer, same $\tau$, same threshold, same $K$ --- no per-dataset switch};
+
+% ================= SHARED (two reads) ARROWS =================
+\draw[accar] (sh.north) to[out=90,in=180] node[lbl,above,pos=0.5]{read 1: first-order pooling (VLAD)} (c1.west);
+\draw[accar] (sh.south) to[out=-90,in=180] node[lbl,below,pos=0.5]{read 2: per-token late interaction} ($(mm)+(-4pt,4pt)$);
+\draw[ar] (c4.south) to[out=-90,in=90] node[lbl,right,pos=0.4]{top-$K$ candidates} (r2.north);
+
+% ================= STORAGE + FOOTNOTE =================
+\node[anchor=west, draw=store!55, dashed, rounded corners=2pt, inner sep=5pt,
+      font=\scriptsize, align=left, text=store] (stor) at (imgN.west |- 0,-6.5)
+  {\textbf{STORED / image:}\;\; global descriptor $1024$-d $\approx$ \textbf{2\,KB} (scans full DB) \;\;$|$\;\;
+   weighted tokens $512{\times}512\approx$ \textbf{0.52\,MB} (only the shortlist is re-ranked)};
+\node[anchor=east, note, text=ink!55] at (c4.east |- 0,-6.5)
+  {\scriptsize $^\dagger$ $0.3$ R@100 on databases below $10^4$ images, $2.6$--$3.7$ above; ordering vs.\ second order is unchanged};
+
+% ================= TITLE =================
+\node[anchor=south west, font=\large\bfseries, text=ink] at (imgN.west |- 0,2.55)
+  {One frozen forward, one weight, two reductions
+   \textnormal{\normalfont\small--- no VPR training, no place labels}};
+
+% ================= BANDS =================
+\begin{scope}[on background layer]
+  \node[fill=sonebg!45, rounded corners=4pt, fit=(c1)(c4), inner sep=7pt] {};
+  \coordinate (mmA) at ($(mm)+(-4pt,14pt)$);
+  \coordinate (mmB) at ($(mm)+(40pt,-16pt)$);
+  \node[fill=stwobg!45, rounded corners=4pt, fit=(mmA)(mmB)(r3)(zca), inner sep=7pt] {};
+\end{scope}
+
+\end{tikzpicture}

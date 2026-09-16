@@ -1,0 +1,60 @@
+\subsection{Hyperparameters and calibration}
+\label{app:hyper}
+\label{sec:exp-hp}
+\label{app:abl}
+\begin{table}[t]
+\caption{Backbone layer (Tokyo24/7, DINOv3-L, base \textsc{MaxSim} R@1). The peak sits at ${\sim}0.75$--$0.9$ depth (L20--21); the last layer degrades. All backbones agree (S$\cdot$L11, B$\cdot$L9, L$\cdot$L20, 7B$\cdot$L32). Our runs (B0).}
+\label{tab:layer}
+\begin{center}
+{\footnotesize\setlength{\tabcolsep}{2pt}%
+\begin{tabular}{lcccccc}
+\toprule
+DINOv3-L layer  & L15 & L19 & L20 & L21 & L23 & L24 (last)\\
+\midrule
+R@1  & 93.7 & 95.6 & \textbf{95.9} & \textbf{95.9} & 94.9 & 92.1\\
+\bottomrule
+\end{tabular}%
+}
+\end{center}
+\end{table}
+\begin{table}[t]
+\caption{\textbf{Redundancy threshold $\tau$}, SF-XL val, first-order instance ($k{=}32$, no intra-normalization, power law). At $\tau{=}0$ every degree equals $N$, so $w$ cancels and the column is the unweighted baseline: the weight is worth $14.6$ R@1 coarse and $8.7$ after re-ranking.}
+\label{tab:cal-tau}
+\begin{center}{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{lccccccccccc}
+\toprule
+$\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.70\\
+\midrule
+\multicolumn{12}{l}{\emph{Stage 1 alone}} \\
+\ \ R@1  & 67.59 & 79.37 & \textbf{82.14} & 81.67 & 81.46 & 80.97 & 80.95 & 80.57 & 80.65 & 80.81 & 81.75\\
+\ \ R@5  & 79.93 & 89.55 & \textbf{91.16} & 90.96 & 90.67 & 90.57 & 90.32 & 90.07 & 90.07 & 90.13 & 90.57\\
+\ \ R@10  & 84.89 & 92.37 & 93.56 & \textbf{93.67} & 93.56 & 93.26 & 93.14 & 92.87 & 92.85 & 93.04 & 93.17\\
+\ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
+\midrule
+\multicolumn{12}{l}{\emph{Two stages ($\theta{=}0.65$, $d_2{=}256$, $K{=}100$)}} \\
+\ \ R@1  & 82.09 & 87.36 & 89.09 & 89.40 & 90.05 & 90.34 & 90.50 & \textbf{90.82} & 90.61 & 90.50 & 89.95\\
+\ \ R@5  & 88.06 & 92.87 & 94.13 & 94.41 & 94.41 & 94.59 & 94.41 & 94.60 & \textbf{94.66} & 94.53 & 94.35\\
+\ \ R@10  & 90.24 & 94.39 & 95.28 & 95.42 & 95.62 & 95.70 & 95.74 & \textbf{95.80} & 95.77 & 95.68 & 95.58\\
+\ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
+\bottomrule
+\end{tabular}}\end{center}
+
+\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: the coarse stage prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-order instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
+\end{table}
+\begin{table}[t]
+\caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the re-ranking score, so every column re-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
+\label{tab:cal-t2}
+\begin{center}{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{lccccccccccc}
+\toprule
+$\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0.80\\
+\midrule
+\ \ R@1  & 86.95 & 86.91 & 85.21 & 81.96 & 84.77 & 87.50 & 89.74 & \textbf{90.76} & 90.28 & 88.56 & 83.90\\
+\ \ R@5  & 91.92 & 91.88 & 90.66 & 88.81 & 91.04 & 92.93 & 94.16 & \textbf{94.45} & 94.35 & 93.61 & 90.72\\
+\ \ R@10  & 93.47 & 93.37 & 92.45 & 91.34 & 93.14 & 94.58 & 95.40 & \textbf{95.70} & \textbf{95.70} & 94.95 & 93.10\\
+\bottomrule
+\end{tabular}}\end{center}
+
+\par\smallskip{\scriptsize\emph{Notes.} That last figure is the ceiling---no gate can retrieve what the shortlist does not contain---so the best column converts $80.46$ into $90.76$ of an available $98.17$. \textbf{The curve is not monotone}: it falls from $86.95$ at the open gate to a minimum of $81.96$ at $0.40$ before rising to $90.76$ at $0.65$. A gate in the middle of the similarity distribution is worse than no gate at all, because it discards moderate matches while keeping neither the confident ones alone nor all of them. The second-order instance has the same dip at the same place ($82.17$ at $0.40$). Our runs (ND21).}
+\end{table}
+
