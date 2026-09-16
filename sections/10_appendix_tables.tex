@@ -1,6 +1,121 @@
+\section{Protocol and constants}
+
+
+\subsection{Evaluation protocol}
+\label{app:protocol}
+\begin{table}[t]
+\caption{\textbf{Evaluation protocol, per benchmark.} Every method here---ours and every baseline---is run through this protocol: same splits, ground truth and database. We do not quote each paper's own number, since those use different ground-truth radii and query subsets.}
+\label{tab:protocol}
+\begin{center}
+{\scriptsize\setlength{\tabcolsep}{3.2pt}%
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrll}
+\toprule
+Dataset & Database & Queries & Positives & Ground truth & Notes \\
+\midrule
+\multicolumn{6}{l}{\emph{Urban / standard benchmarks}} \\
+\midrule
+Pitts30k & 10{,}000 & 6{,}816 & 142.1 & UTM $\le 25$\,m & NetVLAD's official pitts30k\_test.mat split \\
+Pitts250k & 83{,}952 & 8{,}280 & 153.6 & UTM $\le 25$\,m & same convention, different .mat \\
+Tokyo 24/7 & 75{,}984 & 315 & 118.3 & filename UTM $\le 25$\,m & the official \textbf{315} subset, not the 1125 one \\
+MSLS-val & 18{,}871 & 740 & 10.8 & filename UTM $\le 25$\,m, distance only (no heading) & the \textbf{740} subset of \citet{patchnetvlad}; \citet{effovpr} report the 11k variant \\
+Nordland & 27{,}592 & 27{,}592 & 21.0 & $\pm 10$ frames (\textbf{lenient}) & papers using $\pm 1$ frame report markedly lower numbers \\
+St Lucia & 1{,}549 & 1{,}464 & 14.9 & filename UTM $\le 25$\,m & gmberton format \\
+Oxford RobotCar & 191 & 191 & 14.2 & the .mat's own posDistThr $=16$\,m & the small vehicular split used by \citet{anyloc} \\
+AmsterTime & 1{,}231 & 1{,}231 & 1.0 & old\_X$\leftrightarrow$new\_X, one positive & historical against present-day photographs \\
+\midrule
+\multicolumn{6}{l}{\emph{SF-XL (one imagery set: a design split and four test splits)}} \\
+\midrule
+SF-XL val$^\ast$ & 8{,}015 & 7{,}983 & 9.3 & UTM $\le 25$\,m & \textbf{design split}; appears in no main table \\
+SF-XL test v1 & 2{,}805{,}840 & 1{,}000 & 124.2 & UTM $\le 25$\,m & the four test splits share one $2.8$M database \\
+SF-XL test v2 & 2{,}805{,}840 & 598 & 188.3 & UTM $\le 25$\,m & not yet re-run for the baselines (\S\ref{sec:setup}) \\
+SF-XL test night & 2{,}805{,}840 & 466 & 114.1 & UTM $\le 25$\,m &  \\
+SF-XL test occl. & 2{,}805{,}840 & 76 & 151.9 & UTM $\le 25$\,m & $74$ queries have a positive \\
+\midrule
+\multicolumn{6}{l}{\emph{Beyond street view (AnyLoc suite)}} \\
+\midrule
+VP-Air \emph{(aerial)} & 12{,}706 & 2{,}706 & 7.0 & provided correspondences & AnyLoc convention: database $=$ references $+$ $10{,}000$ distractors \\
+Nardo-Air \emph{(aerial)} & 102 & 71 & 6.1 & gt\_matches.csv, distance $\le 60$\,m &  \\
+Nardo-Air R \emph{(aerial)} & 102 & 71 & 6.1 & as above & reference images rotated $90^\circ$ \\
+Hawkins \emph{(subterranean)} & 127 & 118 & 10.6 & 2-D pose $\le 8$\,m & long corridor \\
+Laurel Caverns \emph{(subterranean)} & 141 & 112 & 23.8 & 2-D pose $\le 8$\,m &  \\
+17 Places \emph{(indoor)} & 406 & 406 & 10.9 & official ground\_truth\_new.npy &  \\
+Baidu Mall \emph{(indoor)} & 689 & 2{,}292 & 35.1 & 2-D camera pose $\le 10$\,m & $2{,}248$ queries have a positive \\
+Gardens Point \emph{(day/night)} & 200 & 200 & 5.0 & official gardens\_gt.npy & database $=$ day-right, queries $=$ night-right \\
+Mid-Atlantic Ridge \emph{(underwater)} & 65 & 101 & 3.0 & eiffel\_gt[101:] & the Eiffel Tower deep-sea site \citep{eiffeltower}, which \citet{anyloc} files under the ridge it sits on \\
+\bottomrule
+\end{tabular}%
+}%
+}
+\end{center}
+
+\par\smallskip{\scriptsize\emph{Notes.} Each baseline runs at its own default input resolution. Three conventions on which published numbers split: Nordland uses the lenient $\pm10$-frame ground truth, Tokyo the $315$-query and MSLS the $740$-query subsets, and VP-Air's database carries AnyLoc's $10{,}000$ distractors. Re-ranking uses a pool of $P=\min(1000,|\mathcal{D}|)$ throughout. $^{\ast}$SF-XL val is the design split and appears in no results table.}
+\end{table}
+
+\subsection{Hyperparameters and calibration}
+\label{app:hyper}
+\label{sec:exp-hp}
+\label{app:abl}
+\begin{table}[t]
+\caption{Backbone layer (Tokyo24/7, DINOv3-L, base \textsc{MaxSim} R@1). The peak sits at ${\sim}0.75$--$0.9$ depth (L20--21); the last layer degrades. All backbones agree (S$\cdot$L11, B$\cdot$L9, L$\cdot$L20, 7B$\cdot$L32). Our runs (B0).}
+\label{tab:layer}
+\begin{center}
+{\footnotesize\setlength{\tabcolsep}{2pt}%
+\begin{tabular}{lcccccc}
+\toprule
+DINOv3-L layer  & L15 & L19 & L20 & L21 & L23 & L24 (last)\\
+\midrule
+R@1  & 93.7 & 95.6 & \textbf{95.9} & \textbf{95.9} & 94.9 & 92.1\\
+\bottomrule
+\end{tabular}%
+}
+\end{center}
+\end{table}
+\begin{table}[t]
+\caption{\textbf{Redundancy threshold $\tau$}, SF-XL val, first-order instance ($k{=}32$, no intra-normalization, power law). At $\tau{=}0$ every degree equals $N$, so $w$ cancels and the column is the unweighted baseline: the weight is worth $14.6$ R@1 coarse and $8.7$ after re-ranking.}
+\label{tab:cal-tau}
+\begin{center}{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{lccccccccccc}
+\toprule
+$\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.70\\
+\midrule
+\multicolumn{12}{l}{\emph{Stage 1 alone}} \\
+\ \ R@1  & 67.59 & 79.37 & \textbf{82.14} & 81.67 & 81.46 & 80.97 & 80.95 & 80.57 & 80.65 & 80.81 & 81.75\\
+\ \ R@5  & 79.93 & 89.55 & \textbf{91.16} & 90.96 & 90.67 & 90.57 & 90.32 & 90.07 & 90.07 & 90.13 & 90.57\\
+\ \ R@10  & 84.89 & 92.37 & 93.56 & \textbf{93.67} & 93.56 & 93.26 & 93.14 & 92.87 & 92.85 & 93.04 & 93.17\\
+\ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
+\midrule
+\multicolumn{12}{l}{\emph{Two stages ($\theta{=}0.65$, $d_2{=}256$, $K{=}100$)}} \\
+\ \ R@1  & 82.09 & 87.36 & 89.09 & 89.40 & 90.05 & 90.34 & 90.50 & \textbf{90.82} & 90.61 & 90.50 & 89.95\\
+\ \ R@5  & 88.06 & 92.87 & 94.13 & 94.41 & 94.41 & 94.59 & 94.41 & 94.60 & \textbf{94.66} & 94.53 & 94.35\\
+\ \ R@10  & 90.24 & 94.39 & 95.28 & 95.42 & 95.62 & 95.70 & 95.74 & \textbf{95.80} & 95.77 & 95.68 & 95.58\\
+\ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
+\bottomrule
+\end{tabular}}\end{center}
+
+\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: the coarse stage prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-order instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
+\end{table}
+\begin{table}[t]
+\caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the re-ranking score, so every column re-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
+\label{tab:cal-t2}
+\begin{center}{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{lccccccccccc}
+\toprule
+$\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0.80\\
+\midrule
+\ \ R@1  & 86.95 & 86.91 & 85.21 & 81.96 & 84.77 & 87.50 & 89.74 & \textbf{90.76} & 90.28 & 88.56 & 83.90\\
+\ \ R@5  & 91.92 & 91.88 & 90.66 & 88.81 & 91.04 & 92.93 & 94.16 & \textbf{94.45} & 94.35 & 93.61 & 90.72\\
+\ \ R@10  & 93.47 & 93.37 & 92.45 & 91.34 & 93.14 & 94.58 & 95.40 & \textbf{95.70} & \textbf{95.70} & 94.95 & 93.10\\
+\bottomrule
+\end{tabular}}\end{center}
+
+\par\smallskip{\scriptsize\emph{Notes.} That last figure is the ceiling---no gate can retrieve what the shortlist does not contain---so the best column converts $80.46$ into $90.76$ of an available $98.17$. \textbf{The curve is not monotone}: it falls from $86.95$ at the open gate to a minimum of $81.96$ at $0.40$ before rising to $90.76$ at $0.65$. A gate in the middle of the similarity distribution is worse than no gate at all, because it discards moderate matches while keeping neither the confident ones alone nor all of them. The second-order instance has the same dip at the same place ($82.17$ at $0.40$). Our runs (ND21).}
+\end{table}
+
 \section{The weight}
 
-\subsection{The democratic-aggregation derivation in full}
+
+\subsection{Derivation of the closed form}
 \label{app:ridge}
 
 Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $G=FF^{\top}$. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $Gw=\mathbf 1$. With $N\gg C$ the Gram matrix has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat G=\mathbb 1[\,G>\tau\,]$ instead.
@@ -25,7 +140,7 @@ It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-
 \end{equation}
 Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a weight built on them needs a larger exponent to match.
 
-\subsection{Which patch-importance signal}
+\subsection{Alternative patch-importance signals}
 \label{app:weight-extra}
 \begin{table}[t]
 \caption{\textbf{Which patch-importance signal.} Pitts30k, $6816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ pool. Every row changes only $w$. \emph{Source} names the work the signal is taken from.}
@@ -73,9 +188,10 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \label{fig:vis-c3}
 \end{figure*}
 
-\section{The second-order descriptor}
+\section{First stage: the second-order descriptor}
 
-\subsection{The coarse stage: factorial and reduction grid}
+
+\subsection{Devices, pruning and compression}
 \label{sec:exp-stage1}
 \label{sec:stage1abl}
 \label{sec:compact}
@@ -128,7 +244,7 @@ Ours    &    DINOv3-7B    &  52.5  &  60.7  &  \underline{65.5}  &  95.5  &  77.
 \end{center}
 \end{table}
 \begin{table}[t]
-\caption{\textbf{The instance-and-device factorial at a matched $1024$-d budget} (compressed before scoring). Bold marks the best value in each column. The weight is the largest device in both orders ($7.0$ and $18.7$ mean R@1).}
+\caption{\textbf{Devices on the second-order descriptor at a matched $1024$-d budget} (compressed before scoring). Bold marks the best value in each column; the weight is the largest device ($18.7$ mean R@1).}
 \label{tab:firstsecond}
 \begin{center}
 {\scriptsize\setlength{\tabcolsep}{2.2pt}%
@@ -139,17 +255,7 @@ Ours    &    DINOv3-7B    &  52.5  &  60.7  &  \underline{65.5}  &  95.5  &  77.
 \cmidrule(lr){2-7}\cmidrule(lr){8-8}
 Configuration   &   Amst   &   SF$^\ast$   &   Pitts   &   VP-Air   &   MSLS   &   Nord   &   mean  \\
     &  \tiny 1.2k &  \tiny 8.0k &  \tiny 10k &  \tiny 12.7k &  \tiny 18.9k &  \tiny 27.6k &  \\
-\midrule \multicolumn{8}{l}{\emph{\textbf{R@1}} \ \ \scriptsize mean over the $6$ databases both orders share} \\
-\multicolumn{8}{l}{\ \ First order (VLAD)} \\
-\ \ \ none & 26.16 & 52.67 & 74.94 & 44.09 & 34.46 & 10.89 & 40.54 \\
-\ \ \ intra-norm & 46.55 & 68.07 & 85.62 & \textbf{55.99} & 53.38 & 12.94 & 53.76 \\
-\ \ \ power law & 40.70 & 63.20 & 80.34 & 46.27 & 42.16 & 16.21 & 48.15 \\
-\ \ \ intra-norm $+$ power law & \textbf{47.77} & 68.85 & 85.18 & 52.73 & 52.03 & 15.92 & 53.75 \\
-\ \ \ $w$ & 34.69 & 76.06 & 84.30 & 43.02 & 65.00 & 35.54 & 56.44 \\
-\ \ \ $w$ $+$ intra-norm & 46.95 & 63.94 & 85.14 & 52.18 & 51.22 & 15.13 & 52.43 \\
-\ \ \ $w$ $+$ intra-norm $+$ power law & 47.12 & 65.24 & 84.32 & 50.70 & 50.14 & 17.27 & 52.46 \\
-\ \ \ $w$ $+$ power law & 45.57 & \textbf{80.42} & 86.38 & 48.60 & \textbf{70.41} & 44.82 & \textbf{62.70} \\
-\multicolumn{8}{l}{\ \ Second order (covariance)} \\
+\midrule \multicolumn{8}{l}{\emph{\textbf{R@1}} \ \ \scriptsize mean over the $6$ databases} \\
 \ \ \ none & 21.85 & 38.67 & 72.84 & 37.14 & 24.86 & 4.90 & 33.38 \\
 \ \ \ spectral $\alpha{=}\tfrac12$ & 34.12 & 54.68 & 80.55 & 40.06 & 36.89 & 10.93 & 42.87 \\
 \ \ \ power law & 33.79 & 52.99 & 77.14 & 38.54 & 33.65 & 15.19 & 41.88 \\
@@ -158,17 +264,7 @@ Configuration   &   Amst   &   SF$^\ast$   &   Pitts   &   VP-Air   &   MSLS   &
 \ \ \ $w$ $+$ spectral & 45.90 & 75.26 & \textbf{88.12} & 44.68 & 68.92 & 39.63 & 60.42 \\
 \ \ \ $w$ $+$ spectral $+$ power law & 46.71 & 73.61 & 88.04 & 38.06 & 67.84 & 51.19 & 60.91 \\
 \ \ \ $w$ $+$ power law & 45.49 & 74.46 & 87.40 & 43.83 & 68.11 & \textbf{51.39} & 61.78 \\
-\midrule \multicolumn{8}{l}{\emph{\textbf{R@100}} \ \ \scriptsize mean over the $6$ databases both orders share} \\
-\multicolumn{8}{l}{\ \ First order (VLAD)} \\
-\ \ \ none & 79.45 & 83.87 & 95.25 & 79.34 & 62.84 & 39.58 & 73.39 \\
-\ \ \ intra-norm & 93.58 & 95.99 & 99.16 & 90.28 & 86.89 & 51.10 & 86.17 \\
-\ \ \ power law & 91.71 & 93.80 & 97.29 & 83.07 & 78.24 & 51.98 & 82.68 \\
-\ \ \ intra-norm $+$ power law & \textbf{94.48} & 96.42 & 99.11 & 88.40 & 85.54 & 54.32 & 86.38 \\
-\ \ \ $w$ & 90.33 & 97.80 & 98.93 & 90.84 & 92.57 & 81.13 & 91.93 \\
-\ \ \ $w$ $+$ intra-norm & 93.99 & 95.59 & 99.18 & \textbf{92.76} & 87.57 & 53.75 & 87.14 \\
-\ \ \ $w$ $+$ intra-norm $+$ power law & 94.23 & 96.22 & 98.99 & 90.24 & 85.81 & 55.19 & 86.78 \\
-\ \ \ $w$ $+$ power law & \textbf{94.48} & \textbf{98.18} & 99.16 & 89.06 & \textbf{95.14} & 82.27 & \textbf{93.05} \\
-\multicolumn{8}{l}{\ \ Second order (covariance)} \\
+\midrule \multicolumn{8}{l}{\emph{\textbf{R@100}} \ \ \scriptsize mean over the $6$ databases} \\
 \ \ \ none & 71.32 & 69.26 & 93.79 & 71.91 & 53.92 & 24.28 & 64.08 \\
 \ \ \ spectral $\alpha{=}\tfrac12$ & 87.00 & 87.71 & 96.96 & 72.84 & 71.62 & 40.56 & 76.11 \\
 \ \ \ power law & 88.87 & 87.86 & 96.13 & 74.32 & 67.70 & 47.43 & 77.05 \\
@@ -177,17 +273,7 @@ Configuration   &   Amst   &   SF$^\ast$   &   Pitts   &   VP-Air   &   MSLS   &
 \ \ \ $w$ $+$ spectral & 93.34 & 96.78 & 99.33 & 82.22 & 93.65 & 77.82 & 90.52 \\
 \ \ \ $w$ $+$ spectral $+$ power law & 93.99 & 96.72 & \textbf{99.35} & 76.09 & 93.24 & 84.06 & 90.58 \\
 \ \ \ $w$ $+$ power law & 93.74 & 97.03 & 99.24 & 85.03 & 94.19 & \textbf{85.63} & 92.48 \\
-\midrule \multicolumn{8}{l}{\emph{\textbf{R@1000}} \ \ \scriptsize mean over the $4$ databases both orders share; AmsterTime and SF-XL val are shown but excluded from the summary, where a top-$1000$ list is $81\%$ and $12.5\%$ of the database} \\
-\multicolumn{8}{l}{\ \ First order (VLAD)} \\
-\ \ \ none & 99.43 & 98.70 & 99.87 & 96.05 & 87.97 & 76.66 & 90.14 \\
-\ \ \ intra-norm & \textbf{100.00} & 99.84 & \textbf{100.00} & \textbf{99.78} & 97.70 & 81.03 & 94.63 \\
-\ \ \ power law & 99.84 & 99.84 & \textbf{100.00} & 98.45 & 96.49 & 83.37 & 94.58 \\
-\ \ \ intra-norm $+$ power law & \textbf{100.00} & \textbf{99.91} & \textbf{100.00} & \textbf{99.78} & 98.11 & 83.06 & 95.24 \\
-\ \ \ $w$ & 99.84 & 99.87 & \textbf{100.00} & 99.70 & 98.11 & 97.19 & 98.75 \\
-\ \ \ $w$ $+$ intra-norm & \textbf{100.00} & 99.80 & \textbf{100.00} & 99.74 & 98.11 & 81.53 & 94.84 \\
-\ \ \ $w$ $+$ intra-norm $+$ power law & \textbf{100.00} & 99.86 & \textbf{100.00} & 99.74 & 98.11 & 83.51 & 95.34 \\
-\ \ \ $w$ $+$ power law & \textbf{100.00} & 99.90 & \textbf{100.00} & \textbf{99.78} & \textbf{99.05} & 97.03 & 98.97 \\
-\multicolumn{8}{l}{\ \ Second order (covariance)} \\
+\midrule \multicolumn{8}{l}{\emph{\textbf{R@1000}} \ \ \scriptsize mean over the $4$ databases; AmsterTime and SF-XL val are shown but excluded from the summary, where a top-$1000$ list is $81\%$ and $12.5\%$ of the database} \\
 \ \ \ none & 99.76 & 90.81 & 99.88 & 94.09 & 77.70 & 60.02 & 82.92 \\
 \ \ \ spectral $\alpha{=}\tfrac12$ & 99.92 & 98.91 & \textbf{100.00} & 95.45 & 90.00 & 75.87 & 90.33 \\
 \ \ \ power law & 99.92 & 99.36 & \textbf{100.00} & 93.31 & 90.54 & 82.27 & 91.53 \\
@@ -203,7 +289,7 @@ Configuration   &   Amst   &   SF$^\ast$   &   Pitts   &   VP-Air   &   MSLS   &
 \end{center}
 \end{table}
 \begin{table}[t]
-\caption{\textbf{Token pruning $\times$ whitened compression, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). Both orders, both backbones, one protocol; keep-$N$ selects by $w_i$ computed on the full token set. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ (7B) / $96.3$ (L) anywhere in the grid.}
+\caption{\textbf{Token pruning $\times$ whitened compression, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). Both backbones, one protocol; keep-$N$ selects by $w_i$ computed on the full token set. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ (7B) / $96.3$ (L) anywhere in the grid.}
 \label{tab:prunecomp}
 \begin{center}
 \scriptsize
@@ -228,23 +314,12 @@ Order   &   keep   &   compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo
        &             &    WPCA-1024         &  90.40 &  84.19 &  74.26 &  89.52 &  60.52 &  79.78 &  89.50 &  84.05 &  48.66 &  83.49 &  51.18 &  71.38\\
        &             &    WPCA-2048         &  91.07 &  86.76 &  78.06 &  93.33 &  60.52$^\dagger$ &  81.95 &  90.60 &  82.97 &  53.81 &  89.21 &  51.18$^\dagger$ &  73.55\\
 \midrule
-1st   &   full    &   raw              &  86.52 &  71.22 &  67.41 &  92.70 &  52.40 &  74.05 &  86.84 &  67.16 &  40.27 &  90.48 &  45.90 &  66.13\\
-       &             &    WPCA-1024         &  87.32 &  84.05 &  56.07 &  94.29 &  62.47 &  76.84 &  87.24 &  77.70 &  30.26 &  92.70 &  55.89 &  68.76\\
-       &             &    WPCA-2048         &  87.21 &  83.24 &  54.37 &  95.56 &  62.47$^\dagger$ &  76.57 &  86.75 &  79.59 &  30.07 &  91.11 &  55.89$^\dagger$ &  68.68\\
-\addlinespace[2pt]
-1st   &   1024    &   raw              &  87.62 &  77.03 &  79.56 &  89.84 &  51.26 &  77.06 &  87.28 &  72.30 &  49.61 &  87.30 &  44.11 &  68.12\\
-       &             &    WPCA-1024         &  88.47 &  85.00 &  61.48 &  92.06 &  60.03 &  77.41 &  88.15 &  81.62 &  34.48 &  88.89 &  53.05 &  69.24\\
-       &             &    WPCA-2048         &  88.98 &  85.00 &  59.55 &  95.56 &  60.03$^\dagger$ &  77.82 &  88.50 &  80.68 &  35.13 &  89.52 &  53.05$^\dagger$ &  69.38\\
-\addlinespace[2pt]
-1st   &   512     &   raw              &  85.52 &  77.70 &  79.54 &  81.59 &  44.60 &  73.79 &  86.15 &  71.89 &  49.62 &  80.95 &  37.69 &  65.26\\
-       &             &    WPCA-1024         &  87.57 &  84.32 &  61.93 &  85.08 &  51.42 &  74.06 &  86.83 &  79.46 &  35.88 &  79.37 &  43.54 &  65.02\\
-       &             &    WPCA-2048         &  87.60 &  83.92 &  58.96 &  87.94 &  51.42$^\dagger$ &  73.97 &  87.50 &  79.73 &  36.78 &  81.59 &  43.54$^\dagger$ &  65.83\\
 \bottomrule
 \end{tabular}}
 \end{center}
 \end{table}
 
-\subsection{What the weight does to the descriptor}
+\subsection{What the weight does to the spectrum}
 \label{app:patchvis-main}
 \begin{figure}[H]
 \centering
@@ -253,7 +328,8 @@ Order   &   keep   &   compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo
 \label{fig:patchcov}
 \end{figure}
 
-\section{\textsc{MaxSim} re-ranking}
+\section{Second stage: \textsc{MaxSim} re-ranking}
+
 
 \subsection{Token budget against re-ranking operator}
 \label{app:s2grid}
@@ -351,57 +427,4 @@ $T_1$ at $65$ & 77.93 & $+0.00$ \\
 \caption{\textsc{MaxSim} matches, benchmarks 13--17.}
 \label{fig:vis-m3}
 \end{figure*}
-
-\section{Protocols and constants}
-
-\subsection{Evaluation protocol}
-\label{app:protocol}
-\begin{table}[t]
-\caption{\textbf{Evaluation protocol, per benchmark.} Every method here---ours and every baseline---is run through this protocol: same splits, ground truth and database. We do not quote each paper's own number, since those use different ground-truth radii and query subsets.}
-\label{tab:protocol}
-\begin{center}
-{\scriptsize\setlength{\tabcolsep}{3.2pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrll}
-\toprule
-Dataset & Database & Queries & Positives & Ground truth & Notes \\
-\midrule
-\multicolumn{6}{l}{\emph{Urban / standard benchmarks}} \\
-\midrule
-Pitts30k & 10{,}000 & 6{,}816 & 142.1 & UTM $\le 25$\,m & NetVLAD's official pitts30k\_test.mat split \\
-Pitts250k & 83{,}952 & 8{,}280 & 153.6 & UTM $\le 25$\,m & same convention, different .mat \\
-Tokyo 24/7 & 75{,}984 & 315 & 118.3 & filename UTM $\le 25$\,m & the official \textbf{315} subset, not the 1125 one \\
-MSLS-val & 18{,}871 & 740 & 10.8 & filename UTM $\le 25$\,m, distance only (no heading) & the \textbf{740} subset of \citet{patchnetvlad}; \citet{effovpr} report the 11k variant \\
-Nordland & 27{,}592 & 27{,}592 & 21.0 & $\pm 10$ frames (\textbf{lenient}) & papers using $\pm 1$ frame report markedly lower numbers \\
-St Lucia & 1{,}549 & 1{,}464 & 14.9 & filename UTM $\le 25$\,m & gmberton format \\
-Oxford RobotCar & 191 & 191 & 14.2 & the .mat's own posDistThr $=16$\,m & the small vehicular split used by \citet{anyloc} \\
-AmsterTime & 1{,}231 & 1{,}231 & 1.0 & old\_X$\leftrightarrow$new\_X, one positive & historical against present-day photographs \\
-\midrule
-\multicolumn{6}{l}{\emph{SF-XL (one imagery set: a design split and four test splits)}} \\
-\midrule
-SF-XL val$^\ast$ & 8{,}015 & 7{,}983 & 9.3 & UTM $\le 25$\,m & \textbf{design split}; appears in no main table \\
-SF-XL test v1 & 2{,}805{,}840 & 1{,}000 & 124.2 & UTM $\le 25$\,m & the four test splits share one $2.8$M database \\
-SF-XL test v2 & 2{,}805{,}840 & 598 & 188.3 & UTM $\le 25$\,m & not yet re-run for the baselines (\S\ref{sec:setup}) \\
-SF-XL test night & 2{,}805{,}840 & 466 & 114.1 & UTM $\le 25$\,m &  \\
-SF-XL test occl. & 2{,}805{,}840 & 76 & 151.9 & UTM $\le 25$\,m & $74$ queries have a positive \\
-\midrule
-\multicolumn{6}{l}{\emph{Beyond street view (AnyLoc suite)}} \\
-\midrule
-VP-Air \emph{(aerial)} & 12{,}706 & 2{,}706 & 7.0 & provided correspondences & AnyLoc convention: database $=$ references $+$ $10{,}000$ distractors \\
-Nardo-Air \emph{(aerial)} & 102 & 71 & 6.1 & gt\_matches.csv, distance $\le 60$\,m &  \\
-Nardo-Air R \emph{(aerial)} & 102 & 71 & 6.1 & as above & reference images rotated $90^\circ$ \\
-Hawkins \emph{(subterranean)} & 127 & 118 & 10.6 & 2-D pose $\le 8$\,m & long corridor \\
-Laurel Caverns \emph{(subterranean)} & 141 & 112 & 23.8 & 2-D pose $\le 8$\,m &  \\
-17 Places \emph{(indoor)} & 406 & 406 & 10.9 & official ground\_truth\_new.npy &  \\
-Baidu Mall \emph{(indoor)} & 689 & 2{,}292 & 35.1 & 2-D camera pose $\le 10$\,m & $2{,}248$ queries have a positive \\
-Gardens Point \emph{(day/night)} & 200 & 200 & 5.0 & official gardens\_gt.npy & database $=$ day-right, queries $=$ night-right \\
-Mid-Atlantic Ridge \emph{(underwater)} & 65 & 101 & 3.0 & eiffel\_gt[101:] & the Eiffel Tower deep-sea site \citep{eiffeltower}, which \citet{anyloc} files under the ridge it sits on \\
-\bottomrule
-\end{tabular}%
-}%
-}
-\end{center}
-
-\par\smallskip{\scriptsize\emph{Notes.} Each baseline runs at its own default input resolution. Three conventions on which published numbers split: Nordland uses the lenient $\pm10$-frame ground truth, Tokyo the $315$-query and MSLS the $740$-query subsets, and VP-Air's database carries AnyLoc's $10{,}000$ distractors. Re-ranking uses a pool of $P=\min(1000,|\mathcal{D}|)$ throughout. $^{\ast}$SF-XL val is the design split and appears in no results table.}
-\end{table}
 

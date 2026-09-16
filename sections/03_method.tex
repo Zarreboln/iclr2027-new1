@@ -37,9 +37,11 @@ Contract $S$ from both sides, $w_Q^{\top}\sigma(S)\,w_D$ with $\sigma$ applied e
 \end{equation}
 a Frobenius inner product between two $C{\times}C$ matrices \citep{bcnn,mpncov}. Stage 1 stores that matrix, flattened and $\ell_2$-normalized,
 \begin{equation}\label{eq:stage1}
-  \psi(F)\;=\;\operatorname{vec}\big(G_C(F)\big)\big/\big\lVert G_C(F)\big\rVert_F ,
+  \psi(F)\;=\;\frac{\rho\big(\operatorname{vec}(G_C(F))\big)}{\lVert\rho\big(\operatorname{vec}(G_C(F))\big)\rVert_2},
+  \qquad
+  \rho(u)=\operatorname{sign}(u)\sqrt{|u|},
 \end{equation}
-which keeps the identity of \eqref{eq:so-deriv} exact. Second-order descriptors are usually reshaped by a spectral power, the $\Sigma^{\alpha}$ of \citet{mpncov}; here that role is taken by the whitened descriptor-PCA that follows, which applies $\Lambda^{-1/2}$ to the retained directions while reducing to $2048$ dimensions, so $\alpha{=}1$ is what we deploy and Appendix~\ref{app:calib} sweeps the exponent. The scan then returns a shortlist of $P{=}\min(1000,|\mathcal{D}|)$. The same weight prunes the store: each image keeps its $1024$ highest-weight tokens, the weights computed on the full token set and carried with the survivors, since recomputing them afterwards collapses their spread (\S\ref{sec:stage1abl}). Nothing here is fitted outside $\mathcal{D}$; Figure~\ref{fig:patchcov} shows the stored matrix.
+with $\rho$ the power normalization of \citet{improvedfisher}, applied entrywise as it is on Fisher vectors and VLAD \citep{allvlad}. It attacks the same nuisance the weight does, a repeated element concentrating the descriptor's mass on a few entries, and it does so downstream of aggregation rather than on the patches, so the two compose. The result is reduced to $2048$ dimensions by a whitened descriptor-PCA and the scan returns a shortlist of $P{=}\min(1000,|\mathcal{D}|)$. The same weight prunes the store: each image keeps its $1024$ highest-weight tokens, the weights computed on the full token set and carried with the survivors, since recomputing them afterwards collapses their spread (\S\ref{sec:stage1abl}). Nothing here is fitted outside $\mathcal{D}$; Figure~\ref{fig:patchcov} shows the stored matrix.
 
 \subsection{Second stage}
 \label{sec:core}
