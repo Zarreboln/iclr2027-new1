@@ -44,8 +44,8 @@ AnyLoc                   &  DINOv2-G  &  81.49 &  87.7 &  90.48 &  49.19 &  20.1
 EffoVPR-ZS$^{\dagger}$   &  DINOv2-L  &  93.38 &  89.4 &  90.8 &  70.3 &  57.9 &  97.75 &  76.96 &  65.80 &  80.29 \\
 \midrule
 \multicolumn{11}{l}{Ours \emph{--- training-free, deployed configuration (\S\ref{sec:global}: keep-1024, WPCA-2048 coarse, \textsc{selfw\_conf})}} \\
-Ours$^{\dagger}$         &  DINOv3-L  &  95.92 &  93.18 &  97.14 &  88.92 &  87.02 &  99.11 &  \textbf{100.00} &  69.86 &  91.39 \\
-Ours$^{\dagger}$         &  DINOv3-7B &  96.12 &  93.74 &  \textbf{98.41} &  89.32 &  \underline{96.25} &  99.73 &  98.95 &  \textbf{73.60} &  \textbf{93.27} \\
+Ours$^{\dagger}$         &  DINOv3-L  &  95.92 &  93.18 &  97.14 &  88.92 &  87.92 &  99.11 &  \textbf{100.00} &  69.86 &  91.51 \\
+Ours$^{\dagger}$         &  DINOv3-7B &  96.12 &  93.74 &  \textbf{98.41} &  89.32 &  \underline{96.56} &  99.73 &  98.95 &  \textbf{73.60} &  \textbf{93.30} \\
 \bottomrule
 \end{tabular}%
 }\\[3pt]
@@ -85,7 +85,7 @@ Ours$^{\dagger}$         &  DINOv3-7B &  96.12 &  93.74 &  \textbf{98.41} &  89.
 \end{center}
 \end{table}
 
-Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.4$ on Nordland, whose seasonal change is the hardest condition in the table. Our mean of $93.27$ is the highest in the table, above every trained method as well, and we take the best number on Tokyo 24/7, Oxford RobotCar and AmsterTime, the benchmark with decades of time variation. These benchmarks are exactly the terrain a trained method's supervision is aimed at, and we reach it there without a single place label.
+Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.7$ on Nordland, whose seasonal change is the hardest condition in the table. Our mean of $93.30$ is the highest in the table, above every trained method as well, and we take the best number on Tokyo 24/7, Oxford RobotCar and AmsterTime, the benchmark with decades of time variation. These benchmarks are exactly the terrain a trained method's supervision is aimed at, and we reach it there without a single place label.
 
 \label{sec:ood}
 
