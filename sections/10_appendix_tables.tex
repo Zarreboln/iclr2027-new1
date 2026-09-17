@@ -53,6 +53,9 @@ Mid-Atlantic Ridge \emph{(underwater)} & 65 & 101 & 3.0 & eiffel\_gt[101:] & the
 
 \subsection{Hyperparameters and calibration}
 \label{app:hyper}
+\label{app:calib}
+\paragraph{Why a threshold is the right form for the gate.} Write the row maximum $m_i$ of \eqref{eq:stage2} as evidence for the hypothesis that patch $i$ has a counterpart in the candidate, against the alternative that its best match is accidental. The likelihood ratio between the two increases with $m_i$, so the Bayes-optimal decision is to accept patch $i$ when $m_i$ exceeds a constant \citep{kay}. The gate of \eqref{eq:stage2} is that decision, with the constant fixed at $\theta{=}0.65$ for every backbone and dataset; the sweep below reports what other values cost.
+
 \label{sec:exp-hp}
 \label{app:abl}
 \begin{table}[H]
@@ -193,13 +196,20 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 
 \section{First stage: the second-order descriptor}
 
+\subsection{Why the second moment factorizes}
+\label{app:factorize}
+Section~\ref{sec:global} contracts the cross-similarity table from both sides, $\sum_{i,j} w_{Q,i}w_{D,j}\,\sigma(S_{ij})$ with $\sigma$ applied entrywise, and states the case $\sigma(u)=u^{2}$. The same regrouping holds for any monomial $\sigma(u)=u^{\gamma}$: the entrywise power $S^{\circ\gamma}$ equals $Q^{[\gamma]}\big(D^{[\gamma]}\big)^{\top}$, where $Q^{[\gamma]}$ is the row-wise Kronecker power whose $i$-th row is $\mathbf q_i^{\otimes\gamma}$. The contraction therefore becomes one inner product of width $C^{\gamma}$ between two vectors, each computed from a single image. At $\gamma{=}1$ that vector is the weighted mean of the tokens, the first-order instance of a VLAD-style descriptor; at $\gamma{=}2$ it is the weighted second moment $G_C$ we deploy. Table~\ref{tab:firstsecond} measures the devices that act on it.
+
+
 \FloatBarrier
 
 \subsection{Devices, pruning and compression}
+\label{app:coarsegrid}
+\paragraph{The second moment against an average.} On frozen features the second-order descriptor is far stronger than pooling the same tokens by their mean. Against same-backbone GeM it moves AmsterTime from $28.9$ to $48.9$ and Baidu Mall from $48.1$ to $73.1$ at DINOv2-B, and it leads the degraded and subterranean axes with no re-ranking at all. The grids below cross the devices that act on it with token pruning and whitened compression.
+
 \label{sec:exp-stage1}
 \label{sec:stage1abl}
 \label{sec:compact}
-\label{app:coarsegrid}
 \begin{table}[H]
 \caption{\textbf{Stage 1 alone on the nine environments.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the DINOv2-G row.}
 \label{tab:coarse}
@@ -332,6 +342,11 @@ Order   &   keep   &   compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo
 \end{figure}
 
 \section{Second stage: \textsc{MaxSim} re-ranking}
+
+\subsection{Why \textsc{MaxSim} admits no fixed-size descriptor}
+\label{app:nofactor}
+The first stage factorizes because its contraction is bilinear in the two token sets. The row-wise maximum of \eqref{eq:stage2} is not: it is not linear in the candidate's tokens, so no regrouping of the kind used in Appendix~\ref{app:factorize} applies. The score is not even symmetric, which rules out any form $\langle\psi(Q),\psi(D)\rangle$ with $\psi$ mapping a token set to a vector. Take $Q=\{\mathbf q\}$ and $D=\{\mathbf d_1,\mathbf d_2\}$ with unit weights and $S=(0.9,\ 0.1)$: scoring $Q$ against $D$ gives $0.9$, while scoring $D$ against $Q$ gives $0.9+0.1=1.0$. A pipeline that stores one vector per image therefore cannot express this stage, and we run it pair by pair on the shortlist.
+
 
 \FloatBarrier
 
