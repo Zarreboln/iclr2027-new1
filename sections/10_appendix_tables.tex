@@ -4,7 +4,7 @@
 \begin{table}[H]
 \caption{\textbf{Evaluation protocol, per benchmark.} Every method here---ours and every baseline---is run through this protocol: same splits, ground truth and database. We do not quote each paper's own number, since those use different ground-truth radii and query subsets.}
 \label{tab:protocol}
-\begin{center}
+\centering
 {\scriptsize\setlength{\tabcolsep}{3.2pt}%
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrll}
@@ -45,7 +45,6 @@ Mid-Atlantic Ridge \emph{(underwater)} & 65 & 101 & 3.0 & eiffel\_gt[101:] & the
 \end{tabular}%
 }%
 }
-\end{center}
 
 \par\smallskip{\scriptsize\emph{Notes.} Each baseline runs at its own default input resolution. Three conventions on which published numbers split: Nordland uses the lenient $\pm10$-frame ground truth, Tokyo the $315$-query and MSLS the $740$-query subsets, and VP-Air's database carries AnyLoc's $10{,}000$ distractors. Re-ranking uses a pool of $P=\min(1000,|\mathcal{D}|)$ throughout. $^{\ast}$SF-XL val is the design split and appears in no results table.}
 \end{table}
@@ -59,7 +58,7 @@ Mid-Atlantic Ridge \emph{(underwater)} & 65 & 101 & 3.0 & eiffel\_gt[101:] & the
 \begin{table}[H]
 \caption{Backbone layer (Tokyo24/7, DINOv3-L, base \textsc{MaxSim} R@1). The peak sits at ${\sim}0.75$--$0.9$ depth (L20--21); the last layer degrades. All backbones agree (S$\cdot$L11, B$\cdot$L9, L$\cdot$L20, 7B$\cdot$L32). Our runs (B0).}
 \label{tab:layer}
-\begin{center}
+\centering
 {\footnotesize\setlength{\tabcolsep}{2pt}%
 \begin{tabular}{lcccccc}
 \toprule
@@ -69,12 +68,12 @@ R@1  & 93.7 & 95.6 & \textbf{95.9} & \textbf{95.9} & 94.9 & 92.1\\
 \bottomrule
 \end{tabular}%
 }
-\end{center}
 \end{table}
 \begin{table}[H]
 \caption{\textbf{Redundancy threshold $\tau$}, SF-XL val, first-order instance ($k{=}32$, no intra-normalization, power law). At $\tau{=}0$ every degree equals $N$, so $w$ cancels and the column is the unweighted baseline: the weight is worth $14.6$ R@1 coarse and $8.7$ after re-ranking.}
 \label{tab:cal-tau}
-\begin{center}{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\centering
+{\footnotesize\setlength{\tabcolsep}{3.4pt}
 \begin{tabular}{lccccccccccc}
 \toprule
 $\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.70\\
@@ -91,14 +90,14 @@ $\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.7
 \ \ R@10  & 90.24 & 94.39 & 95.28 & 95.42 & 95.62 & 95.70 & 95.74 & \textbf{95.80} & 95.77 & 95.68 & 95.58\\
 \ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
 \bottomrule
-\end{tabular}}\end{center}
-
+\end{tabular}}
 \par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: the coarse stage prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-order instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
 \end{table}
 \begin{table}[H]
 \caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the re-ranking score, so every column re-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
 \label{tab:cal-t2}
-\begin{center}{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\centering
+{\footnotesize\setlength{\tabcolsep}{3.4pt}
 \begin{tabular}{lccccccccccc}
 \toprule
 $\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0.80\\
@@ -107,8 +106,7 @@ $\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0
 \ \ R@5  & 91.92 & 91.88 & 90.66 & 88.81 & 91.04 & 92.93 & 94.16 & \textbf{94.45} & 94.35 & 93.61 & 90.72\\
 \ \ R@10  & 93.47 & 93.37 & 92.45 & 91.34 & 93.14 & 94.58 & 95.40 & \textbf{95.70} & \textbf{95.70} & 94.95 & 93.10\\
 \bottomrule
-\end{tabular}}\end{center}
-
+\end{tabular}}
 \par\smallskip{\scriptsize\emph{Notes.} That last figure is the ceiling---no gate can retrieve what the shortlist does not contain---so the best column converts $80.46$ into $90.76$ of an available $98.17$. \textbf{The curve is not monotone}: it falls from $86.95$ at the open gate to a minimum of $81.96$ at $0.40$ before rising to $90.76$ at $0.65$. A gate in the middle of the similarity distribution is worse than no gate at all, because it discards moderate matches while keeping neither the confident ones alone nor all of them. The second-order instance has the same dip at the same place ($82.17$ at $0.40$). Our runs (ND21).}
 \end{table}
 
@@ -148,7 +146,8 @@ Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fix
 \begin{table}[H]
 \caption{\textbf{Which patch-importance signal.} Pitts30k, $6816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ pool. Every row changes only $w$. \emph{Source} names the work the signal is taken from.}
 \label{tab:w-signal}
-\begin{center}{\footnotesize
+\centering
+{\footnotesize
 \begin{tabular}{ll c l}
 \toprule
 Signal for $w$   &   Source   &  R@1 &   \\
@@ -167,8 +166,7 @@ cross-referencing    &    DeepEMD    &  81.78 &    below baseline \\
 rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below baseline \\
 \bottomrule
 \end{tabular}%
-}\end{center}
-\end{table}
+}\end{table}
 
 \FloatBarrier
 
@@ -205,7 +203,7 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \begin{table}[H]
 \caption{\textbf{Stage 1 alone on the nine environments.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the DINOv2-G row.}
 \label{tab:coarse}
-\begin{center}
+\centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
 \begin{tabular}{llccccccccc|c}
 \toprule
@@ -247,12 +245,11 @@ Ours    &    DINOv3-7B    &  52.5  &  60.7  &  \underline{65.5}  &  95.5  &  77.
 \bottomrule
 \end{tabular}%
 }
-\end{center}
 \end{table}
 \begin{table}[H]
 \caption{\textbf{Devices on the second-order descriptor at a matched $1024$-d budget} (compressed before scoring). Bold marks the best value in each column; the weight is the largest device ($18.7$ mean R@1).}
 \label{tab:firstsecond}
-\begin{center}
+\centering
 {\scriptsize\setlength{\tabcolsep}{2.2pt}%
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc|c}
@@ -292,12 +289,11 @@ Configuration   &   Amst   &   SF$^\ast$   &   Pitts   &   VP-Air   &   MSLS   &
 \end{tabular}%
 }%
 }
-\end{center}
 \end{table}
 \begin{table}[H]
 \caption{\textbf{Token pruning $\times$ whitened compression, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). Both backbones, one protocol; keep-$N$ selects by $w_i$ computed on the full token set. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ (7B) / $96.3$ (L) anywhere in the grid.}
 \label{tab:prunecomp}
-\begin{center}
+\centering
 \scriptsize
 \setlength{\tabcolsep}{3.4pt}
 \renewcommand{\arraystretch}{1.02}
@@ -322,7 +318,6 @@ Order   &   keep   &   compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo
 \midrule
 \bottomrule
 \end{tabular}}
-\end{center}
 \end{table}
 
 \FloatBarrier
@@ -345,7 +340,7 @@ Order   &   keep   &   compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo
 \begin{table}[h]
 \caption{\textbf{Seven re-ranking operators $\times$ two token budgets}, mean R@1 over the nine environment sets of Table~\ref{tab:ood}. The coarse stage is the deployed one throughout; only the second stage changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
 \label{tab:s2grid}
-\begin{center}
+\centering
 {\footnotesize\setlength{\tabcolsep}{3pt}%
 \begin{tabular}{llccccccc}
 \toprule
@@ -359,7 +354,6 @@ DINOv3-7B & all $2{,}304$ & 71.68 & 74.90 & 69.04 & \textbf{76.57} & 70.46 & 72.
 \bottomrule
 \end{tabular}%
 }
-\end{center}
 \end{table}
 
 \FloatBarrier
@@ -369,7 +363,7 @@ DINOv3-7B & all $2{,}304$ & 71.68 & 74.90 & 69.04 & \textbf{76.57} & 70.46 & 72.
 \begin{table}[H]
 \caption{\textbf{Scoring rules at a matched stage 1} (Pitts30k, R@1; shortlist and features identical). \emph{lift} is over the class-token retrieval that produced the shortlist. $T_1$ is \textsc{EffoVPR}'s attention threshold, reported at the keypoint budget it induces.}
 \label{tab:effo-matched}
-\begin{center}
+\centering
 {\small
 \begin{tabular}{lcc}
 \toprule
@@ -391,12 +385,11 @@ $T_1$ at $65$ & 77.93 & $+0.00$ \\
 \textsc{mnn\_selfw65} & \textbf{91.58} & $+13.64$ \\
 \bottomrule
 \end{tabular}}
-\end{center}
 \end{table}
 \begin{table}[H]
 \caption{\textbf{Which patches to keep} (Pitts30k, R@1; survivors re-weighted by $w$ in every column). Symmetric keeps $N$ tokens in the query and in the database image; database-only keeps all query tokens. Keep-all reads $91.31$.}
 \label{tab:keepn}
-\begin{center}
+\centering
 {\small
 \begin{tabular}{llccc}
 \toprule
@@ -415,7 +408,6 @@ $T_1$ at $65$ & 77.93 & $+0.00$ \\
  & $32$  & 58.98 & 45.70 & \textbf{80.05} \\
 \bottomrule
 \end{tabular}}
-\end{center}
 \end{table}
 
 \FloatBarrier

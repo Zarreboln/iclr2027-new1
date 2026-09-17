@@ -3,12 +3,11 @@
 Place recognition is posed as retrieval. Given a query image $Q$ and a database $\mathcal{D}$ of geo-tagged images, we score every candidate $D\in\mathcal{D}$ against $Q$ and return the highest, whose location is taken as the query's. Scoring each candidate by its patches is too costly on a database of millions, so the score is computed twice: a first stage compares one vector per image and scans all of $\mathcal{D}$, and a second stage re-scores the shortlist that scan returns. Both stages read tables of similarity between the patches of the images involved, and one frozen forward pass per image supplies them.
 
 \begin{figure}[t]
-\begin{center}
+\centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
 \includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
 \caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G_N{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages and prunes the store. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
 \label{fig:method}
-\end{center}
 \end{figure}
 
 \subsection{Tokens}

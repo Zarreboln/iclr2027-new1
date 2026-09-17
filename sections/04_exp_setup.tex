@@ -15,7 +15,7 @@ We compare our two-stage pipeline with previous state of the art, both trained a
 \begin{table}[t]
 \caption{\textbf{Recall@1 on the standard urban benchmarks.} One deployed configuration, tokens pruned to $1024$ throughout. Baseline cells are published numbers, or our run of the released checkpoint where the paper omits the benchmark. $^{\dagger}$two-stage; $^{\ddag}$without the cross-image encoder; ``--'' not reported, with \emph{mean} left blank for such rows.}
 \label{tab:breadth}
-\begin{center}
+\centering
 {\scriptsize\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll cccccccc|c}
 \toprule
@@ -82,7 +82,6 @@ Ours$^{\dagger}$         &  DINOv3-7B &  96.12 &  93.74 &  \textbf{98.41} &  89.
 % Nordland G33.80/L32.43/7B53.02 = C16 L:4182. AmsterTime G58.08 (A7.2 L:1344) / L48.50 (SPEC L:3161); 7B not run.
 % Near-lossless: R@1000 stays 98-100 at 1024-d (shortlist recall preserved) so re-ranking runs unaffected; storage ~4KB/image (256x smaller than native 262144).
 % Compact covD @1024-d single-stage (Pitts-7B 88.64) is competitive with AnyLoc @49152-d single-stage (87.7) at 48x smaller.
-\end{center}
 \end{table}
 
 Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.7$ on Nordland, whose seasonal change is the hardest condition in the table. Our mean of $93.30$ is the highest in the table, above every trained method as well, and we take the best number on Tokyo 24/7, Oxford RobotCar and AmsterTime, the benchmark with decades of time variation. These benchmarks are exactly the terrain a trained method's supervision is aimed at, and we reach it there without a single place label.
@@ -92,7 +91,7 @@ Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We le
 \begin{table}[t]
 \caption{\textbf{Nine environments, two stages against two stages.} R@1 under the same deployed configuration, re-ranking all $2{,}304$ tokens here against $1024$ in Table~\ref{tab:breadth}. $^{d}$AnyLoc's VP-Air figure may omit the $10{,}000$ distractors ours carries. Each method as published: $^{\dagger}$after its own re-ranker, $^{\ddag}$without the cross-image encoder. Bold $=$ best, \underline{underline} $=$ second.}
 \label{tab:ood}
-\begin{center}
+\centering
 {\scriptsize\setlength{\tabcolsep}{2pt}%
 \begin{tabular}{llccccccccc|c}
 \toprule
@@ -131,7 +130,6 @@ Ours & DINOv3-7B & 61.0 & \underline{75.9} & 65.3 & \textbf{99.5} & 83.5 & \text
 \bottomrule
 \end{tabular}%
 }
-\end{center}
 \end{table}
 
 Table~\ref{tab:ood} takes the same configuration off street view, to degraded, subterranean, indoor, aerial and underwater imagery, with every method given a second stage of its own so that two-stage is compared against two-stage. We take the best number on seven of the nine environments and the second on the other two, for a mean of $76.6$ against $65.1$ for the strongest trained method (MegaLoc) and $69.5$ for the strongest training-free one (AnyLoc). The margins are largest where a single descriptor has least to work with: $68.6$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns, and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. The gap between our three backbones is $1.2$ R@1, so the result rests on the pipeline rather than on backbone scale.
@@ -145,7 +143,7 @@ Table~\ref{tab:stage2swap} isolates our second stage by dropping it into other p
 \begin{table}[t]
 \caption{\textbf{Our second stage on other methods' first stages.} Each figure is what the method publishes, after its own re-ranker in the upper block and from its global descriptor in the lower; the subscript is the change under \eqref{eq:stage2}, replacing that re-ranker or added where there is none. Backbone, resolution and shortlist stay the method's own.}
 \label{tab:stage2swap}
-\begin{center}
+\centering
 {\scriptsize\setlength{\tabcolsep}{2pt}%
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llccccccccc|c}
@@ -173,5 +171,4 @@ VLAD-BuFF            & DINOv2-B   & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt
 \end{tabular}%
 }%
 }
-\end{center}
 \end{table}
