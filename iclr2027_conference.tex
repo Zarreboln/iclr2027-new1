@@ -12,6 +12,7 @@
 \usepackage{multirow}
 \usepackage{amsthm}
 \usepackage{booktabs}
+\newcommand{\method}{PaSS}
 \usepackage{float}
 \usepackage{placeins}
 \usepackage{enumitem}
@@ -73,7 +74,7 @@
 \maketitle
 
 \begin{abstract}
-Visual Place Recognition (VPR) asks where a photograph was taken by retrieving the most similar image from a geo-tagged database. Training a representation for it calls for a place-labelled corpus running to tens of millions of images, produces features that shift with the domain, and ties the result to the one backbone it was trained on. Methods built on frozen foundation models avoid all three and need no place label, yet they still trail supervised ones. They choose what to keep from an image by salience, which is not the property that separates places. In this paper we remove that criterion and let the patches of the two images being compared supply every quantity in the pipeline. Two tables of patch-to-patch similarity carry it: the self-similarity of one image weights each patch by how many of that image's own patches resemble it, in closed form; the cross-similarity of the pair is reduced two ways, one factoring into a per-image covariance that scans a database, the other not factoring and re-ranking a shortlist. Nothing is fitted between the frozen network and the ranking. Across thirteen benchmarks spanning urban streets, seasonal railways, and degraded, subterranean, indoor, aerial and underwater imagery, one fixed configuration reaches the highest mean Recall@1, and it is level with the strongest supervised method on the urban benchmarks its supervision targets. As a drop-in scoring rule, it also improves published two-stage pipelines when it replaces their own re-ranker and single-stage ones when it is added to them.
+Visual Place Recognition (VPR) identifies where a photograph was taken by matching it against a geo-tagged database. Two families dominate. Supervised methods learn an aggregation layer from place labels and are strong on the urban benchmarks they are trained for, but they call for corpora running to tens of millions of labelled images and lose a large part of their accuracy once the imagery changes. Training-free methods drop that cost and generalise better, yet they decide what to keep from an image by salience, a property that does not separate one place from another, and the features they obtain leave them behind on accuracy. To address both, we propose \method{}, a training-free pipeline built entirely on patch-to-patch similarity. Within an image, self-similarity gives every patch a weight in closed form, so a scene element counts once however much of the frame it covers; between two images, cross-similarity is read twice, once to scan a database and once to re-rank a shortlist. Nothing is fitted between the frozen backbone and the ranking. Under one fixed configuration \method{} reaches the highest mean Recall@1 on thirteen benchmarks, $93.3$ on the urban suite and $76.6$ across nine further environments against $65.1$ for the strongest supervised method, while matching that method on the urban benchmarks its supervision targets. As a drop-in scoring rule it improves four published two-stage pipelines by $+5.5$ to $+12.5$ R@1 and eight single-stage ones by $+9.1$ to $+17.8$.
 \end{abstract}
 
 \input{sections/01_intro}
