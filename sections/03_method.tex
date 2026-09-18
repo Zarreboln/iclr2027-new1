@@ -7,7 +7,7 @@
 \end{figure}
 \section{Method}
 \label{sec:method}
-As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one frozen forward pass per image and builds everything from the patch tokens it returns. A single weight, computed from each image's own token self-similarity, discounts repeated content such as sky or a facade of identical windows, and is used by both stages and by the store (\S\ref{sec:feat}). Stage 1 then represents each image by one global descriptor, the weighted second moment of its tokens, and scans the whole database with it to return a shortlist (\S\ref{sec:global}). Stage 2 re-ranks that shortlist by explicit patch-to-patch \textsc{MaxSim} matching, with patches that have no counterpart in the other image gated out (\S\ref{sec:core}).
+As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one frozen forward pass per image and builds everything from the patch tokens it returns. A single weight, computed from each image's own token self-similarity, discounts repeated content such as sky or a facade of identical windows, and is used by both stages and by the store (\S\ref{sec:feat}). Stage 1 then represents each image by one global descriptor, obtained by weighted second-order pooling of its tokens, and scans the whole database with it to return a shortlist (\S\ref{sec:global}). Stage 2 re-ranks that shortlist by explicit patch-to-patch \textsc{MaxSim} matching, with patches that have no counterpart in the other image gated out (\S\ref{sec:core}).
 
 
 \subsection{Preliminaries}
@@ -42,7 +42,7 @@ A patch recurring twenty times in its image therefore receives one twentieth of 
 
 \subsection{First stage}
 \label{sec:global}
-Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it by weighted second-order pooling of the patch features.
+Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it as the weighted second moment of the patch features.
 
 Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
 \begin{equation}\label{eq:so-deriv}

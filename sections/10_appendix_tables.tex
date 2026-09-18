@@ -94,7 +94,7 @@ $\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.7
 \ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
 \bottomrule
 \end{tabular}}
-\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: the coarse stage prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-order instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
+\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: the coarse stage prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-moment instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
 \end{table}
 \begin{table}[H]
 \caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the re-ranking score, so every column re-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
@@ -194,7 +194,7 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \label{fig:vis-c3}
 \end{figure}
 
-\section{First stage: the second-order descriptor}
+\section{First stage: the second-moment descriptor}
 
 \subsection{Why the second moment factorizes}
 \label{app:factorize}
@@ -205,7 +205,7 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 
 \subsection{Devices, pruning and compression}
 \label{app:coarsegrid}
-\paragraph{The second moment against an average.} On frozen features the second-order descriptor is far stronger than pooling the same tokens by their mean. Against same-backbone GeM it moves AmsterTime from $28.9$ to $48.9$ and Baidu Mall from $48.1$ to $73.1$ at DINOv2-B, and it leads the degraded and subterranean axes with no re-ranking at all. The grids below cross the devices that act on it with token pruning and whitened compression.
+\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. Against same-backbone GeM it moves AmsterTime from $28.9$ to $48.9$ and Baidu Mall from $48.1$ to $73.1$ at DINOv2-B, and it leads the degraded and subterranean axes with no re-ranking at all. The grids below cross the devices that act on it with token pruning and whitened compression.
 
 \label{sec:exp-stage1}
 \label{sec:stage1abl}
@@ -246,7 +246,7 @@ GeM                  &    DINOv2-B    &  54.2  &  56.3  &  63.8  &  90.5  &  48.
 GeM                  &    DINOv2-L    &  55.9  &  56.3  &  63.8  &  92.5  &  46.4  &  \underline{80.3}  &  83.1  &  46.4  &  24.8  &  61.1\\
 AnyLoc$^{p}$         &    DINOv2-G    &  \underline{65.2}  &  61.6  &  65.0  &  95.5  &  75.2  &  76.1  &  85.9  &  \underline{66.7}$^{d}$  &  34.6  &  \underline{69.5}\\
 \midrule
-\multicolumn{12}{l}{Ours \emph{--- training-free, second-order instance}} \\
+\multicolumn{12}{l}{Ours \emph{--- training-free, second-moment instance}} \\
 Ours    &    DINOv2-B    &  58.5  &  60.7  &  63.6  &  94.0  &  71.7  &  47.9  &  84.5  &  43.0  &  35.6$^{o}$  &  62.2\\
 Ours    &    DINOv2-L    &  \textbf{69.5}  &  50.9  &  64.0  &  96.0  &  73.8  &  36.6  &  84.5  &  49.5  &  \underline{36.6}$^{o}$  &  62.4\\
 Ours    &    DINOv2-G    &  56.8  &  \underline{67.9}  &  65.0  &  96.5  &  76.7  &  74.7  &  95.8  &  48.2  &  35.6  &  68.6\\
@@ -257,7 +257,7 @@ Ours    &    DINOv3-7B    &  52.5  &  60.7  &  \underline{65.5}  &  95.5  &  77.
 }
 \end{table}
 \begin{table}[H]
-\caption{\textbf{Devices on the second-order descriptor at a matched $1024$-d budget} (compressed before scoring). Bold marks the best value in each column; the weight is the largest device ($18.7$ mean R@1).}
+\caption{\textbf{Devices on the second-moment descriptor at a matched $1024$-d budget} (compressed before scoring). Bold marks the best value in each column; the weight is the largest device ($18.7$ mean R@1).}
 \label{tab:firstsecond}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.2pt}%
