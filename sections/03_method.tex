@@ -45,7 +45,7 @@ Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate
 \end{equation}
 $G_C$ records how an image's features co-occur across channels, ignoring where in the frame they appeared, and it keeps much more of the image than an average of the same tokens would (Appendix~\ref{app:coarsegrid}). Appendix~\ref{app:factorize} treats other powers.
 
-We store $G_C$ flattened, take the square root of each entry, and $\ell_2$-normalize:
+The $C\times C$ matrix is read out as a single vector of $C^2$ numbers, written $\operatorname{vec}(G_C)$, each entry is replaced by its signed square root, and the vector is $\ell_2$-normalized:
 \begin{equation}\label{eq:stage1}
   \psi(F)\;=\;\frac{\rho\big(\operatorname{vec}(G_C(F))\big)}{\lVert\rho\big(\operatorname{vec}(G_C(F))\big)\rVert_2},
   \qquad
