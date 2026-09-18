@@ -7,7 +7,7 @@
 \end{figure}
 \section{Method}
 \label{sec:method}
-As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one frozen forward pass per image and builds everything from the patch tokens it returns. A single weight, computed from each image's own token self-similarity, discounts repeated content such as sky or a facade of identical windows, and is used by both stages and by the store (\S\ref{sec:feat}). Stage 1 then represents each image by one global descriptor, obtained by weighted second-order pooling of its tokens, and scans the whole database with it to return a shortlist (\S\ref{sec:global}). Stage 2 re-ranks that shortlist by explicit patch-to-patch \textsc{MaxSim} matching, with patches that have no counterpart in the other image gated out (\S\ref{sec:core}).
+As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one frozen forward pass per image and builds everything from the patch tokens it returns. A single weight, computed from each image's own token self-similarity, discounts repeated content such as sky or a facade of identical windows, and is used by both stages and by the store (\S\ref{sec:feat}). Stage 1 then represents each image by one global descriptor, obtained by pooling its tokens into their weighted second moment, and scans the whole database with it to return a shortlist (\S\ref{sec:global}). Stage 2 re-ranks that shortlist by explicit patch-to-patch \textsc{MaxSim} matching, with patches that have no counterpart in the other image gated out (\S\ref{sec:core}).
 
 
 \subsection{Preliminaries}
@@ -38,7 +38,7 @@ the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We imp
   \qquad
   n_i=\sum_j \hat G_{ij}.
 \end{equation}
-A patch recurring twenty times in its image therefore receives one twentieth of the weight of a patch that occurs once. Appendix~\ref{app:ridge} gives the derivation. The threshold $\tau$ is the only constant here, fixed at $0.5$ everywhere.
+A patch recurring twenty times in its image therefore receives one twentieth of the weight of a patch that occurs once. Appendix~\ref{app:ridge} gives the derivation.
 
 \subsection{First stage}
 \label{sec:global}
