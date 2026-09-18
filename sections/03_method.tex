@@ -1,7 +1,3 @@
-\section{Method}
-\label{sec:method}
-Place recognition is posed as retrieval: given a query image, we search a database $\mathcal{D}$ of geo-tagged images and return the place of the best match. Scoring every candidate patch by patch is too slow on a database of millions, so we proceed in two stages. We first retrieve and shortlist a fixed number of candidates using a single global descriptor per image, obtained by weighted second-order pooling of its patch features. We then re-rank that shortlist by explicit patch-to-patch \textsc{MaxSim} matching. Both stages read similarities between patch features, and one frozen forward pass per image supplies them.
-
 \begin{figure}[t]
 \centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
@@ -9,60 +5,50 @@ Place recognition is posed as retrieval: given a query image, we search a databa
 \caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G_N{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages and prunes the store. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
 \label{fig:method}
 \end{figure}
+\section{Method}
+\label{sec:method}
+Place recognition is posed as retrieval. Given a query image $Q$ and a database $\mathcal{D}$ of geo-tagged images, we score every candidate $D\in\mathcal{D}$ against $Q$ and return the highest, whose location is taken as the query's. Scoring each candidate by its patches is too costly on a database of millions, so the score is computed twice: a first stage compares one vector per image and scans all of $\mathcal{D}$, and a second stage re-scores the shortlist that scan returns. Both stages read tables of similarity between the patches of the images involved, and one frozen forward pass per image supplies them.
+
+
 
 \subsection{Tokens}
 \label{sec:prelim}
-An image is passed through a frozen DINOv2/DINOv3 backbone, and we take the value facet of a fixed block, the output of its value projection, which \citet{vitfacets} introduced as a dense descriptor and \citet{effovpr} adopted for VPR. A PCA is fitted across patch tokens collected from a few hundred unlabelled database images and is then applied to every token, reducing it to $C{=}512$ channels; each token is $\ell_2$-normalized before and after. This gives $N$ unit-norm patch features per image, written $\mathbf f_1,\dots,\mathbf f_N$ and stacked row-wise as $F$. Two kinds of similarity follow: within one image, $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$, and between a query and a candidate, $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$. Block, facet and shortlist depth are swept in Appendix~\ref{app:hyper}.
+An image is passed through a frozen DINOv2/DINOv3 backbone. We take the value facet of a fixed block, the output of its value projection, which \citet{vitfacets} introduced as a dense descriptor and \citet{effovpr} adopted for VPR. We $\ell_2$-normalize it, giving one vector $\mathbf v_i$ per patch, and reduce it to $C{=}512$ channels by a token-PCA. Writing $\boldsymbol\mu$ for the mean token and $U$ for the top $C$ eigenvectors of the token covariance, both estimated once on a few hundred unlabelled images of $\mathcal{D}$,
+\begin{equation}\label{eq:tokpca}
+  \mathbf f_i \;=\; \frac{U^{\top}(\mathbf v_i-\boldsymbol\mu)}{\lVert U^{\top}(\mathbf v_i-\boldsymbol\mu)\rVert_2}.
+\end{equation}
+These are $N$ unit-norm tokens stacked row-wise as $F\in\mathbb R^{N\times C}$. Two tables follow: the self-similarity of one image, $G{=}FF^{\top}$, and the cross-similarity of a query $Q\in\mathbb R^{N_Q\times C}$ against a candidate $D\in\mathbb R^{N_D\times C}$, $S{=}QD^{\top}$. Block, facet and shortlist depth are swept in Appendix~\ref{app:hyper}.
 
 \subsection{The weight}
 \label{sec:feat}
-A patch of sky, or one window in a facade of identical windows, appears many times in the same image, and every copy is counted again. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much. We therefore give each patch a weight before either stage uses it.
-
-For token $i$, we want the total weight of the tokens similar to it to be approximately constant. If $G_{ij}$ measures token similarity, this condition reads
-\begin{equation}\label{eq:demo}
-  \sum_j G_{ij}\,w_j = 1,
-  \qquad\text{or in matrix form}\qquad
-  G\mathbf w=\mathbf 1,
-\end{equation}
-which is the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it not on $G$ but on its thresholded version $\hat G_{ij}=\mathbb 1[\,G_{ij}>\tau\,]$, which counts near-duplicates instead of grading them. The condition then has a closed-form solution,
+An expanse of sky or a facade of identical windows yields many near-duplicate patches, so one scene element is counted once for each patch it covers. This is \emph{burst} \citep{allvlad}, and both stages inherit it, so we repair it once in the tokens. We ask that every token's total contribution to its image be equal, the condition of \citet{democratic} written by \citet{gmp} as $Gw=\mathbf 1$. With $N\gg C$ that system has no exact solution and \citet{gmp} solve a ridge relaxation iteratively. Imposing it instead on the thresholded matrix $\hat G=\mathbb 1[\,G>\tau\,]$ gives a closed form. Under a model in which an element seen $n$ times yields $n$ patches near-duplicate of one another and of nothing else, $\hat G$ is block diagonal with one all-ones block per element, each block contributes one scalar equation, and both the exchangeability of its patches and the minimum-norm solution $\hat G^{\dagger}\mathbf 1$ return the same point:
 \begin{equation}\label{eq:weight}
-  w_i=\frac{1}{n_i},
-  \qquad
-  n_i=\sum_j \hat G_{ij},
+  w_i \;=\; 1/n_i, \qquad n_i=\textstyle\sum_j \hat G_{ij},
 \end{equation}
-the reciprocal of the number of patches in the image that resemble patch $i$: a sky patch that appears twenty times receives one twentieth of the weight of a patch that appears once. Appendix~\ref{app:ridge} derives this and relates it to the regularized solution of \citet{gmp}. The only constant is the threshold $\tau$, fixed at $0.5$ for every backbone and dataset. Figure~\ref{fig:vis-c1} draws the near-duplicate groups at that threshold.
+the reciprocal of a patch's near-duplicate count. It is what \citet{gmp}'s ridge solution converges to as its regularizer vanishes, so the weight is a solution rather than a heuristic; Appendix~\ref{app:ridge} gives the derivation in full. There is no constant to choose beyond $\tau$, fixed at $0.5$ throughout. Figure~\ref{fig:vis-c1} draws the blocks at the deployed $\tau$.
 
 \subsection{First stage}
 \label{sec:global}
-Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it by weighted second-order pooling of the patch features.
-
-Take one patch $\mathbf q$ from the query and one patch $\mathbf d$ from a candidate. Their similarity is $\mathbf q^{\top}\mathbf d$, and its square can be rewritten as $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$, a comparison of two matrices, each built from one image alone. Summing over all patch pairs with the weights of \S\ref{sec:feat} therefore separates into a single comparison between two per-image matrices,
+Contract $S$ from both sides, $w_Q^{\top}\sigma(S)\,w_D$ with $\sigma$ applied entrywise. For a monomial $\sigma(u){=}u^{\gamma}$ this regroups into one inner product between two vectors computed from each image alone, since the entrywise power $S^{\circ\gamma}$ equals $Q^{[\gamma]}(D^{[\gamma]})^{\top}$ for the row-wise Kronecker power. At $\gamma{=}2$ that vector is the image's weighted second moment,
 \begin{equation}\label{eq:so-deriv}
-  \sum_{i,j} w_{Q,i}\,w_{D,j}\,\big(\mathbf q_i^{\top}\mathbf d_j\big)^{2}
-  =\big\langle\, G_C(Q),\ G_C(D)\,\big\rangle,
+  w_Q^{\top}\, S^{\circ 2}\, w_D \;=\; \big\langle\, G_C(Q),\ G_C(D)\,\big\rangle_F,
   \qquad
-  G_C(F)=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top}.
+  G_C(F)\;=\;\textstyle\frac{1}{\sum_i w_i}\sum_{i} w_i\, \mathbf f_i \mathbf f_i^{\top} ,
 \end{equation}
-$G_C$ records how the image's features co-occur across channels, with no reference to where in the image they appeared, which is what lets two views of a place match under a change of viewpoint, and it retains far more than an average of the features would (Appendix~\ref{app:coarsegrid}). Other powers of the similarity factorize in the same way, as Appendix~\ref{app:factorize} works out.
-
-The stored descriptor is $G_C$ flattened, with a square root applied to each entry, and the result $\ell_2$-normalized:
+a Frobenius inner product between two $C{\times}C$ matrices \citep{bcnn,mpncov}. Stage 1 stores that matrix, flattened and $\ell_2$-normalized,
 \begin{equation}\label{eq:stage1}
   \psi(F)\;=\;\frac{\rho\big(\operatorname{vec}(G_C(F))\big)}{\lVert\rho\big(\operatorname{vec}(G_C(F))\big)\rVert_2},
   \qquad
-  \rho(u)=\operatorname{sign}(u)\sqrt{|u|}.
+  \rho(u)=\operatorname{sign}(u)\sqrt{|u|},
 \end{equation}
-The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD \citep{allvlad}. Its purpose is the same as the weight's. A repeated element makes a few entries of the descriptor very large, and those entries then dominate the comparison between two images. Taking square roots pulls the large entries down and lets the rest of the descriptor count. The weight acts on patches before pooling and the square root acts on the descriptor after it, so the two do not overlap.
-
-The descriptor is reduced to $2048$ dimensions by a whitened PCA, again fitted on the deployment database, and the scan returns the $P{=}\min(1000,|\mathcal{D}|)$ best candidates. The same weight also decides what to store: each image keeps its $1024$ highest-weight patches, with the weights computed on the full set and carried along (\S\ref{sec:stage1abl}). Nothing is fitted outside $\mathcal{D}$; Figure~\ref{fig:patchcov} shows the stored matrix.
+with $\rho$ the power normalization of \citet{improvedfisher}, applied entrywise as it is on Fisher vectors and VLAD \citep{allvlad}. It attacks the same nuisance the weight does, a repeated element concentrating the descriptor's mass on a few entries, and it does so downstream of aggregation rather than on the patches, so the two compose. The result is reduced to $2048$ dimensions by a whitened descriptor-PCA and the scan returns a shortlist of $P{=}\min(1000,|\mathcal{D}|)$. The same weight prunes the store: each image keeps its $1024$ highest-weight tokens, the weights computed on the full token set and carried with the survivors, since recomputing them afterwards collapses their spread (\S\ref{sec:stage1abl}). Nothing here is fitted outside $\mathcal{D}$; Figure~\ref{fig:patchcov} shows the stored matrix.
 
 \subsection{Second stage}
 \label{sec:core}
-For each query patch we find its most similar patch in the candidate image and sum those similarities,
+Taking each query patch's best match instead of contracting from both sides admits no such regrouping: the row maximum is not linear in the candidate's tokens, and the score is not even symmetric, which rules out any form $\langle\psi(Q),\psi(D)\rangle$. It therefore runs pair by pair, on the shortlist. This is the \textsc{MaxSim} late-interaction rule of \citet{colbert}. Sky, occluders and pedestrians have no counterpart and \textsc{MaxSim} scores them at whatever their best spurious match happens to be, so we gate each row at $\theta$, the Bayes rule \citep{kay} for a likelihood ratio increasing in $m_i$, fixed at $0.65$ throughout:
 \begin{equation}\label{eq:stage2}
   s(Q,D)=\sum_{i=1}^{N_Q} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i
   \qquad\text{with}\qquad
-  m_i=\max_{j} S_{ij},
+  m_i=\max_{j} S_{ij}.
 \end{equation}
-which is the \textsc{MaxSim} late-interaction rule of \citet{colbert}, weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, and \textsc{MaxSim} would still score them at their best accidental match, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ throughout; Appendix~\ref{app:calib} gives the sweep and the reasoning behind it.
-
-Unlike the first stage, \textsc{MaxSim} cannot be represented by a single fixed-size image descriptor, so we apply it only to the shortlisted candidates, which keeps it affordable; Appendix~\ref{app:nofactor} explains why no such descriptor exists. A method that stores one descriptor per image is therefore denied this stage, and must train its pooling until that single vector separates places on its own \citep{netvlad}. The tables denote our rule \textsc{selfw\_conf}, and Figure~\ref{fig:vis-m1} draws its surviving matches. A variant \textsc{mnn\_selfw65} additionally requires each match to be mutual and counts weighted inliers instead of summing similarities; Appendix~\ref{app:effo-matched} runs both against \textsc{EffoVPR}'s attention-selected rule on an identical shortlist and identical features.
+The tables denote this \textsc{selfw\_conf}, and Figure~\ref{fig:vis-m1} draws its surviving matches. A variant \textsc{mnn\_selfw65} additionally requires each match to be mutual and counts weighted inliers instead of summing similarities. Appendix~\ref{app:effo-matched} runs both against \textsc{EffoVPR}'s attention-selected rule on an identical shortlist and identical features. A method that stores one descriptor per image is denied this stage by construction, and must train its pooling until that single vector separates places on its own \citep{netvlad}.
