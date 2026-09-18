@@ -45,13 +45,7 @@ Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate
 \end{equation}
 $G_C$ records how an image's features co-occur across channels, ignoring where in the frame they appeared, and it keeps much more of the image than an average of the same tokens would (Appendix~\ref{app:coarsegrid}). Appendix~\ref{app:factorize} treats other powers.
 
-The $C\times C$ matrix is read out as a single vector of $C^2$ numbers, written $\operatorname{vec}(G_C)$, each entry is replaced by its signed square root, and the vector is $\ell_2$-normalized:
-\begin{equation}\label{eq:stage1}
-  \psi(F)\;=\;\frac{\rho\big(\operatorname{vec}(G_C(F))\big)}{\lVert\rho\big(\operatorname{vec}(G_C(F))\big)\rVert_2},
-  \qquad
-  \rho(u)=\operatorname{sign}(u)\sqrt{|u|}.
-\end{equation}
-The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD. It serves the same end as the weight, acting after aggregation rather than on the patches before it: a repeated element makes a few entries of the descriptor very large, and those entries would otherwise dominate the comparison between two images. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns a shortlist of the $K$ nearest candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
+The matrix is flattened into a single vector, each entry is replaced by its signed square root, $\rho(u){=}\operatorname{sign}(u)\sqrt{|u|}$, and the vector is $\ell_2$-normalized. The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD: a repeated element makes a few entries very large, and they would otherwise dominate the comparison. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns a shortlist of the $K$ nearest candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
 
 \subsection{Second stage}
 \label{sec:core}
