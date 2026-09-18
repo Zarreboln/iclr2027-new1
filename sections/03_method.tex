@@ -12,7 +12,7 @@ Place recognition is retrieval: given a query image, we search a database $\math
 
 \subsection{Preliminaries}
 \label{sec:prelim}
-Each image passes through a frozen DINOv2/DINOv3 backbone, and we keep the value facet of one block \citep{vitfacets,effovpr}. A PCA is fitted across patch tokens collected from a few hundred unlabelled database images and then applied to every token, reducing it to $C{=}512$ channels. Tokens are $\ell_2$-normalized, so an image becomes $N$ unit vectors $\mathbf f_1,\dots,\mathbf f_N$. Two similarities follow: $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$ inside one image, and $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$ between a query and a candidate. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
+Each image passes through a frozen DINOv2/DINOv3 backbone, and we keep the value facet of one block, the output of its value projection \citep{vitfacets,effovpr}. A PCA is fitted across patch tokens collected from a few hundred unlabelled database images and then applied to every token, reducing it to $C{=}512$ channels. Tokens are $\ell_2$-normalized, so an image becomes $N$ unit vectors $\mathbf f_1,\dots,\mathbf f_N$. Two similarities follow: $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$ inside one image, and $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$ between a query and a candidate. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
 
 \subsection{The weight}
 \label{sec:feat}
@@ -34,7 +34,7 @@ A patch that recurs twenty times in its image receives one twentieth of the weig
 
 \subsection{First stage}
 \label{sec:global}
-Stage 1 needs one fixed-size descriptor per image so that the database can be searched by inner product.
+Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it by weighted second-order pooling of the patch features.
 
 Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
 \begin{equation}\label{eq:so-deriv}
@@ -51,7 +51,7 @@ We store $G_C$ flattened, take the square root of each entry, and $\ell_2$-norma
   \qquad
   \rho(u)=\operatorname{sign}(u)\sqrt{|u|}.
 \end{equation}
-This is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD. It serves the weight's purpose one step later: a repeated element makes a few entries very large, and those entries would otherwise dominate the comparison. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns $P{=}\min(1000,|\mathcal{D}|)$ candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
+The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD. Its purpose is the weight's, one step later. A repeated element makes a few entries of the descriptor very large, and those entries would otherwise dominate the comparison. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns $P{=}\min(1000,|\mathcal{D}|)$ candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
 
 \subsection{Second stage}
 \label{sec:core}
@@ -63,4 +63,4 @@ For each query patch we find its most similar patch in the candidate image and a
 \end{equation}
 the \textsc{MaxSim} rule of \citet{colbert}, weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}).
 
-\textsc{MaxSim} cannot be written as an inner product of two fixed-size descriptors (Appendix~\ref{app:nofactor}), which is why it runs pair by pair on the shortlist rather than over the database, and why a method holding one vector per image cannot use it at all: such a method has to train its pooling until that single vector separates places on its own \citep{netvlad}. Our rule appears in the tables as \textsc{selfw\_conf}; a variant \textsc{mnn\_selfw65} also requires matches to be mutual and counts weighted inliers. Figure~\ref{fig:vis-m1} draws the surviving matches, and Appendix~\ref{app:effo-matched} compares both against \textsc{EffoVPR}'s attention-selected rule on an identical shortlist.
+\textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores one vector per image is denied this stage, and has to train its pooling until that vector separates places on its own \citep{netvlad}. The tables call our rule \textsc{selfw\_conf}; Figure~\ref{fig:vis-m1} draws its surviving matches, and Appendix~\ref{app:effo-matched} compares it against a mutual-match variant and against \textsc{EffoVPR}'s attention-selected rule on an identical shortlist.
