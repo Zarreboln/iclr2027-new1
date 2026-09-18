@@ -10,7 +10,7 @@
 Place recognition is retrieval: given a query image, we search a database $\mathcal{D}$ of geo-tagged images and return the place of the best match. Comparing every candidate patch by patch is too slow on millions of images, so we work in two stages. Stage 1 gives each image one global descriptor, obtained by weighted second-order pooling of its patch features, and scans the database with it. Stage 2 re-ranks the shortlist by matching patches directly. One frozen forward pass per image supplies everything both stages need.
 
 
-\subsection{Tokens}
+\subsection{Preliminaries}
 \label{sec:prelim}
 Each image passes through a frozen DINOv2/DINOv3 backbone, and we keep the value facet of one block \citep{vitfacets,effovpr}. A PCA is fitted across patch tokens collected from a few hundred unlabelled database images and then applied to every token, reducing it to $C{=}512$ channels. Tokens are $\ell_2$-normalized, so an image becomes $N$ unit vectors $\mathbf f_1,\dots,\mathbf f_N$. Two similarities follow: $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$ inside one image, and $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$ between a query and a candidate. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
 
