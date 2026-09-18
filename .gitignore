@@ -22,3 +22,10 @@ main.fls
 main.fdb_latexmk
 main.bbl
 main.blg
+
+# 编译产物:Overleaf 每次重编译都会与 GitHub 冲突,不再入库
+iclr2027_conference.pdf
+*.aux
+*.fls
+*.fdb_latexmk
+*.synctex.gz
