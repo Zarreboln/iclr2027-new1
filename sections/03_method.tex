@@ -2,7 +2,7 @@
 \centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
 \includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
-\caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G_N{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages and prunes the store. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
+\caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages and prunes the store. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
 \label{fig:method}
 \end{figure}
 \section{Method}
@@ -12,7 +12,15 @@ As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one froze
 
 \subsection{Preliminaries}
 \label{sec:prelim}
-Each image passes through a frozen DINOv2/DINOv3 backbone, and we keep the value facet of one block, the output of its value projection \citep{vitfacets,effovpr}. A PCA is fitted across patch tokens collected from a few hundred unlabelled database images and then applied to every token, reducing it to $C{=}512$ channels. Tokens are $\ell_2$-normalized, so an image becomes $N$ unit vectors $\mathbf f_1,\dots,\mathbf f_N$. Two similarities follow: $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$ inside one image, and $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$ between a query and a candidate. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
+A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_d)\}$ of images with known coordinates, and the coordinates of the retrieved image are returned as the query's. Every image is a grid of $N$ patches, $I=[\,p_1,\dots,p_N\,]$, and passes once through a frozen DINOv2/DINOv3 backbone, from which we keep the value facet of one block, the output of its value projection \citep{vitfacets,effovpr}. A PCA is fitted across patch tokens collected from a few hundred unlabelled database images and then applied to every token, reducing it to $C{=}512$ channels; tokens are $\ell_2$-normalized. An image is therefore a matrix of $N$ unit vectors,
+\begin{equation}\label{eq:tokens}
+  F=[\,\mathbf f_1,\dots,\mathbf f_N\,]^{\top}\in\mathbb R^{N\times C},
+  \qquad
+  G=FF^{\top},
+  \qquad
+  S=QD^{\top},
+\end{equation}
+with $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$ the similarity between two patches of one image and $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$ the similarity between a query patch and a candidate patch. Both stages read nothing but these two tables. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
 
 \subsection{The weight}
 \label{sec:feat}
