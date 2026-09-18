@@ -16,9 +16,7 @@ A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_
 
 \subsection{Self-similarity weight}
 \label{sec:feat}
-Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch is weighted before either stage uses it.
-
-For token $i$, we want the total weight of the tokens similar to it to be about constant:
+Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch is weighted before either stage uses it. For token $i$, we want the total weight of the tokens similar to it to be about constant:
 \begin{equation}\label{eq:demo}
   \sum_j G_{ij}\,w_j = 1,
   \qquad\text{in matrix form}\qquad
@@ -34,9 +32,7 @@ A patch recurring twenty times in its image therefore receives one twentieth of 
 
 \subsection{First stage}
 \label{sec:global}
-Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it as the weighted second moment of the patch features.
-
-Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
+Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it as the weighted second moment of the patch features. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
 \begin{equation}\label{eq:so-deriv}
   \sum_{i,j} w_{Q,i}\,w_{D,j}\,\big(\mathbf q_i^{\top}\mathbf d_j\big)^{2}
   =\big\langle\, G_C(Q),\ G_C(D)\,\big\rangle,
