@@ -7,7 +7,7 @@
 \end{figure}
 \section{Method}
 \label{sec:method}
-Place recognition is retrieval: given a query image, we search a database $\mathcal{D}$ of geo-tagged images and return the place of the best match. Comparing a query to every candidate patch by patch is too costly on a database of millions, so the search proceeds in two stages. Stage 1 represents each image by a single global descriptor, obtained by weighted second-order pooling of its patch features, and scans the database with it. Stage 2 re-ranks the resulting shortlist by explicit patch-to-patch matching. One frozen forward pass per image supplies everything both stages need.
+As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one frozen forward pass per image and builds everything from the patch tokens it returns. A single weight, computed from each image's own token self-similarity, discounts repeated content such as sky or a facade of identical windows, and is used by both stages and by the store (\S\ref{sec:feat}). Stage 1 then represents each image by one global descriptor, the weighted second moment of its tokens, and scans the whole database with it to return a shortlist (\S\ref{sec:global}). Stage 2 re-ranks that shortlist by explicit patch-to-patch \textsc{MaxSim} matching, with patches that have no counterpart in the other image gated out (\S\ref{sec:core}). Nothing is trained and nothing is fitted outside the deployment database.
 
 
 \subsection{Preliminaries}
