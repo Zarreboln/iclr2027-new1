@@ -16,7 +16,7 @@ A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_
 
 \subsection{Self-similarity weight}
 \label{sec:feat}
-Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch is weighted before either stage uses it.
+Frozen-backbone pipelines aggregate every patch alike: \citet{anyloc} shows that a frozen DINOv2 with VLAD aggregation is already a strong place descriptor, but an image filled with sky or with a repeated facade is then described mostly by what repeats in it. \citet{effovpr} selects patches instead, keeping those with the highest class-token attention, which promotes what stands out in the frame rather than what is distinctive within it. We take the opposite signal, and weight each patch by how often it repeats inside its own image, a quantity already carried by $G$. Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch is weighted before either stage uses it.
 
 For token $i$, we want the total weight of the tokens similar to it to be about constant:
 \begin{equation}\label{eq:demo}
@@ -34,7 +34,7 @@ A patch recurring twenty times in its image therefore receives one twentieth of 
 
 \subsection{First stage}
 \label{sec:global}
-Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it as the weighted second moment of the patch features.
+Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. \citet{anyloc} builds it by VLAD aggregation against a vocabulary fitted per domain, and GeM pools the same tokens into one averaged vector; both record how strongly each channel fires and discard which channels fire together. We obtain the descriptor instead as the weighted second moment of the patch features.
 
 Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
 \begin{equation}\label{eq:so-deriv}
@@ -49,7 +49,7 @@ The matrix is flattened into a single vector, each entry is replaced by its sign
 
 \subsection{Second stage}
 \label{sec:core}
-For each query patch we find its most similar patch in the candidate image and add up those similarities:
+Second stages in VPR are usually geometric, verifying patch correspondences with RANSAC \citep{patchnetvlad} or a learned matcher \citep{r2former}, or they train a cross-image encoder on top of the shortlist \citep{selavpr}. Both need a component fitted for the task. We re-rank with a rule that has no fitted part: for each query patch we find its most similar patch in the candidate image and add up those similarities,
 \begin{equation}\label{eq:stage2}
   s(Q,D)=\sum_{i=1}^{N_Q} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i,
   \qquad
