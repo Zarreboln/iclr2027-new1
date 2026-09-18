@@ -7,7 +7,7 @@
 \end{figure}
 \section{Method}
 \label{sec:method}
-Place recognition is retrieval: given a query image, we search a database $\mathcal{D}$ of geo-tagged images and return the place of the best match. Comparing every candidate patch by patch is too slow on millions of images, so we work in two stages. Stage 1 gives each image one global descriptor, obtained by weighted second-order pooling of its patch features, and scans the database with it. Stage 2 re-ranks the shortlist by matching patches directly. One frozen forward pass per image supplies everything both stages need.
+Place recognition is retrieval: given a query image, we search a database $\mathcal{D}$ of geo-tagged images and return the place of the best match. Comparing a query to every candidate patch by patch is too costly on a database of millions, so the search proceeds in two stages. Stage 1 represents each image by a single global descriptor, obtained by weighted second-order pooling of its patch features, and scans the database with it. Stage 2 re-ranks the resulting shortlist by explicit patch-to-patch matching. One frozen forward pass per image supplies everything both stages need.
 
 
 \subsection{Preliminaries}
@@ -24,13 +24,13 @@ For token $i$, we want the total weight of the tokens similar to it to be about 
   \qquad\text{in matrix form}\qquad
   G\mathbf w=\mathbf 1,
 \end{equation}
-the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat G_{ij}=\mathbb 1[\,G_{ij}>\tau\,]$, which counts near-copies rather than grading them, and the condition then solves in closed form:
+the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat G_{ij}=\mathbb 1[\,G_{ij}>\tau\,]$, which counts near-copies rather than grading them. The condition then admits a closed-form solution,
 \begin{equation}\label{eq:weight}
   w_i=\frac{1}{n_i},
   \qquad
   n_i=\sum_j \hat G_{ij}.
 \end{equation}
-A patch that recurs twenty times in its image receives one twentieth of the weight of a patch that occurs once. Appendix~\ref{app:ridge} gives the derivation. The threshold $\tau$ is the only constant here, fixed at $0.5$ everywhere.
+A patch recurring twenty times in its image therefore receives one twentieth of the weight of a patch that occurs once. Appendix~\ref{app:ridge} gives the derivation. The threshold $\tau$ is the only constant here, fixed at $0.5$ everywhere.
 
 \subsection{First stage}
 \label{sec:global}
@@ -51,7 +51,7 @@ We store $G_C$ flattened, take the square root of each entry, and $\ell_2$-norma
   \qquad
   \rho(u)=\operatorname{sign}(u)\sqrt{|u|}.
 \end{equation}
-The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD. Its purpose is the weight's, one step later. A repeated element makes a few entries of the descriptor very large, and those entries would otherwise dominate the comparison. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns $P{=}\min(1000,|\mathcal{D}|)$ candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
+The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD. It serves the same end as the weight, acting after aggregation rather than on the patches before it: a repeated element makes a few entries of the descriptor very large, and those entries would otherwise dominate the comparison between two images. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns $P{=}\min(1000,|\mathcal{D}|)$ candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
 
 \subsection{Second stage}
 \label{sec:core}
@@ -63,4 +63,4 @@ For each query patch we find its most similar patch in the candidate image and a
 \end{equation}
 the \textsc{MaxSim} rule of \citet{colbert}, weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}).
 
-\textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores one vector per image is denied this stage, and has to train its pooling until that vector separates places on its own \citep{netvlad}. The tables call our rule \textsc{selfw\_conf}; Figure~\ref{fig:vis-m1} draws its surviving matches, and Appendix~\ref{app:effo-matched} compares it against a mutual-match variant and against \textsc{EffoVPR}'s attention-selected rule on an identical shortlist.
+\textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}. This rule is denoted \textsc{selfw\_conf} in the tables, and Figure~\ref{fig:vis-m1} shows the matches that survive the threshold. Appendix~\ref{app:effo-matched} compares it against a mutual-match variant and against \textsc{EffoVPR}'s attention-selected rule on an identical shortlist.
