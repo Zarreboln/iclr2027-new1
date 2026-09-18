@@ -22,7 +22,7 @@ A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_
 \end{equation}
 with $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$ the similarity between two patches of one image and $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$ the similarity between a query patch and a candidate patch. Both stages read nothing but these two tables. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
 
-\subsection{The weight}
+\subsection{Self-similarity weight}
 \label{sec:feat}
 Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch is weighted before either stage uses it.
 
