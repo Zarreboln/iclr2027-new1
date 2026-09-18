@@ -51,7 +51,7 @@ We store $G_C$ flattened, take the square root of each entry, and $\ell_2$-norma
   \qquad
   \rho(u)=\operatorname{sign}(u)\sqrt{|u|}.
 \end{equation}
-The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD. It serves the same end as the weight, acting after aggregation rather than on the patches before it: a repeated element makes a few entries of the descriptor very large, and those entries would otherwise dominate the comparison between two images. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns $K{=}\min(1000,|\mathcal{D}|)$ candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
+The square root is the power normalization of \citet{improvedfisher}, standard for Fisher vectors and VLAD. It serves the same end as the weight, acting after aggregation rather than on the patches before it: a repeated element makes a few entries of the descriptor very large, and those entries would otherwise dominate the comparison between two images. A whitened PCA then reduces the descriptor to $2048$ dimensions and the scan returns a shortlist of the $K$ nearest candidates. The same weight decides what to store, each image keeping its $1024$ highest-weight patches (\S\ref{sec:stage1abl}). Both PCAs are fitted on the deployment database and nothing else is fitted at all.
 
 \subsection{Second stage}
 \label{sec:core}
