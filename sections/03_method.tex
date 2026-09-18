@@ -1,7 +1,3 @@
-\section{Method}
-\label{sec:method}
-Place recognition is retrieval: given a query image, we search a database $\mathcal{D}$ of geo-tagged images and return the place of the best match. Comparing every candidate patch by patch is too slow on millions of images, so we work in two stages. Stage 1 gives each image one global descriptor, obtained by weighted second-order pooling of its patch features, and scans the database with it. Stage 2 re-ranks the shortlist by matching patches directly. One frozen forward pass per image supplies everything both stages need.
-
 \begin{figure}[t]
 \centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
@@ -9,6 +5,10 @@ Place recognition is retrieval: given a query image, we search a database $\math
 \caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G_N{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages and prunes the store. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
 \label{fig:method}
 \end{figure}
+\section{Method}
+\label{sec:method}
+Place recognition is retrieval: given a query image, we search a database $\mathcal{D}$ of geo-tagged images and return the place of the best match. Comparing every candidate patch by patch is too slow on millions of images, so we work in two stages. Stage 1 gives each image one global descriptor, obtained by weighted second-order pooling of its patch features, and scans the database with it. Stage 2 re-ranks the shortlist by matching patches directly. One frozen forward pass per image supplies everything both stages need.
+
 
 \subsection{Tokens}
 \label{sec:prelim}
