@@ -51,12 +51,8 @@ AnyLoc & 49152 & 81.49 & 87.7 & 90.48 & 49.19 & 20.19 & 96.2 & \underline{99.5} 
 EffoVPR-ZS$^{\dagger}$ & 1024 & 93.38 & 89.4 & 90.8 & 70.3 & 57.9 & 97.75 & 76.96 & 65.80 & 80.29 \\
 \midrule
 \multicolumn{11}{l}{Ours \emph{--- training-free, deployed configuration (\S\ref{sec:global}: keep-1024, WPCA-2048 coarse, \textsc{selfw\_conf})}} \\
-Ours \emph{DINOv2-B}$^{\dagger}$ & 2048 & 94.72 & 92.03 & 95.87 & 86.49 & 68.63 & 97.20 & 98.95 & 65.07 & 87.37 \\
-Ours \emph{DINOv2-L}$^{\dagger}$ & 2048 & 94.57 & 91.96 & 96.51 & 84.73 & 64.62 & 94.60 & 97.38 & 65.96 & 86.29 \\
-Ours \emph{DINOv2-G}$^{\dagger}$ & 2048 & 95.66 & 92.49 & 97.46 & 89.05 & 83.03 & 99.11 & 98.95 & 68.07 & 90.48 \\
-Ours \emph{DINOv3-B}$^{\dagger}$ & 2048 & 92.64 & 89.45 & 94.29 & 85.00 & 77.58 & 98.50 & \textbf{100.00} & 60.84 & 87.29 \\
-Ours \emph{DINOv3-L}$^{\dagger}$ & 2048 & 95.92 & 93.18 & 97.14 & 88.92 & 87.92 & 99.11 & \textbf{100.00} & 69.86 & 91.51 \\
-Ours \emph{DINOv3-7B}$^{\dagger}$ & 2048 & 96.12 & 93.74 & \textbf{98.41} & 89.32 & \underline{96.56} & 99.73 & 98.95 & \textbf{73.60} & \textbf{93.30} \\
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.66 & 92.49 & 97.46 & 89.05 & 83.03 & 99.11 & 98.95 & 68.07 & 90.48 \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.12 & 93.74 & \textbf{98.41} & 89.32 & \underline{96.56} & 99.73 & 98.95 & \textbf{73.60} & \textbf{93.30} \\
 \bottomrule
 \end{tabular}%
 }\\[3pt]
@@ -95,7 +91,7 @@ Ours \emph{DINOv3-7B}$^{\dagger}$ & 2048 & 96.12 & 93.74 & \textbf{98.41} & 89.3
 % Compact covD @1024-d single-stage (Pitts-7B 88.64) is competitive with AnyLoc @49152-d single-stage (87.7) at 48x smaller.
 \end{table}
 
-Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.7$ on Nordland, whose seasonal change is the hardest condition in the table. Our mean of $93.30$ is the highest in the table, above every trained method as well, and we take the best number on Tokyo 24/7, Oxford RobotCar and AmsterTime, the benchmark with decades of time variation. These benchmarks are exactly the terrain a trained method's supervision is aimed at, and we reach it there without a single place label. The six backbones span $86.3$ to $93.3$ mean R@$1$, and the ordering follows the backbone rather than the pipeline: at ViT-B the two families differ by $0.1$ ($87.4$ against $87.3$), while Nordland separates them most, $68.6$ for DINOv2-B against $77.6$ for DINOv3-B.
+Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.7$ on Nordland, whose seasonal change is the hardest condition in the table. Our mean of $93.30$ is the highest in the table, above every trained method as well, and we take the best number on Tokyo 24/7, Oxford RobotCar and AmsterTime, the benchmark with decades of time variation. These benchmarks are exactly the terrain a trained method's supervision is aimed at, and we reach it there without a single place label. The two rows differ by $2.8$ mean R@$1$, almost all of it on Nordland, where the frozen features carry the seasonal change on their own.
 
 \label{sec:ood}
 
@@ -119,34 +115,30 @@ R2Former$^{\dagger}$ & 256 & 17.8 & 30.4 & 63.8 & 84.0 & 74.7 & 26.8 & 83.1 & 15
 SALAD & 8448 & 38.1 & 46.4 & 64.3 & 96.5 & 69.9 & 53.5 & 94.4 & 24.0 & 15.8 & 55.9 \\
 CricaVPR$^\ddag$ & 10752 & 28.0 & 34.8 & 64.0 & 94.0 & 65.8 & 45.1 & \textbf{100.0} & 19.9 & 27.7 & 53.3 \\
 SelaVPR$^{\dagger}$ & 1024 & 25.4 & 53.6 & 63.3 & 94.5 & 68.5 & 59.1 & 83.1 & 32.6 & 21.8 & 55.8 \\
-BoQ & 12288 & 33.9 & 60.7 & 64.3 & 98.0 & 77.4 & 62.0 & 91.5 & 29.5 & 35.6 & 61.4 \\
+BoQ & 12288 & 33.9 & 60.7 & 64.3 & \underline{98.0} & 77.4 & 62.0 & 91.5 & 29.5 & 35.6 & 61.4 \\
 CliqueMining & 8448 & 22.9 & 38.4 & \underline{65.3} & 93.0 & 69.1 & 62.0 & 84.5 & 22.9 & 35.6 & 54.9 \\
 SuperVLAD$^\ddag$ & 3072 & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 51.1 \\
 VLAD-BuFF & 4096 & 37.3 & 33.9 & 64.5 & 96.5 & 76.4 & 57.7 & 88.7 & 33.3 & 27.7 & 57.4 \\
 SelaVPR++$^{\dagger}$ & 2048 & 21.2 & 35.7 & 65.0 & 95.5 & 73.6 & 81.7 & 87.3 & 42.7 & 27.7 & 58.9 \\
-MegaLoc & 8448 & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & 85.9 & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
+MegaLoc & 8448 & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & \underline{85.9} & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
 FoL$^{\dagger}$ & 8448 & 36.4 & 54.5 & \underline{65.3} & 97.0 & 78.9 & 77.5 & \underline{98.6} & 46.7 & 25.7 & 64.5 \\
-SAGE$^\ddag$ & 8448 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & 85.9 & 84.5 & 39.1 & 24.8 & 60.0 \\
+SAGE$^\ddag$ & 8448 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \underline{85.9} & 84.5 & 39.1 & 24.8 & 60.0 \\
 \midrule
 \multicolumn{12}{l}{\emph{Training-free}} \\
-AnyLoc & 49152 & 65.2 & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7$^{d}$ & 34.6 & 69.5 \\
+AnyLoc & 49152 & \underline{65.2} & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7$^{d}$ & 34.6 & 69.5 \\
 GeM & 768 & 39.8 & 68.8 & \underline{65.3} & 97.5 & 78.7 & 76.1 & 91.6 & 61.4 & 30.7 & 67.8 \\
 GeM & 1024 & 42.4 & 62.5 & 65.0 & 97.0 & 78.3 & 83.1 & 91.6 & 70.0 & 28.7 & 68.7 \\
 EffoVPR-ZS$^{\dagger}$ & 1024 & 38.1 & 67.0 & \textbf{65.5} & 97.5 & 75.9 & 83.1 & 88.7 & 65.7 & 36.6 & 68.7 \\
 \midrule
 \multicolumn{12}{l}{Ours \emph{--- training-free, coarse retrieval with late interaction}} \\
-Ours \emph{DINOv2-B} & 2048 & 58.5 & 66.1 & \textbf{65.5} & \textbf{99.5} & 81.8 & 74.7 & 70.4 & 47.8 & 30.7 & 66.1 \\
-Ours \emph{DINOv2-L} & 2048 & 58.5 & 65.2 & \underline{65.3} & 98.5 & 79.5 & 71.8 & \textbf{100.0} & 48.8 & 26.7 & 68.3 \\
-Ours \emph{DINOv2-G} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & 84.5 & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
-Ours \emph{DINOv3-B} & 2048 & 39.8 & 46.4 & \textbf{65.5} & 95.0 & \underline{85.8} & 49.3 & 83.1 & 36.2 & 31.7 & 59.2 \\
-Ours \emph{DINOv3-L} & 2048 & \underline{66.1} & 71.4 & 64.8 & \underline{99.0} & \textbf{86.8} & \underline{90.1} & 95.8 & 69.1 & 35.6 & 75.4 \\
-Ours \emph{DINOv3-7B} & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & 83.5 & \textbf{91.5} & 97.2 & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
+Ours\,\emph{v2} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
+Ours\,\emph{v3} & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & 97.2 & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
-Table~\ref{tab:ood} takes the same configuration off street view, to degraded, subterranean, indoor, aerial and underwater imagery, with every method given a second stage of its own so that two-stage is compared against two-stage. We take the best number on eight of the nine environments and the second on the ninth, for a mean of $76.6$ against $65.1$ for the strongest trained method (MegaLoc) and $69.5$ for the strongest training-free one (AnyLoc). The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns, and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. Across the three largest backbones the gap is $1.2$ R@1, and at ViT-B the pipeline already reaches $66.1$, above every trained method at that scale, so the result rests on the pipeline rather than on backbone scale.
+Table~\ref{tab:ood} takes the same configuration off street view, to degraded, subterranean, indoor, aerial and underwater imagery, with every method given a second stage of its own so that two-stage is compared against two-stage. We take the best number on eight of the nine environments and the second on the ninth, for a mean of $76.6$ against $65.1$ for the strongest trained method (MegaLoc) and $69.5$ for the strongest training-free one (AnyLoc). The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns, and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. The two backbones differ by $0.3$ R@1 on the mean, so the result rests on the pipeline rather than on backbone scale.
 
 Figure~\ref{fig:qual} shows one query per benchmark family. Where the trained baselines return a different place under seasonal change, illumination change or a degraded interior, our pipeline returns the correct image at rank one.
 
