@@ -221,7 +221,7 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 \cmidrule(lr){3-11}
 Method   &   Backbone   &   Hawk   &   Laurel   &  17Pl &   Gard   &   Baidu   &   N-Air   &   N-AirR   &   VP-Air   & M-Atl &   mean \\
 \midrule
-\multicolumn{12}{l}{\emph{Trained / fine-tuned --- single-stage global descriptor}} \\
+\multicolumn{12}{l}{\emph{Trained or fine-tuned, single global descriptor}} \\
 MegaLoc              &    DINOv2-B    &  37.3  &  55.4  &  64.8  &  95.5  &  \underline{79.4}  &  \textbf{85.9}  &  81.7  &  45.6  &  \textbf{40.6}  &  65.1\\
 SAGE                 &    DINOv2-L    &  27.1  &  46.4  &  64.0  &  93.5  &  74.6  &  \textbf{85.9}  &  84.5  &  39.1  &  24.8  &  60.0\\
 BoQ                  &    DINOv2-B    &  33.9  &  60.7  &  64.3  &  \underline{98.0}  &  77.4  &  62.0  &  91.5  &  29.5  &  35.6  &  61.4\\
@@ -241,12 +241,12 @@ SelaVPR$^{\dagger}$  & DINOv2-L       &  25.4  &  53.6  &  63.3  &  94.5  &  68.
 MixVPR               &    R50         &  26.3  &  32.1  &  63.8  &  92.0  &  68.4  &  39.4  &  78.9  &  12.9  &  24.8  &  48.7\\
 NetVLAD              &    VGG16       &  38.1  &  42.9  &  63.8  &  66.0  &  57.8  &  9.9  &  39.4  &  14.7  &  26.7  &  39.9\\
 \midrule
-\multicolumn{12}{l}{\emph{Training-free --- frozen backbone, first-order pooling}} \\
+\multicolumn{12}{l}{\emph{Training-free, frozen backbone, first-order pooling}} \\
 GeM                  &    DINOv2-B    &  54.2  &  56.3  &  63.8  &  90.5  &  48.1  &  66.2  &  85.9  &  37.0  &  20.8  &  58.1\\
 GeM                  &    DINOv2-L    &  55.9  &  56.3  &  63.8  &  92.5  &  46.4  &  \underline{80.3}  &  83.1  &  46.4  &  24.8  &  61.1\\
 AnyLoc$^{p}$         &    DINOv2-G    &  \underline{65.2}  &  61.6  &  65.0  &  95.5  &  75.2  &  76.1  &  85.9  &  \underline{66.7}$^{d}$  &  34.6  &  \underline{69.5}\\
 \midrule
-\multicolumn{12}{l}{Ours \emph{--- training-free, second-moment instance}} \\
+\multicolumn{12}{l}{Ours \emph{--- training-free, second-moment descriptor}} \\
 Ours    &    DINOv2-B    &  58.5  &  60.7  &  63.6  &  94.0  &  71.7  &  47.9  &  84.5  &  43.0  &  35.6$^{o}$  &  62.2\\
 Ours    &    DINOv2-L    &  \textbf{69.5}  &  50.9  &  64.0  &  96.0  &  73.8  &  36.6  &  84.5  &  49.5  &  \underline{36.6}$^{o}$  &  62.4\\
 Ours    &    DINOv2-G    &  56.8  &  \underline{67.9}  &  65.0  &  96.5  &  76.7  &  74.7  &  95.8  &  48.2  &  35.6  &  68.6\\
