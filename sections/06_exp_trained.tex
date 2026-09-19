@@ -5,7 +5,7 @@
 To compare aggregation at equal capacity, we retrain three baselines on DINOv3-7B, each under its own published recipe with nothing changed but the backbone. Table~\ref{tab:perdataset} gives Recall@1 on all thirteen benchmarks. Our mean is $82.1$ against $73.1$ for the strongest retrained baseline, we are within one point of the best on nine of the thirteen and ahead by more than $14$ on three, and moving from the DINOv2 backbone to the DINOv3 one raises our mean by $1.4$ with nothing re-fitted but the two unsupervised bases.
 
 \begin{table}[t]
-\caption{\textbf{Matched-backbone comparison, per dataset.} R@1 on the thirteen benchmarks: \emph{v2} is a DINOv2 backbone, \emph{v3} a DINOv3 one: for the baselines their published backbone and a retraining on DINOv3-7B, for us DINOv2-G and DINOv3-7B, both frozen. \emph{Dim} is the first-stage descriptor dimensionality. $\Delta$ $=$ our \emph{v3} minus the best baseline on that benchmark. Bold $=$ best, \underline{underline} $=$ second, over all rows. Our runs.}
+\caption{\textbf{Matched-backbone comparison, per dataset.} R@1 on the thirteen benchmarks: \emph{v2} is a DINOv2 backbone, \emph{v3} a DINOv3 one: for the baselines their published backbone and a retraining on DINOv3-7B, for us DINOv2-G and DINOv3-7B, both frozen. \emph{Dim} is the first-stage descriptor dimensionality. Bold $=$ best, \underline{underline} $=$ second, over all rows. Our runs.}
 \label{tab:perdataset}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.6pt}%
@@ -26,8 +26,6 @@ CliqueMining\,\emph{v3} & 8448 & 93.63 & 98.10 & 93.51 & 94.76 & 68.59 & 61.58 &
 \multicolumn{16}{l}{\emph{Training-free, deployed configuration}} \\
 Ours\,\emph{v2} & 2048 & 92.49 & 97.46 & 89.05 & 83.03 & \textbf{84.48} & \textbf{65.52} & \textbf{99.50} & \textbf{66.95} & \textbf{83.04} & 83.10 & 94.37 & \underline{72.06} & \textbf{37.62} & \underline{80.67} \\
 Ours\,\emph{v3} & 2048 & 93.74 & \underline{98.41} & 89.32 & \textbf{96.56} & \underline{83.45} & \underline{65.27} & \textbf{99.50} & \underline{61.02} & \underline{75.89} & \textbf{91.55} & \underline{97.18} & \textbf{77.64} & \textbf{37.62} & \textbf{82.09} \\
-\midrule
-\multicolumn{2}{l}{$\Delta$ \emph{(ours v3 $-$ best baseline)}} & $-0.66$ & $-0.32$ & $-4.87$ & $+0.63$ & $+6.09$ & $+0.00$ & $+1.00$ & $+16.95$ & $+14.28$ & $+7.04$ & $-2.82$ & $+27.82$ & $+1.98$ & $+8.93$ \\
 \bottomrule
 \end{tabular}%
 }%
