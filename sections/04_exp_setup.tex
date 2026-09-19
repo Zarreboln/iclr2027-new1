@@ -139,6 +139,15 @@ Table~\ref{tab:ood} takes the same configuration off street view, to degraded, s
 
 Figure~\ref{fig:qual} shows one query per benchmark family. Where the trained baselines return a different place under seasonal change, illumination change or a degraded interior, our pipeline returns the correct image at rank one.
 
+Figure~\ref{fig:blocktsne} looks at the score itself rather than at its ranking. Every image of a place is embedded from each method's own similarity, and the separation between places, measured as the gap between within-place and between-place similarity in units of the latter's spread, grows from $3.3$ on Pitts30k to $11.2$ indoors and $22.9$ on the aerial set, where a single descriptor has least to work with.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.88\textwidth]{figures/block_tsne.pdf}
+\caption{\textbf{Places under each method's own similarity.} All images of a place, embedded by t-SNE on the method's own pairwise scores taken as distances (perplexity $10$, seed $0$); colour is the place. \emph{sep} is the within-place minus between-place mean similarity, in units of the between-place standard deviation, and is the only quantity comparable across panels.}
+\label{fig:blocktsne}
+\end{figure}
+
 \subsection{Ablation study}
 \label{sec:swap}
 Table~\ref{tab:stage2swap} isolates our second stage by dropping it into other pipelines: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes. The upper block re-ranks the shortlist of the four methods that ship a second stage of their own, and all four improve on the nine-environment mean, FoL by $+5.5$, R2Former $+5.6$, SelaVPR $+9.7$ and SelaVPR++ $+12.5$ R@1, better on $28$ of the $36$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
