@@ -144,8 +144,6 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \end{tabular}%
 }\end{table}
 
-Table~\ref{tab:stage2swap} isolates our second stage by dropping it into other pipelines: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes. The upper block re-ranks the shortlist of the four methods that ship a second stage of their own, and all four improve on the nine-environment mean, FoL by $+5.5$, R2Former $+5.6$, SelaVPR $+9.7$ and SelaVPR++ $+12.5$ R@1, better on $28$ of the $36$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
-
 \begin{table}[t]
 \caption{\textbf{Our second stage on other methods' first stages.} Each figure is what the method publishes, after its own re-ranker in the upper block and from its global descriptor in the lower; the subscript is the change under \eqref{eq:stage2}, replacing that re-ranker or added where there is none. Backbone, resolution and shortlist stay the method's own.}
 \label{tab:stage2swap}
