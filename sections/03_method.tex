@@ -40,7 +40,6 @@ A patch recurring twenty times in its image therefore receives one twentieth of 
 
 \subsection{First stage \textcolor{red}{Chen: Coarse Ranking?}}
 \label{sec:global}
-{\color{blue}
 Stage 1 scores a pair by adding up the similarity of every query patch to every candidate patch, that is, by summing over all entries of $S(Q,D)$. Computing that table for every database image would be far too slow, and it is not needed: the sum can be rearranged into an inner product of two vectors, one computed from the query alone and one from the candidate alone, so each database image is stored as a single fixed-size descriptor and searched as such. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
 \begin{equation}\label{eq:so-deriv}
   \sum_{i,j} w_{Q,i}\,w_{D,j}\,S(Q,D)_{ij}^{2}
@@ -49,20 +48,9 @@ Stage 1 scores a pair by adding up the similarity of every query patch to every 
   G_C(F)=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top}.
 \end{equation}
 $G_C$ is the weighted second moment of the patch features: it records how an image's features co-occur across channels, ignoring where in the frame they appeared. The square is what makes it worth keeping. The same sum over the entries themselves, $\sum_{i,j}w_{Q,i}w_{D,j}S(Q,D)_{ij}$, is only the inner product of two weighted mean vectors, and an average of the same tokens retains far less of the image (Appendix~\ref{app:coarsegrid}). In kernel terms the stage is a degree-two polynomial match kernel over patches \citep{smk}, and it is exactly the case that factorizes; Appendix~\ref{app:factorize} treats other powers. The descriptor is flattened, $\ell_2$-normalized and whitened, and the database is scanned with it to a shortlist of $K$ candidates.
-}
-
-Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it as the second moment of the patch features, each weighted by its importance $w_i$. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
-\begin{equation}
-  \sum_{i,j} w_{Q,i}\,w_{D,j}\,\big(\mathbf q_i^{\top}\mathbf d_j\big)^{2}
-  =\big\langle\, G_C(Q),\ G_C(D)\,\big\rangle,
-  \qquad
-  G_C(F)=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top}.
-\end{equation}
-$G_C$ records how an image's features co-occur across channels, ignoring where in the frame they appeared, and it keeps much more of the image than an average of the same tokens would (Appendix~\ref{app:coarsegrid}). Appendix~\ref{app:factorize} treats other powers.
 
 \subsection{Second stage \textcolor{red}{Chen: Fine Ranking?}}
 \label{sec:core}
-{\color{blue}
 This stage reads $S(Q,D)$ row by row. For each query patch we find its most similar patch in the candidate image and add up those similarities,
 \begin{equation}\label{eq:stage2}
   \sum_{i=1}^{N_Q} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i
@@ -71,12 +59,3 @@ This stage reads $S(Q,D)$ row by row. For each query patch we find its most simi
   m_i=\max_{j} S(Q,D)_{ij},
 \end{equation}
 the \textsc{MaxSim} interaction of \citet{colbert}, in which each query patch enters with the same importance $w_{Q,i}$ as in stage 1. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). The row maximum keeps which patch matched which, and for that reason it cannot be written as an inner product of two per-image vectors (Appendix~\ref{app:nofactor}); we therefore apply it only to the $K$ shortlisted candidates. A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
-}
-
-For each query patch we find its most similar patch in the candidate image and add up those similarities,
-\begin{equation}
-  s(Q,D)=\sum_{i=1}^{N_Q} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i,
-  \qquad
-  m_i=\max_{j} S_{ij},
-\end{equation}
-the \textsc{MaxSim} interaction of \citet{colbert}, in which each query patch enters with the same importance $w_{Q,i}$ as in stage 1. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
