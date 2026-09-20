@@ -41,7 +41,7 @@ Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
 \begin{equation*}
 \text{R@}K=\frac{1}{|\mathcal{Q}|}\sum_{q\in\mathcal{Q}}\mathbb{1}\big[\exists\,d\in\text{top-}K(q):\ \delta(d,q)\le\epsilon\big],
 \end{equation*}
-with $\delta$ and $\epsilon$ as each benchmark defines them, $25$\,m in UTM on the urban sets and the provided correspondences, frame windows or pose thresholds elsewhere (Appendix~\ref{app:protocol}). R@$5$ and R@$10$ for every table are given in the appendix. Every baseline is scored against the same ground truth, the same query and database lists and the same shortlist depth as ours.
+with $\delta$ and $\epsilon$ as each benchmark defines them, $25$\,m in UTM on the urban sets and the provided correspondences, frame windows or pose thresholds elsewhere (Appendix~\ref{app:protocol}). R@$5$ and R@$10$ for every table are given in the appendix. Every baseline we run is scored against the same ground truth and the same query and database lists as ours, at its own default resolution and, for two-stage methods, its own shortlist depth; published numbers are quoted only where the paper's protocol coincides with this one.
 
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
