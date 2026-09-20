@@ -181,7 +181,7 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 \label{sec:stage1abl}
 \label{sec:compact}
 \begin{table}[H]
-\caption{\textbf{Stage 1 alone on the nine environments.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the DINOv2-G row.}
+\caption{\textbf{Stage 1 alone on the nine environments.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2-G row.}
 \label{tab:coarse}
 \centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
@@ -192,57 +192,52 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 Method   &   Backbone   &   Hawk   &   Laurel   &  17Pl &   Gard   &   Baidu   &   N-Air   &   N-AirR   &   VP-Air   & M-Atl &   mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Trained or fine-tuned, single global descriptor}} \\
-MegaLoc              &    DINOv2-B    &  37.3  &  55.4  &  64.8  &  95.5  &  \underline{79.4}  &  \textbf{85.9}  &  81.7  &  45.6  &  \textbf{40.6}  &  65.1\\
-SAGE                 &    DINOv2-L    &  27.1  &  46.4  &  64.0  &  93.5  &  74.6  &  \textbf{85.9}  &  84.5  &  39.1  &  24.8  &  60.0\\
-BoQ                  &    DINOv2-B    &  33.9  &  60.7  &  64.3  &  \underline{98.0}  &  77.4  &  62.0  &  91.5  &  29.5  &  35.6  &  61.4\\
-CricaVPR             &    DINOv2-B    &  28.0  &  34.8  &  64.0  &  94.0  &  65.8  &  45.1  &  \textbf{100.0}  &  19.9  &  27.7  &  53.3\\
-SALAD                &    DINOv2-B    &  38.1  &  46.4  &  64.3  &  96.5  &  69.9  &  53.5  &  94.4  &  24.0  &  15.8  &  55.9\\
-CliqueMining         &    DINOv2-B    &  22.9  &  38.4  &  65.3  &  93.0  &  69.2  &  62.0  &  84.5  &  22.8  &  35.6  &  54.9\\
-FoL$^{\dagger}$      & DINOv2-L       &  36.4  &  54.5  &  65.3  &  97.0  &  78.9  &  77.5  &  \underline{98.6}  &  46.7  &  25.7  &  64.5\\
-EigenPlaces          &    R50         &  28.8  &  27.7  &  63.8  &  86.0  &  66.6  &  12.7  &  \textbf{100.0}  &  13.1  &  29.7  &  47.6\\
-CosPlace             &    R50         &  33.9  &  25.9  &  63.3  &  84.5  &  47.1  &  0.0  &  76.1  &  10.4  &  32.7  &  41.5\\
-SFRS                 &    VGG16       &  29.7  &  21.4  &  59.1  &  55.0  &  51.3  &  0.0  &  47.9  &  9.4  &  9.9  &  31.5\\
-SelaVPR++$^{\dagger}$  &  DINOv2-L         &  21.2  &  35.7  &  65.0  &  95.5  &  73.6  &  81.7  &  87.3  &  42.7  &  27.7  &  58.9\\
-Patch-NetVLAD        &    VGG16       &  39.0  &  59.8  &  63.1  &  74.5  &  66.8  &  63.4  &  71.8  &  16.0  &  23.8  &  53.1\\
-R2Former$^{\dagger}$ & DeiT-S         &  17.8  &  30.4  &  63.8  &  84.0  &  74.7  &  26.8  &  83.1  &  15.0  &  22.8  &  46.5\\
-VLAD-BuFF            &    DINOv2-B    &  37.3  &  33.9  &  64.5  &  96.5  &  76.4  &  57.8  &  88.7  &  33.3  &  27.7  &  57.4\\
-SuperVLAD            &    DINOv2-B    &  37.3  &  51.8  &  64.8  &  95.5  &  70.3  &  14.1  &  88.7  &  23.8  &  13.9  &  51.1\\
-SelaVPR$^{\dagger}$  & DINOv2-L       &  25.4  &  53.6  &  63.3  &  94.5  &  68.5  &  59.1  &  83.1  &  32.6  &  21.8  &  55.8\\
-MixVPR               &    R50         &  26.3  &  32.1  &  63.8  &  92.0  &  68.4  &  39.4  &  78.9  &  12.9  &  24.8  &  48.7\\
-NetVLAD              &    VGG16       &  38.1  &  42.9  &  63.8  &  66.0  &  57.8  &  9.9  &  39.4  &  14.7  &  26.7  &  39.9\\
+MegaLoc & DINOv2-B & 37.3 & 55.4 & 64.8 & 95.5 & \textbf{79.4} & \textbf{85.9} & 81.7 & 45.6 & \textbf{40.6} & 65.1\\
+SAGE & DINOv2-L & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \textbf{85.9} & 84.5 & 39.1 & 24.8 & 60.0\\
+BoQ & DINOv2-B & 33.9 & 60.7 & 64.3 & \textbf{98.0} & 77.4 & 62.0 & 91.5 & 29.5 & \underline{35.6} & 61.4\\
+CricaVPR & DINOv2-B & 28.0 & 34.8 & 64.0 & 94.0 & 65.8 & 45.1 & \textbf{100.0} & 19.9 & 27.7 & 53.3\\
+SALAD & DINOv2-B & 38.1 & 46.4 & 64.3 & 96.5 & 69.9 & 53.5 & 94.4 & 24.0 & 15.8 & 55.9\\
+CliqueMining & DINOv2-B & 22.9 & 38.4 & \underline{65.3} & 93.0 & 69.2 & 62.0 & 84.5 & 22.8 & \underline{35.6} & 54.9\\
+FoL$^{\dagger}$ & DINOv2-L & 36.4 & 54.5 & \underline{65.3} & \underline{97.0} & \underline{78.9} & 77.5 & \underline{98.6} & 46.7 & 25.7 & 64.5\\
+EigenPlaces & R50 & 28.8 & 27.7 & 63.8 & 86.0 & 66.6 & 12.7 & \textbf{100.0} & 13.1 & 29.7 & 47.6\\
+CosPlace & R50 & 33.9 & 25.9 & 63.3 & 84.5 & 47.1 & 0.0 & 76.1 & 10.4 & 32.7 & 41.5\\
+SFRS & VGG16 & 29.7 & 21.4 & 59.1 & 55.0 & 51.3 & 0.0 & 47.9 & 9.4 & 9.9 & 31.5\\
+SelaVPR++$^{\dagger}$ & DINOv2-L & 21.2 & 35.7 & 65.0 & 95.5 & 73.6 & \underline{81.7} & 87.3 & 42.7 & 27.7 & 58.9\\
+Patch-NetVLAD & VGG16 & 39.0 & 59.8 & 63.1 & 74.5 & 66.8 & 63.4 & 71.8 & 16.0 & 23.8 & 53.1\\
+R2Former$^{\dagger}$ & DeiT-S & 17.8 & 30.4 & 63.8 & 84.0 & 74.7 & 26.8 & 83.1 & 15.0 & 22.8 & 46.5\\
+VLAD-BuFF & DINOv2-B & 37.3 & 33.9 & 64.5 & 96.5 & 76.4 & 57.8 & 88.7 & 33.3 & 27.7 & 57.4\\
+SuperVLAD & DINOv2-B & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 51.1\\
+SelaVPR$^{\dagger}$ & DINOv2-L & 25.4 & 53.6 & 63.3 & 94.5 & 68.5 & 59.1 & 83.1 & 32.6 & 21.8 & 55.8\\
+MixVPR & R50 & 26.3 & 32.1 & 63.8 & 92.0 & 68.4 & 39.4 & 78.9 & 12.9 & 24.8 & 48.7\\
+NetVLAD & VGG16 & 38.1 & 42.9 & 63.8 & 66.0 & 57.8 & 9.9 & 39.4 & 14.7 & 26.7 & 39.9\\
 \midrule
 \multicolumn{12}{l}{\emph{Training-free, frozen backbone, first-order pooling}} \\
-GeM                  &    DINOv2-B    &  54.2  &  56.3  &  63.8  &  90.5  &  48.1  &  66.2  &  85.9  &  37.0  &  20.8  &  58.1\\
-GeM                  &    DINOv2-L    &  56.8  &  50.9  &  64.0  &  89.5  &  46.2  &  81.7  &  85.9  &  42.2  &  23.8  &  60.1\\
-AnyLoc$^{p}$         &    DINOv2-G    &  \underline{65.2}  &  61.6  &  65.0  &  95.5  &  75.2  &  76.1  &  85.9  &  \underline{66.7}$^{d}$  &  34.6  &  \underline{69.5}\\
+GeM & DINOv2-B & 54.2 & 56.3 & 63.8 & 90.5 & 48.1 & 66.2 & 85.9 & 37.0 & 20.8 & 58.1\\
+GeM & DINOv2-L & \underline{56.8} & 50.9 & 64.0 & 89.5 & 46.2 & \underline{81.7} & 85.9 & 42.2 & 23.8 & 60.1\\
+AnyLoc$^{p}$ & DINOv2-G & \textbf{65.2} & \underline{61.6} & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & \underline{66.7}$^{d}$ & 34.6 & \underline{69.5}\\
 \midrule
-\multicolumn{12}{l}{Ours \emph{--- training-free, second-moment descriptor}} \\
-Ours    &    DINOv2-B    &  58.5  &  60.7  &  63.6  &  94.0  &  71.7  &  47.9  &  84.5  &  43.0  &  35.6$^{o}$  &  62.2\\
-Ours    &    DINOv2-L    &  \textbf{69.5}  &  50.9  &  64.0  &  96.0  &  73.8  &  36.6  &  84.5  &  49.5  &  \underline{36.6}$^{o}$  &  62.4\\
-Ours    &    DINOv2-G    &  56.8  &  \underline{67.9}  &  65.0  &  96.5  &  76.7  &  74.7  &  95.8  &  48.2  &  35.6  &  68.6\\
-Ours    &    DINOv3-L    &  59.3  &  \textbf{69.6}  &  64.3  &  95.0  &  78.2  &  42.3  &  87.3  &  56.0  &  31.7$^{o}$  &  64.9\\
-Ours    &    DINOv3-7B    &  52.5  &  60.7  &  \underline{65.5}  &  95.5  &  77.2  &  74.7  &  95.8  &  \textbf{73.4}  &  34.7$^{o}$  &  \textbf{70.0}\\
+\multicolumn{12}{l}{\emph{Ours: training-free, second-moment descriptor}} \\
+Ours v2 & DINOv2-G & \underline{56.8} & \textbf{67.9} & 65.0 & 96.5 & 76.7 & 74.7 & 95.8 & 48.2 & \underline{35.6} & 68.6\\
+Ours v3 & DINOv3-7B & 52.5 & 60.7 & \textbf{65.5} & 95.5 & 77.2 & 74.7 & 95.8 & \textbf{73.4} & 34.7$^{o}$ & \textbf{70.0}\\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
 \begin{table}[H]
-\caption{\textbf{Whitened compression of the second moment, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). Both backbones, one protocol, $1024$ tokens per image. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ (7B) / $96.3$ (L) in any row.}
+\caption{\textbf{Whitened compression of the second moment, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). DINOv3-7B, one protocol, $1024$ tokens per image. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ in any row.}
 \label{tab:prunecomp}
 \centering
 \scriptsize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.02}
-\begin{tabular}{l rrrrr r rrrrr r}
+\begin{tabular}{l rrrrr r}
 \toprule
-& \multicolumn{6}{c}{DINOv3-7B} & \multicolumn{6}{c}{DINOv3-L} \\
-\cmidrule(lr){2-7}\cmidrule(lr){8-13}
-Compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo   &   Amst   &   mean   &   Pitts   &   MSLS   &   Nord   &   Tokyo   &   Amst   &   mean \\
+Compression & Pitts & MSLS & Nord & Tokyo & Amst & mean \\
 \midrule
-raw              &  89.22 &  74.32 &  69.33 &  92.06 &  48.09 &  74.60 &  89.10 &  73.65 &  44.31 &  87.30 &  40.29 &  66.93\\
-WPCA-1024         &  90.45 &  84.86 &  70.78 &  92.70 &  66.04 &  80.97 &  89.99 &  84.05 &  43.98 &  86.67 &  59.55 &  72.85\\
-\textbf{WPCA-2048}    &  91.02 &  86.89 &  75.09 &  94.92 &  66.04$^\dagger$ &  82.79 &  90.64 &  84.19 &  49.75 &  90.79 &  59.55$^\dagger$ &  74.98\\
+raw & 89.22 & 74.32 & 69.33 & 92.06 & 48.09 & 74.60 \\
+WPCA-1024 & 90.45 & 84.86 & 70.78 & 92.70 & 66.04 & 80.97 \\
+\textbf{WPCA-2048} & 91.02 & 86.89 & 75.09 & 94.92 & 66.04$^\dagger$ & 82.79 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -277,9 +272,6 @@ The first stage factorizes because its contraction is bilinear in the two token 
 \toprule
 Backbone & tokens & base & \textsc{selfw} & \textsc{conf} & \textsc{selfw\_conf} & \textsc{mnn} & \textsc{mnn\_selfw} & comb. \\
 \midrule
-DINOv3-L  & keep-$1024$ & \textbf{74.85} & 74.07 & 73.89 & 73.56 & 71.10 & 70.74 & 70.50 \\
-DINOv3-L  & all $2{,}304$ & 72.56 & 74.13 & 72.43 & \textbf{75.42} & 70.15 & 71.48 & 70.81 \\
-\addlinespace[2pt]
 DINOv3-7B & keep-$1024$ & 75.27 & 75.41 & 74.50 & \textbf{76.30} & 74.34 & 70.72 & 70.56 \\
 DINOv3-7B & all $2{,}304$ & 71.68 & 74.90 & 69.04 & \textbf{76.57} & 70.46 & 72.10 & 71.63 \\
 \bottomrule
