@@ -2,12 +2,11 @@
 \subsection{Evaluation protocol}
 \label{app:protocol}
 \begin{table}[H]
-\caption{\textbf{Evaluation protocol, per benchmark.} Every method here---ours and every baseline---is run through this protocol: same splits, ground truth and database. We do not quote each paper's own number, since those use different ground-truth radii and query subsets.}
+\caption{\textbf{Evaluation protocol, per benchmark.} Every method, ours and every baseline, is run through this protocol: same splits, ground truth and database. We do not quote each paper's own number, since those use different ground-truth radii and query subsets.}
 \label{tab:protocol}
 \centering
-{\scriptsize\setlength{\tabcolsep}{3.2pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lll}
+{\footnotesize\setlength{\tabcolsep}{4pt}%
+\begin{tabular}{@{}l p{0.27\textwidth} p{0.40\textwidth}@{}}
 \toprule
 Dataset & Ground truth & Notes \\
 \midrule
@@ -43,7 +42,6 @@ Gardens Point \emph{(day/night)} & official gardens\_gt.npy & database $=$ day-r
 Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower deep-sea site \citep{eiffeltower}, which \citet{anyloc} files under the ridge it sits on \\
 \bottomrule
 \end{tabular}%
-}%
 }
 
 \par\smallskip{\scriptsize\emph{Notes.} Each baseline runs at its own default input resolution. Three conventions on which published numbers split: Nordland uses the lenient $\pm10$-frame ground truth, Tokyo the $315$-query and MSLS the $740$-query subsets, and VP-Air's database carries AnyLoc's $10{,}000$ distractors. Re-ranking uses a pool of $K=\min(1000,|\mathcal{D}|)$ throughout. $^{\ast}$SF-XL val is the design split and appears in no results table.}
@@ -175,9 +173,9 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 
 \FloatBarrier
 
-\subsection{Devices, pruning and compression}
+\subsection{Devices and compression}
 \label{app:coarsegrid}
-\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. Against same-backbone GeM it moves AmsterTime from $28.9$ to $48.9$ and Baidu Mall from $48.1$ to $73.1$ at DINOv2-B, and it leads the degraded and subterranean axes with no re-ranking at all. The grids below cross the devices that act on it with token pruning and whitened compression.
+\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. Against same-backbone GeM it moves AmsterTime from $28.9$ to $48.9$ and Baidu Mall from $48.1$ to $73.1$ at DINOv2-B, and it leads the degraded and subterranean axes with no re-ranking at all. The tables below cover the devices that act on it and its whitened compression.
 
 \label{sec:exp-stage1}
 \label{sec:stage1abl}
@@ -230,33 +228,23 @@ Ours    &    DINOv3-7B    &  52.5  &  60.7  &  \underline{65.5}  &  95.5  &  77.
 \end{table}
 
 \begin{table}[H]
-\caption{\textbf{Token pruning $\times$ whitened compression, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). Both backbones, one protocol; keep-$N$ selects by $w_i$ computed on the full token set. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ (7B) / $96.3$ (L) anywhere in the grid.}
+\caption{\textbf{Whitened compression of the second moment, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). Both backbones, one protocol, $1024$ tokens per image. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ (7B) / $96.3$ (L) in any row.}
 \label{tab:prunecomp}
 \centering
 \scriptsize
-\setlength{\tabcolsep}{3.4pt}
+\setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.02}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lll rrrrr r rrrrr r}
+\begin{tabular}{l rrrrr r rrrrr r}
 \toprule
-& & & \multicolumn{6}{c}{DINOv3-7B} & \multicolumn{6}{c}{DINOv3-L} \\
-\cmidrule(lr){4-9}\cmidrule(lr){10-15}
-Order   &   keep   &   compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo   &   Amst   &   mean   &   Pitts   &   MSLS   &   Nord   &   Tokyo   &   Amst   &   mean \\
+& \multicolumn{6}{c}{DINOv3-7B} & \multicolumn{6}{c}{DINOv3-L} \\
+\cmidrule(lr){2-7}\cmidrule(lr){8-13}
+Compression   &   Pitts   &   MSLS   &   Nord   &   Tokyo   &   Amst   &   mean   &   Pitts   &   MSLS   &   Nord   &   Tokyo   &   Amst   &   mean \\
 \midrule
-2nd   &   full    &   raw              &  88.51 &  70.95 &  63.98 &  93.02 &  51.58 &  73.61 &  88.97 &  69.73 &  43.82 &  91.75 &  44.27 &  67.71\\
-       &             &    WPCA-1024         &  89.61 &  83.78 &  60.14 &  93.65 &  67.67 &  78.97 &  89.67 &  82.57 &  37.47 &  90.48 &  61.49 &  72.34\\
-       &             &    WPCA-2048         &  89.80 &  86.49 &  62.18 &  95.87 &  67.67$^\dagger$ &  80.40 &  89.57 &  84.19 &  42.19 &  92.38 &  61.49$^\dagger$ &  73.96\\
-\addlinespace[2pt]
-2nd   &   1024    &   raw              &  89.22 &  74.32 &  69.33 &  92.06 &  48.09 &  74.60 &  89.10 &  73.65 &  44.31 &  87.30 &  40.29 &  66.93\\
-       &             &    WPCA-1024         &  90.45 &  84.86 &  70.78 &  92.70 &  66.04 &  80.97 &  89.99 &  84.05 &  43.98 &  86.67 &  59.55 &  72.85\\
-       &             &    \textbf{WPCA-2048}    &  91.02 &  86.89 &  75.09 &  94.92 &  66.04$^\dagger$ &  82.79 &  90.64 &  84.19 &  49.75 &  90.79 &  59.55$^\dagger$ &  74.98\\
-\addlinespace[2pt]
-2nd   &   512     &   raw              &  87.71 &  74.05 &  71.17 &  85.40 &  40.62 &  71.79 &  87.29 &  72.43 &  43.58 &  81.90 &  33.23 &  63.69\\
-       &             &    WPCA-1024         &  90.40 &  84.19 &  74.26 &  89.52 &  60.52 &  79.78 &  89.50 &  84.05 &  48.66 &  83.49 &  51.18 &  71.38\\
-       &             &    WPCA-2048         &  91.07 &  86.76 &  78.06 &  93.33 &  60.52$^\dagger$ &  81.95 &  90.60 &  82.97 &  53.81 &  89.21 &  51.18$^\dagger$ &  73.55\\
-\midrule
+raw              &  89.22 &  74.32 &  69.33 &  92.06 &  48.09 &  74.60 &  89.10 &  73.65 &  44.31 &  87.30 &  40.29 &  66.93\\
+WPCA-1024         &  90.45 &  84.86 &  70.78 &  92.70 &  66.04 &  80.97 &  89.99 &  84.05 &  43.98 &  86.67 &  59.55 &  72.85\\
+\textbf{WPCA-2048}    &  91.02 &  86.89 &  75.09 &  94.92 &  66.04$^\dagger$ &  82.79 &  90.64 &  84.19 &  49.75 &  90.79 &  59.55$^\dagger$ &  74.98\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 \FloatBarrier
