@@ -1,32 +1,3 @@
 \label{sec:exp-vs}
 \label{sec:burden}
 \label{sec:scale}
-
-\begin{table}[t]
-\caption{\textbf{Matched-backbone comparison, per dataset.} R@1 on the thirteen benchmarks: \emph{v2} is a DINOv2 backbone, \emph{v3} a DINOv3 one: for the baselines their published backbone and a retraining on DINOv3-7B, for us DINOv2-G and DINOv3-7B, both frozen. \emph{Dim} is the first-stage descriptor dimensionality. Bold $=$ best, \underline{underline} $=$ second, over all rows. Our runs.}
-\label{tab:perdataset}
-\centering
-{\scriptsize\setlength{\tabcolsep}{2.6pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{llccccccccccccc|c}
-\toprule
-Method & Dim & Pitts30k & Tokyo & MSLS & Nord & Baidu & 17Pl & Gard & Hawk & Laurel & N-Air & N-AirR & VP-Air & M-Atl & \emph{mean} \\
-
-\midrule
-\multicolumn{16}{l}{\emph{Trained, at its published backbone (\emph{v2}) and retrained on DINOv3-7B (\emph{v3})}} \\
-SALAD\,\emph{v2} & 8448 & 92.37 & 94.60 & 92.03 & 86.42 & 70.02 & 64.29 & 96.50 & 38.14 & 47.32 & 53.52 & 94.37 & 23.98 & 15.84 & 66.88 \\
-SALAD\,\emph{v3} & 8448 & 93.31 & 97.78 & 89.05 & 90.99 & 64.41 & 62.32 & 95.50 & 44.07 & 61.61 & 78.87 & 87.32 & 42.65 & 19.80 & 71.36 \\
-BoQ\,\emph{v2} & 12288 & \underline{93.76} & 96.51 & \underline{93.78} & 90.60 & 77.36 & 64.29 & 98.00 & 32.20 & 60.71 & 61.97 & 91.55 & 29.45 & \underline{35.64} & 71.22 \\
-BoQ\,\emph{v3} & 12288 & \textbf{94.40} & \textbf{98.73} & 91.89 & 94.34 & 71.66 & 63.79 & \underline{98.50} & 33.05 & 48.21 & \underline{84.51} & \textbf{100.00} & 49.82 & 21.78 & 73.13 \\
-CliqueMining\,\emph{v2} & 8448 & 92.65 & 96.83 & \textbf{94.19} & \underline{95.93} & 69.22 & \underline{65.27} & 93.00 & 22.88 & 38.39 & 61.97 & 84.51 & 22.84 & \underline{35.64} & 67.18 \\
-CliqueMining\,\emph{v3} & 8448 & 93.63 & 98.10 & 93.51 & 94.76 & 68.59 & 61.58 & 95.00 & 22.03 & 37.50 & 76.06 & 90.14 & 47.19 & 13.86 & 68.61 \\
-\midrule
-\multicolumn{16}{l}{\emph{Training-free, deployed configuration}} \\
-Ours\,\emph{v2} & 2048 & 92.49 & 97.46 & 89.05 & 83.03 & \textbf{84.48} & \textbf{65.52} & \textbf{99.50} & \textbf{66.95} & \textbf{83.04} & 83.10 & 94.37 & \underline{72.06} & \textbf{37.62} & \underline{80.67} \\
-Ours\,\emph{v3} & 2048 & 93.74 & \underline{98.41} & 89.32 & \textbf{96.56} & \underline{83.45} & \underline{65.27} & \textbf{99.50} & \underline{61.02} & \underline{75.89} & \textbf{91.55} & \underline{97.18} & \textbf{77.64} & \textbf{37.62} & \textbf{82.09} \\
-\bottomrule
-\end{tabular}%
-}%
-}
-\end{table}
-
