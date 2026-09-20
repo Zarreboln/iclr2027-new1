@@ -9,6 +9,7 @@
 
 \subsection{Setup and protocol}
 \label{sec:setup}
+\paragraph{Datasets.} We report thirteen benchmarks spanning eight settings, from urban streets and a seasonal railway to historical photographs and degraded, subterranean, indoor, aerial and underwater imagery. Table~\ref{tab:datasets} says what each benchmark asks of a place representation; Appendix~\ref{app:protocol} gives the split, the database and query counts, the ground-truth distance and the three conventions on which the published literature disagrees.
 
 \begin{table}[t]
 \caption{\textbf{The thirteen benchmarks.} What each one asks of a place representation. Splits, database and query counts and ground-truth distances are in Appendix~\ref{app:protocol}.}
@@ -39,8 +40,15 @@ Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
 }
 \end{table}
 
+
+
+\paragraph{Implementation details.} One configuration is used for every benchmark. Tokens are the value facet of a frozen DINOv3 ViT-L/16 at block $20$ or ViT-7B/16 at block $32$, taken at $768$px for $2{,}304$ patches and reduced to $C{=}512$ channels by a token-PCA. Weights are $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores $F^{\top}WF$ built from each image's $1024$ highest-weight tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks by \eqref{eq:stage2} at $\theta{=}0.65$, scoring those $1024$ tokens on the urban benchmarks and all $2{,}304$ on the environment sets (Appendix~\ref{app:s2grid}). The DINOv2 rows run at each backbone's native resolution. Nothing is fitted outside $\mathcal{D}$: the token-PCA and the descriptor whitening are estimated from a few hundred of its unlabelled images, neither using a label. All runs are on one H100, and layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
+
+\paragraph{Evaluation metric.} A return counts as correct when it lies within the benchmark's distance of the query's true location, and we report Recall@$1$, the share of queries whose top return is correct.
+
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
+We compare our two-stage pipeline with previous state of the art, both trained and training-free, at each method's own published setting.
 
 \begin{table}[t]
 \caption{\textbf{Training-free methods against ours on all seventeen benchmarks.} Recall@1, one deployed configuration throughout; the urban block re-ranks $1024$ tokens per image, the environment block all $2{,}304$. \emph{Dim} is the first-stage descriptor dimensionality, as evaluated. \textsc{CLS token} is the frozen DINOv2-L class token retrieved by cosine. Baseline cells are published numbers, or our run of the released code where the paper omits the benchmark; ``---'' marks a run not yet complete. $^{d}$AnyLoc's VP-Air figure may omit the $10{,}000$ distractors ours carries. $^{\dagger}$two-stage. Bold $=$ best, \underline{underline} $=$ second, within each block.}
@@ -76,6 +84,8 @@ Ours\,\emph{v3} & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99
 \end{tabular}%
 }
 \end{table}
+
+Table~\ref{tab:breadth} sets ours against every training-free method on all seventeen benchmarks. On the urban block we lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.7$ on Nordland, whose seasonal change is the hardest condition in the block; the two rows differ by $2.8$ mean R@$1$, almost all of it on Nordland, where the frozen features carry the seasonal change on their own. On the nine environments we take the best number on eight and the second on the ninth, for a mean of $76.6$ against $69.5$ for AnyLoc, the strongest training-free alternative, whose descriptor is $24\times$ larger.
 
 \label{sec:ood}
 
@@ -116,8 +126,14 @@ Ours\,\emph{v3} & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} 
 }
 \end{table}
 
+Table~\ref{tab:ood} takes the same configuration off street view, to degraded, subterranean, indoor, aerial and underwater imagery, with every method given a second stage of its own so that two-stage is compared against two-stage. We take the best number on eight of the nine environments and the second on the ninth, for a mean of $76.6$ against $65.1$ for the strongest trained method (MegaLoc). The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns, and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. The two backbones differ by $0.3$ R@1 on the mean, so the result rests on the pipeline rather than on backbone scale.
+
+Figure~\ref{fig:qual} shows one query per benchmark family. Where the trained baselines return a different place under seasonal change, illumination change or a degraded interior, our pipeline returns the correct image at rank one.
+
+
 \subsection{Ablation study}
 \label{sec:swap}
+Table~\ref{tab:w-signal} asks what the weight should read. Every row changes only $w$ and leaves the backbone, the shortlist and the scoring rule untouched. Self-similarity, down-weighted, leads at $93.03$ R@1; class-token attention is the closest alternative at $92.62$; reversing the direction of a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification all sit at or below the unweighted baseline of $87.62$.
 
 \begin{table}[t]
 \caption{\textbf{Which patch-importance signal.} Pitts30k, $6816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ pool. Every row changes only $w$. \emph{Source} names the work the signal is taken from.}

@@ -2,6 +2,8 @@
 \label{sec:burden}
 \label{sec:scale}
 
+To compare aggregation at equal capacity, we retrain three baselines on DINOv3-7B, each under its own published recipe with nothing changed but the backbone. Table~\ref{tab:perdataset} gives Recall@1 on all thirteen benchmarks. Our mean is $82.1$ against $73.1$ for the strongest retrained baseline, we are within one point of the best on nine of the thirteen and ahead by more than $14$ on three, and moving from the DINOv2 backbone to the DINOv3 one raises our mean by $1.4$ with nothing re-fitted but the two unsupervised bases.
+
 \begin{table}[t]
 \caption{\textbf{Matched-backbone comparison, per dataset.} R@1 on the thirteen benchmarks: \emph{v2} is a DINOv2 backbone, \emph{v3} a DINOv3 one: for the baselines their published backbone and a retraining on DINOv3-7B, for us DINOv2-G and DINOv3-7B, both frozen. \emph{Dim} is the first-stage descriptor dimensionality. Bold $=$ best, \underline{underline} $=$ second, over all rows. Our runs.}
 \label{tab:perdataset}
