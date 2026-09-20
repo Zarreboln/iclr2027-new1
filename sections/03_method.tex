@@ -28,7 +28,15 @@ the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We imp
   \qquad
   n_i=\sum_j \hat G_{ij}.
 \end{equation}
-A patch recurring twenty times in its image therefore receives one twentieth of the importance of a patch that occurs once. Appendix~\ref{app:ridge} gives the derivation.
+A patch recurring twenty times in its image therefore receives one twentieth of the importance of a patch that occurs once (Figure~\ref{fig:blocks}). Appendix~\ref{app:ridge} gives the derivation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/blocks_nordland.pdf}
+\caption{Near-duplicate blocks and patch importance on one Nordland pair. Left, the query; right, the database image our pipeline retrieves at rank one. Colours mark blocks of mutually near-duplicate patches under $\hat G$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little importance, the sparse distinctive content receives most. Every benchmark is shown in Appendix~\ref{app:patchvis}.}
+\label{fig:blocks}
+\end{figure}
+
 
 \subsection{First stage \textcolor{red}{Chen: Coarse Ranking?}}
 \label{sec:global}
