@@ -35,7 +35,7 @@ Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
 }
 \end{table}
 
-\paragraph{Implementation details.} One configuration is used for every benchmark: frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}), $2{,}304$ tokens per image, $\tau{=}0.5$, $\theta{=}0.65$, a $2048$-d whitened first-stage descriptor and a shortlist of $K{=}\min(1000,|\mathcal D|)$. Every constant, and the sweep that fixed it, is given in Appendix~\ref{app:impl}.
+\paragraph{Implementation details.} One configuration is used for every benchmark; every constant, and the sweep that fixed it, is given in Appendix~\ref{app:impl}.
 
 \paragraph{Evaluation metric.} We follow the standard VPR protocol and report Recall@$1$, the share of queries whose top-ranked database image lies within the benchmark's own distance of the query's true location,
 \begin{equation*}
