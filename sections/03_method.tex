@@ -7,7 +7,7 @@
 \end{figure}
 \section{Method}
 \label{sec:method}
-Every quantity in the pipeline is read off one table, the patch-to-patch similarity $S(A,B)=AB^{\top}$ between two sets of tokens from a single frozen forward pass. Read on an image against itself, $S(F,F)$, its thresholded row sums give each patch an importance $w$, which discounts repeated content such as sky or a facade of identical windows (\S\ref{sec:feat}). Read on a query against a candidate, $S(Q,D)$, it is reduced in two ways, both using the same $w$: a weighted sum of its squared entries, which factorizes into one descriptor per image and therefore scans the whole database (\S\ref{sec:global}), and a weighted sum of its row maxima, which keeps the patch correspondences, does not factorize, and therefore re-ranks a shortlist (\S\ref{sec:core}). Table~\ref{tab:readings} lists the three readings.
+Every quantity in the pipeline is read off one table, the patch-to-patch similarity $S(A,B)=AB^{\top}$ between two sets of tokens from a single frozen forward pass. Read on an image against itself, $S(F,F)$, its thresholded row sums give each patch an importance $w$, which discounts repeated content such as sky or a facade of identical windows (\S\ref{sec:feat}); this is the patch importance, decided by the image alone. Read on a query against a candidate, $S(Q,D)$, it is reduced in two ways, both using the same $w$, and these are the place evidence, decided by the pair alone: a weighted sum of its squared entries, which factorizes into one descriptor per image and therefore scans the whole database (\S\ref{sec:global}), and a weighted sum of its row maxima, which keeps the patch correspondences, does not factorize, and therefore re-ranks a shortlist (\S\ref{sec:core}). Table~\ref{tab:readings} lists the three readings.
 \begin{center}
 \footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.05}
 \resizebox{\linewidth}{!}{%
@@ -16,8 +16,8 @@ Every quantity in the pipeline is read off one table, the patch-to-patch similar
 Reading of $S$ & Formula & Needs the pair & Used for \\
 \midrule
 $S(F,F)$, count per row above $\tau$ & $w_i=1\big/\sum_j \mathbb 1[S(F,F)_{ij}>\tau]$ & no & patch importance (\S\ref{sec:feat}) \\
-$S(Q,D)$, weighted sum of squares & $\sum_{i,j} w_{Q,i}w_{D,j}S(Q,D)_{ij}^2=\langle G_C(Q),G_C(D)\rangle$ & no & scan $\mathcal D$ to top-$K$ (\S\ref{sec:global}) \\
-$S(Q,D)$, weighted row maxima & $s(Q,D)=\sum_i w_{Q,i}\,\mathbb 1[m_i>\theta]\,m_i$ & yes & re-rank the top-$K$ (\S\ref{sec:core}) \\
+$S(Q,D)$, weighted sum of squares & $\sum_{i,j} w_{Q,i}w_{D,j}S(Q,D)_{ij}^2=\langle G_C(Q),G_C(D)\rangle$ & no & coarse place evidence: scan $\mathcal D$ to top-$K$ (\S\ref{sec:global}) \\
+$S(Q,D)$, weighted row maxima & $s(Q,D)=\sum_i w_{Q,i}\,\mathbb 1[m_i>\theta]\,m_i$ & yes & fine place evidence: re-rank the top-$K$ (\S\ref{sec:core}) \\
 \bottomrule
 \end{tabular}}
 \captionof{table}{The three readings of the similarity table. ``Needs the pair'' marks the reading that cannot be precomputed per image.}
@@ -36,7 +36,7 @@ Sky, pavement and a facade of identical windows fill an image with near-copies o
   \qquad\text{i.e.}\qquad
   \sum_j S(F,F)_{ij}\,w_j = 1\ \ \text{for all } i,
 \end{equation}
-the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat S_{ij}=\mathbb 1[\,S(F,F)_{ij}>\tau\,]$, which counts near-copies rather than grading them. The condition then admits a closed-form solution,
+the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat S_{ij}=\mathbb 1[\,S(F,F)_{ij}>\tau\,]$, which counts near-copies rather than grading them. When repeated content forms blocks of mutual near-duplicates, the block model of Appendix~\ref{app:ridge}, the condition has the closed-form solution
 \begin{equation}\label{eq:weight}
   \hat S\,\mathbf w=\mathbf 1
   \quad\Longrightarrow\quad
@@ -44,7 +44,7 @@ the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We imp
   \qquad
   n_i=\sum_j \mathbb 1[\,S(F,F)_{ij}>\tau\,].
 \end{equation}
-A patch recurring twenty times in its image therefore receives one twentieth of the importance of a patch that occurs once (Figure~\ref{fig:blocks}). Appendix~\ref{app:ridge} gives the derivation.
+and we use this inverse multiplicity as the importance throughout. A patch recurring twenty times in its image therefore receives one twentieth of the importance of a patch that occurs once (Figure~\ref{fig:blocks}). Appendix~\ref{app:ridge} gives the derivation.
 
 \begin{figure}[t]
 \centering
