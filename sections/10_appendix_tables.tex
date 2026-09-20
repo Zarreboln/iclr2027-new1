@@ -111,7 +111,7 @@ $\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0
 \par\smallskip{\scriptsize\emph{Notes.} That last figure is the ceiling---no gate can retrieve what the shortlist does not contain---so the best column converts $80.46$ into $90.76$ of an available $98.17$. \textbf{The curve is not monotone}: it falls from $86.95$ at the open gate to a minimum of $81.96$ at $0.40$ before rising to $90.76$ at $0.65$. A gate in the middle of the similarity distribution is worse than no gate at all, because it discards moderate matches while keeping neither the confident ones alone nor all of them. The second-order instance has the same dip at the same place ($82.17$ at $0.40$). Our runs (ND21).}
 \end{table}
 
-\section{The weight}
+\section{Patch importance}
 
 \FloatBarrier
 
@@ -138,7 +138,7 @@ It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-
   \qquad\text{and}\qquad
   w_i=\frac{1}{n_i}\quad\text{with}\quad n_i=\sum_{j=1}^{N}\hat G_{ij} .
 \end{equation}
-Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a weight built on them needs a larger exponent to match.
+Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and an importance built on them needs a larger exponent to match.
 
 \FloatBarrier
 
@@ -249,12 +249,12 @@ WPCA-1024         &  90.45 &  84.86 &  70.78 &  92.70 &  66.04 &  80.97 &  89.99
 
 \FloatBarrier
 
-\subsection{What the weight does to the spectrum}
+\subsection{What patch importance does to the spectrum}
 \label{app:patchvis-main}
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.50\textwidth]{figures/patch_cov.pdf}
-\caption{\textbf{What the weight does to the descriptor.} One query and the database image our first stage retrieves for it. The right column reads $F^{\top}F$ and $G_C{=}F^{\top}WF$ as a distribution of the image's energy over directions: keeping the $k$ strongest directions captures the plotted share of the total, so a curve that rises early is one where a few directions carry the image. An element covering much of the frame arrives as many near-identical patches pointing the same way and concentrates the unweighted moment; the weight spreads it back, by $6.9$ and $8.0$ points averaged over the first $32$ directions.}
+\caption{\textbf{What patch importance does to the descriptor.} One query and the database image our first stage retrieves for it. The right column reads $F^{\top}F$ and $G_C{=}F^{\top}WF$ as a distribution of the image's energy over directions: keeping the $k$ strongest directions captures the plotted share of the total, so a curve that rises early is one where a few directions carry the image. An element covering much of the frame arrives as many near-identical patches pointing the same way and concentrates the unweighted moment; the importance spreads it back, by $6.9$ and $8.0$ points averaged over the first $32$ directions.}
 \label{fig:patchcov}
 \end{figure}
 

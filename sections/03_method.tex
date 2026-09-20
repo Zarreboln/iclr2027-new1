@@ -2,21 +2,21 @@
 \centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
 \includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
-\caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
+\caption{\textbf{One frozen forward, one patch importance, two reductions.} Thresholding and row-summing $G{=}FF^{\top}$ gives the patch importance $w_i{=}1/n_i$, which both stages read. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
 \label{fig:method}
 \end{figure}
 \section{Method}
 \label{sec:method}
-As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one frozen forward pass per image and builds everything from the patch tokens it returns. A single weight, computed from each image's own token self-similarity, discounts repeated content such as sky or a facade of identical windows, and is used by both stages and by the store (\S\ref{sec:feat}). Stage 1 then represents each image by one global descriptor, obtained by pooling its tokens into their weighted second moment, and scans the whole database with it to return a shortlist (\S\ref{sec:global}). Stage 2 re-ranks that shortlist by explicit patch-to-patch \textsc{MaxSim} matching, with patches that have no counterpart in the other image gated out (\S\ref{sec:core}).
+As illustrated in Figure~\ref{fig:method}, the proposed pipeline reads one frozen forward pass per image and builds everything from the patch tokens it returns. A single per-patch importance $w$, computed from each image's own token self-similarity, discounts repeated content such as sky or a facade of identical windows, and is read by both stages (\S\ref{sec:feat}). Stage 1 then represents each image by one global descriptor, obtained by pooling its tokens into their weighted second moment, and scans the whole database with it to return a shortlist (\S\ref{sec:global}). Stage 2 re-ranks that shortlist by explicit patch-to-patch \textsc{MaxSim} matching, with patches that have no counterpart in the other image gated out (\S\ref{sec:core}).
 
 
 \subsection{Preliminaries}
 \label{sec:prelim}
 A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_d)\}$ of images with known coordinates, and the coordinates of the retrieved image are returned as the query's. Every image is a grid of $N$ patches, $I=[\,p_1,\dots,p_N\,]$, and passes once through a frozen DINOv2/DINOv3 backbone, from which we keep the value facet of one block, the output of its value projection \citep{vitfacets,effovpr}. A PCA fitted on database tokens reduces every token to $C{=}512$ channels; tokens are $\ell_2$-normalized. An image is therefore a matrix of $N$ unit vectors, $F=[\,\mathbf f_1,\dots,\mathbf f_N\,]^{\top}\in\mathbb R^{N\times C}$, and two tables of similarities follow from it: $G=FF^{\top}$ inside one image, with $G_{ij}=\mathbf f_i^{\top}\mathbf f_j$ the similarity between two of its patches, and $S=QD^{\top}$ between a query and a candidate, with $S_{ij}=\mathbf q_i^{\top}\mathbf d_j$. Both stages read nothing but these two tables. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
 
-\subsection{Self-similarity weight}
+\subsection{Patch importance from self-similarity}
 \label{sec:feat}
-Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch is weighted before either stage uses it. For token $i$, we want the total weight of the tokens similar to it to be about constant:
+Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch receives an importance $w_i$ before either stage uses it. For token $i$, we want the total importance of the tokens similar to it to be about constant:
 \begin{equation}\label{eq:demo}
   \sum_j G_{ij}\,w_j = 1,
   \qquad\text{in matrix form}\qquad
@@ -28,11 +28,11 @@ the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We imp
   \qquad
   n_i=\sum_j \hat G_{ij}.
 \end{equation}
-A patch recurring twenty times in its image therefore receives one twentieth of the weight of a patch that occurs once. Appendix~\ref{app:ridge} gives the derivation.
+A patch recurring twenty times in its image therefore receives one twentieth of the importance of a patch that occurs once. Appendix~\ref{app:ridge} gives the derivation.
 
 \subsection{First stage \textcolor{red}{Chen: Coarse Ranking?}}
 \label{sec:global}
-Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it as the weighted second moment of the patch features. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
+Stage 1 needs a fixed-size descriptor for each image so that all database images can be searched efficiently. We obtain it as the second moment of the patch features, each weighted by its importance $w_i$. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
 \begin{equation}\label{eq:so-deriv}
   \sum_{i,j} w_{Q,i}\,w_{D,j}\,\big(\mathbf q_i^{\top}\mathbf d_j\big)^{2}
   =\big\langle\, G_C(Q),\ G_C(D)\,\big\rangle,
@@ -49,4 +49,4 @@ For each query patch we find its most similar patch in the candidate image and a
   \qquad
   m_i=\max_{j} S_{ij},
 \end{equation}
-the \textsc{MaxSim} interaction of \citet{colbert}, weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
+the \textsc{MaxSim} interaction of \citet{colbert}, in which each query patch enters with the same importance $w_{Q,i}$ as in stage 1. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
