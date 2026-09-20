@@ -183,7 +183,7 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \end{tabular}%
 }\end{table}
 
-\paragraph{Our second stage on other methods' first stages.} Table~\ref{tab:stage2swap} isolates the re-ranking rule by dropping it into other pipelines: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes. The upper block replaces the re-ranker of the four methods that ship one, and all four improve on the nine-environment mean, FoL by $+5.5$, R2Former $+5.6$, SelaVPR $+9.7$ and SelaVPR++ $+12.5$ R@1, better on $28$ of the $36$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
+\paragraph{Our second stage on other methods' first stages.} Table~\ref{tab:stage2swap} isolates the re-ranking rule by dropping it into other pipelines: each method keeps its resolution and shortlist, and only the scoring rule changes. The upper block replaces the re-ranker of the four methods that ship one, and all four improve on the nine-environment mean, FoL by $+5.5$, R2Former $+5.6$, SelaVPR $+9.7$ and SelaVPR++ $+12.5$ R@1, better on $28$ of the $36$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
 
 \begin{table}[tp]
 \caption{Our second stage plugged into other pipelines on the nine environments. Each figure is the method's published result, after its own re-ranker in the upper block and from its global descriptor in the lower; the subscript is the change from replacing or adding our re-ranking rule \eqref{eq:stage2}, with the method's backbone, resolution and shortlist left unchanged.}
@@ -191,27 +191,27 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \centering
 {\scriptsize\setlength{\tabcolsep}{2pt}%
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{llccccccccc|M}
+\begin{tabular}{lccccccccc|M}
 \toprule
 & & Degr.\ & SubT & \multicolumn{3}{c}{Indoor} & \multicolumn{3}{c}{Aerial} & UW & \\
-\cmidrule(lr){3-11}
-Method   &   Backbone   &   Hawk   &   Laurel   &  17Pl &   Gard   &   Baidu   &   N-Air   &   N-AirR   &   VP-Air   & M-Atl &   mean \\
+\cmidrule(lr){2-10}
+Method & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
 \midrule
-\multicolumn{12}{l}{\emph{Replacing each method's own re-ranking stage}} \\
-FoL            & DINOv2-L   & 36.4\dlt{+14.4} & 54.5\dlt{+18.7} & 65.3\dlt{-0.5} & 97.0\dlt{+1.0} & 78.9\dlt{+2.4} & 77.5\dlt{+4.2} & 98.6\dlt{-4.2} & 46.7\dlt{+10.1} & 25.7\dlt{+3.0} & 64.5\dltg{+5.5} \\
-SelaVPR++      & DINOv2-L   & 21.2\dlt{+44.9} & 35.7\dlt{+39.3} & 65.0\dlt{-0.0} & 95.5\dlt{+3.0} & 73.6\dlt{+8.0} & 81.7\dlt{-5.6} & 87.3\dlt{+2.8} & 42.7\dlt{+25.0} & 27.7\dlt{-4.9} & 58.9\dltg{+12.5} \\
-SelaVPR        & DINOv2-L   & 25.4\dlt{+38.2} & 53.6\dlt{+13.4} & 63.3\dlt{+2.5} & 94.5\dlt{+1.5} & 68.5\dlt{+7.5} & 59.1\dlt{+1.5} & 83.1\dlt{+1.4} & 32.6\dlt{+23.5} & 21.8\dlt{-2.0} & 55.8\dltg{+9.7} \\
-R2Former       & DeiT-S     & 17.8\dlt{+22.9} & 30.4\dlt{+16.1} & 63.8\dlt{+0.7} & 84.0\dlt{-3.5} & 74.7\dlt{+0.6} & 26.8\dlt{+5.6} & 83.1\dlt{-1.4} & 15.0\dlt{+2.8} & 22.8\dlt{+6.9} & 46.5\dltg{+5.6} \\
+\multicolumn{11}{l}{\emph{Replacing each method's own re-ranking stage}} \\
+FoL & 36.4\dlt{+14.4} & 54.5\dlt{+18.7} & 65.3\dlt{-0.5} & 97.0\dlt{+1.0} & 78.9\dlt{+2.4} & 77.5\dlt{+4.2} & 98.6\dlt{-4.2} & 46.7\dlt{+10.1} & 25.7\dlt{+3.0} & 64.5\dltg{+5.5} \\
+SelaVPR++ & 21.2\dlt{+44.9} & 35.7\dlt{+39.3} & 65.0\dlt{-0.0} & 95.5\dlt{+3.0} & 73.6\dlt{+8.0} & 81.7\dlt{-5.6} & 87.3\dlt{+2.8} & 42.7\dlt{+25.0} & 27.7\dlt{-4.9} & 58.9\dltg{+12.5} \\
+SelaVPR & 25.4\dlt{+38.2} & 53.6\dlt{+13.4} & 63.3\dlt{+2.5} & 94.5\dlt{+1.5} & 68.5\dlt{+7.5} & 59.1\dlt{+1.5} & 83.1\dlt{+1.4} & 32.6\dlt{+23.5} & 21.8\dlt{-2.0} & 55.8\dltg{+9.7} \\
+R2Former & 17.8\dlt{+22.9} & 30.4\dlt{+16.1} & 63.8\dlt{+0.7} & 84.0\dlt{-3.5} & 74.7\dlt{+0.6} & 26.8\dlt{+5.6} & 83.1\dlt{-1.4} & 15.0\dlt{+2.8} & 22.8\dlt{+6.9} & 46.5\dltg{+5.6} \\
 \midrule
-\multicolumn{12}{l}{\emph{Added to methods that provide no re-ranking stage}} \\
-SALAD                & DINOv2-B   & 38.1\dlt{+24.6} & 46.4\dlt{+25.9} & 64.3\dlt{+1.0} & 96.5\dlt{+3.0} & 69.9\dlt{+12.1} & 53.5\dlt{+29.6} & 94.4\dlt{+1.4} & 24.0\dlt{+22.1} & 15.8\dlt{+14.9} & 55.9\dltg{+14.9} \\
-CricaVPR$^\ddag$     & DINOv2-B   & 28.0\dlt{+31.4} & 34.8\dlt{+32.1} & 64.0\dlt{+1.5} & 94.0\dlt{+4.5} & 65.8\dlt{+18.9} & 45.1\dlt{+18.3} & 100.0\dlt{-8.5} & 19.9\dlt{+22.8} & 27.7\dlt{+8.9} & 53.3\dltg{+14.4} \\
-BoQ                  & DINOv2-B   & 33.9\dlt{+33.1} & 60.7\dlt{+16.1} & 64.3\dlt{+0.7} & 98.0\dlt{+1.0} & 77.4\dlt{+6.5} & 62.0\dlt{+31.0} & 91.5\dlt{-8.5} & 29.5\dlt{+24.9} & 35.6\dlt{-5.0} & 61.4\dltg{+11.1} \\
-CliqueMining         & DINOv2-B   & 22.9\dlt{+39.8} & 38.4\dlt{+35.7} & 65.3\dlt{-0.2} & 93.0\dlt{+6.0} & 69.1\dlt{+13.8} & 62.0\dlt{+8.5} & 84.5\dlt{+11.3} & 22.9\dlt{+26.2} & 35.6\dlt{-1.0} & 54.9\dltg{+15.6} \\
-SuperVLAD$^\ddag$    & DINOv2-B   & 37.3\dlt{+23.7} & 51.8\dlt{+21.4} & 64.8\dlt{+1.5} & 95.5\dlt{+3.5} & 70.3\dlt{+15.1} & 14.1\dlt{+60.6} & 88.7\dlt{-9.9} & 23.8\dlt{+23.4} & 13.9\dlt{+20.8} & 51.1\dltg{+17.8} \\
-MegaLoc              & DINOv2-B   & 37.3\dlt{+33.1} & 55.4\dlt{+17.0} & 64.8\dlt{+1.2} & 95.5\dlt{+3.0} & 79.4\dlt{+5.7} & 85.9\dlt{+1.4} & 81.7\dlt{+9.9} & 45.6\dlt{+16.3} & 40.6\dlt{-5.9} & 65.1\dltg{+9.1} \\
-SAGE$^\ddag$         & DINOv2-L   & 27.1\dlt{+37.3} & 46.4\dlt{+26.8} & 64.0\dlt{+0.5} & 93.5\dlt{+5.0} & 74.6\dlt{+6.7} & 85.9\dlt{-9.9} & 84.5\dlt{+5.6} & 39.1\dlt{+26.3} & 24.8\dlt{-2.0} & 60.0\dltg{+10.7} \\
-VLAD-BuFF            & DINOv2-B   & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} & 76.4\dlt{+8.1} & 57.7\dlt{+9.9} & 88.7\dlt{+5.6} & 33.3\dlt{+20.1} & 27.7\dlt{+7.9} & 57.4\dltg{+12.5} \\
+\multicolumn{11}{l}{\emph{Added to methods that provide no re-ranking stage}} \\
+SALAD & 38.1\dlt{+24.6} & 46.4\dlt{+25.9} & 64.3\dlt{+1.0} & 96.5\dlt{+3.0} & 69.9\dlt{+12.1} & 53.5\dlt{+29.6} & 94.4\dlt{+1.4} & 24.0\dlt{+22.1} & 15.8\dlt{+14.9} & 55.9\dltg{+14.9} \\
+CricaVPR$^\ddag$ & 28.0\dlt{+31.4} & 34.8\dlt{+32.1} & 64.0\dlt{+1.5} & 94.0\dlt{+4.5} & 65.8\dlt{+18.9} & 45.1\dlt{+18.3} & 100.0\dlt{-8.5} & 19.9\dlt{+22.8} & 27.7\dlt{+8.9} & 53.3\dltg{+14.4} \\
+BoQ & 33.9\dlt{+33.1} & 60.7\dlt{+16.1} & 64.3\dlt{+0.7} & 98.0\dlt{+1.0} & 77.4\dlt{+6.5} & 62.0\dlt{+31.0} & 91.5\dlt{-8.5} & 29.5\dlt{+24.9} & 35.6\dlt{-5.0} & 61.4\dltg{+11.1} \\
+CliqueMining & 22.9\dlt{+39.8} & 38.4\dlt{+35.7} & 65.3\dlt{-0.2} & 93.0\dlt{+6.0} & 69.1\dlt{+13.8} & 62.0\dlt{+8.5} & 84.5\dlt{+11.3} & 22.9\dlt{+26.2} & 35.6\dlt{-1.0} & 54.9\dltg{+15.6} \\
+SuperVLAD$^\ddag$ & 37.3\dlt{+23.7} & 51.8\dlt{+21.4} & 64.8\dlt{+1.5} & 95.5\dlt{+3.5} & 70.3\dlt{+15.1} & 14.1\dlt{+60.6} & 88.7\dlt{-9.9} & 23.8\dlt{+23.4} & 13.9\dlt{+20.8} & 51.1\dltg{+17.8} \\
+MegaLoc & 37.3\dlt{+33.1} & 55.4\dlt{+17.0} & 64.8\dlt{+1.2} & 95.5\dlt{+3.0} & 79.4\dlt{+5.7} & 85.9\dlt{+1.4} & 81.7\dlt{+9.9} & 45.6\dlt{+16.3} & 40.6\dlt{-5.9} & 65.1\dltg{+9.1} \\
+SAGE$^\ddag$ & 27.1\dlt{+37.3} & 46.4\dlt{+26.8} & 64.0\dlt{+0.5} & 93.5\dlt{+5.0} & 74.6\dlt{+6.7} & 85.9\dlt{-9.9} & 84.5\dlt{+5.6} & 39.1\dlt{+26.3} & 24.8\dlt{-2.0} & 60.0\dltg{+10.7} \\
+VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} & 76.4\dlt{+8.1} & 57.7\dlt{+9.9} & 88.7\dlt{+5.6} & 33.3\dlt{+20.1} & 27.7\dlt{+7.9} & 57.4\dltg{+12.5} \\
 \bottomrule
 \end{tabular}%
 }%
