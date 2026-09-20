@@ -118,7 +118,7 @@ $\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0
 \subsection{Derivation of the closed form}
 \label{app:ridge}
 
-Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $G=FF^{\top}$. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $Gw=\mathbf 1$. With $N\gg C$ the Gram matrix has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat G=\mathbb 1[\,G>\tau\,]$ instead.
+Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $G=FF^{\top}$, the within-image table $S(F,F)$ of \S\ref{sec:prelim}. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $Gw=\mathbf 1$. With $N\gg C$ the Gram matrix has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat G=\mathbb 1[\,G>\tau\,]$ instead.
 
 Under the burst model an element seen $n$ times yields $n$ patches near-duplicate of one another and of nothing else, so $\hat G$ is block diagonal with one all-ones block per element: $\hat G=\bigoplus_{k=1}^{m}J_{n_k}$ with $J_n$ the $n\times n$ all-ones matrix. The system decouples, and block $k$ reads
 \begin{equation}\label{eq:block}
