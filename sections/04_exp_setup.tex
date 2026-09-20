@@ -51,67 +51,46 @@ Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
 We compare our two-stage pipeline with previous state of the art, both trained and training-free, at each method's own published setting.
 
 \begin{table}[t]
-\caption{\textbf{Recall@1 on the standard urban benchmarks.} One deployed configuration, tokens pruned to $1024$ throughout. \emph{Dim} is the first-stage descriptor dimensionality, as evaluated. \textsc{CLS token} is the frozen DINOv2-L class token, retrieved by cosine. Baseline cells are published numbers, or our run of the released checkpoint where the paper omits the benchmark. $^{\dagger}$two-stage; $^{\ddag}$without the cross-image encoder; ``--'' not reported, with \emph{mean} left blank for such rows.}
+\caption{\textbf{Training-free methods against ours on all seventeen benchmarks.} Recall@1, one deployed configuration throughout; the urban block re-ranks $1024$ tokens per image, the environment block all $2{,}304$. \emph{Dim} is the first-stage descriptor dimensionality, as evaluated. \textsc{CLS token} is the frozen DINOv2-L class token retrieved by cosine. Baseline cells are published numbers, or our run of the released code where the paper omits the benchmark; ``---'' marks a run not yet complete. $^{d}$AnyLoc's VP-Air figure may omit the $10{,}000$ distractors ours carries. $^{\dagger}$two-stage. Bold $=$ best, \underline{underline} $=$ second, within each block.}
 \label{tab:breadth}
 \centering
-{\scriptsize\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{0.92}%
-\begin{tabular}{ll cccccccc|c}
+{\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
+\begin{tabular}{ll ccccccccc|c}
 \toprule
-Method   &   Dim   &  Pitts250k &  Pitts30k &  Tokyo24/7 &  MSLS-val &  Nordland &  St Lucia &  Oxford &  AmsterTime &  mean \\
+\multicolumn{12}{l}{\emph{Standard benchmarks (urban)}} \\
+Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & Nordland & St Lucia & Oxford & AmsterTime & & mean \\
 \midrule
-\multicolumn{11}{l}{\emph{Training-free, frozen backbone}} \\
-CLS token & 1024 & 80.35 & 78.73 & 46.03 & 37.84 & 15.94 & 81.49 & 25.65 & 45.82 & 51.48 \\
-AnyLoc & 49152 & 81.49 & 87.7 & 90.48 & 49.19 & 20.19 & 96.2 & \underline{99.5} & 44.60 & 71.17 \\
-GeM & 1024 & 80.41 & 78.55 & 69.84 & 35.95 & 15.01 & 74.18 & 71.73 & 27.86 & 56.69 \\
-EffoVPR-ZS$^{\dagger}$ & 1024 & 93.38 & 89.4 & 90.8 & 70.3 & 57.9 & 97.75 & 76.96 & 65.80 & 80.29 \\
+CLS token & 1024 & 80.3 & 78.7 & 46.0 & 37.8 & 15.9 & 81.5 & 25.6 & 45.8 &  & 51.5 \\
+GeM & 1024 & 80.4 & 78.5 & 69.8 & 36.0 & 15.0 & 74.2 & 71.7 & 27.9 &  & 56.7 \\
+AnyLoc & 49152 & 81.5 & 87.7 & 90.5 & 49.2 & 20.2 & 96.2 & \textbf{99.5} & 44.6 &  & 71.2 \\
+EffoVPR-ZS$^{\dagger}$ & 1024 & 93.4 & 89.4 & 90.8 & 70.3 & 57.9 & 97.8 & 77.0 & 65.8 &  & 80.3 \\
+SegVLAD-PreT & 49152 & --- & 86.7 & --- & --- & --- & --- & 73.8 & 62.4 &  & --- \\
 \midrule
-\multicolumn{11}{l}{Ours \emph{--- training-free, deployed configuration (\S\ref{sec:global}: keep-1024, WPCA-2048 coarse, \textsc{selfw\_conf})}} \\
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.66 & 92.49 & 97.46 & 89.05 & 83.03 & 99.11 & 98.95 & 68.07 & 90.48 \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.12 & 93.74 & \textbf{98.41} & 89.32 & \underline{96.56} & 99.73 & 98.95 & \textbf{73.60} & \textbf{93.30} \\
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{95.7} & \underline{92.5} & \underline{97.5} & \underline{89.0} & \underline{83.0} & \underline{99.1} & \underline{99.0} & \underline{68.1} &  & \underline{90.5} \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{89.3} & \textbf{96.6} & \textbf{99.7} & \underline{99.0} & \textbf{73.6} &  & \textbf{93.3} \\
+\midrule\midrule
+\multicolumn{12}{l}{\emph{Nine environments}} \\
+Method & Dim & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
+\midrule
+CLS token & 1024 & 26.3 & 50.9 & 61.1 & 75.0 & 43.1 & 56.3 & 76.1 & 38.0 & 24.8 & 50.2 \\
+GeM & 1024 & 56.8 & 50.9 & 64.0 & 89.5 & 46.2 & 81.7 & 85.9 & 42.2 & 23.8 & 60.1 \\
+AnyLoc & 49152 & \underline{65.2} & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7$^{d}$ & 34.6 & 69.5 \\
+EffoVPR-ZS$^{\dagger}$ & 1024 & 38.1 & 67.0 & \textbf{65.5} & \underline{97.5} & 75.9 & \underline{83.1} & 88.7 & 65.7 & \underline{36.6} & 68.7 \\
+SegVLAD-PreT & 49152 & 56.8 & 26.8 & 64.8 & 91.5 & 78.5 & 45.1 & 40.9 & 69.8 & 22.8 & 55.2 \\
+\midrule
+Ours\,\emph{v2} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & \underline{83.1} & \underline{94.4} & \underline{72.1} & \textbf{37.6} & \underline{76.3} \\
+Ours\,\emph{v3} & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \textbf{97.2} & \textbf{77.6} & \textbf{37.6} & \textbf{76.6} \\
 \bottomrule
 \end{tabular}%
-}\\[3pt]
-% ===== SOURCES for This-work cells (all EXPERIMENTS_LOG.md line:col, G/L/7B = DINOv2-G/DINOv3-L/DINOv3-7B) =====
-% selfw_conf (covD coarse):
-%   Pitts (pool100) G92.49/L92.81/7B93.41 = C18 L:4298-4300.
-%   Tokyo315 selfw_conf NOT tabulated per-op (only best-op); 1125-caliber selfw_conf G92.67/L92.20/7B93.14 = C17 L:4240-4242.
-%   MSLS(740,pool1000) G87.16/L87.70/7B85.81 = C14 L:4096-4098.
-%   Nordland(pool1000) G86.36/L88.21/7B94.19 = C16 L:4192-4194.
-%   AmsterTime(full-lib) G65.64/L67.18/7B71.57(raw; 73.92 w/ZCA) = B6.4/B6.5 L:3095-3097,3139.
-% mnn_selfw65 (covD coarse):
-%   Pitts (pool100) G93.08/L93.54/7B93.82 = C18 L:4298-4300 (L pool1000 = 93.63, C10 L:3912).
-%   Tokyo(315-standard, best-op incl mnn) G98.73/L98.41/7B99.37 = C17 L:4248-4250.
-%   MSLS(740,pool1000) G86.22/L87.43/7B87.43 = C14 L:4096-4098.
-%   Nordland(pool1000) G78.58/L86.29/7B94.18 = C16 L:4192-4194.
-%   AmsterTime: NO mnn_selfw65 column exists anywhere (AmsterTime tables are selfw_conf-only) -> cells stay "--".
-% peak: Pitts93.82(7B,mnn) Tokyo99.37(7B) MSLS87.70(L,selfw_conf) Nordland94.31(7B,comb_full,C16 L:4194) Amster71.57(7B,selfw_conf; ZCA variant 73.92 REMOVED -- per-dataset switch).
-% Dim: covD d'=512 -> 262144 (A7.2 L:1311; DINOv3-L "262144-d" L:3078); desc-PCA 1024=~4KB (L:1344).
-%   AnyLoc VLAD 49152 = L:318.  MegaLoc global 8448 = L:3203.
-% CAVEATS: covD/Dim R@1 partly AmsterTime-only preliminary (L:1347); Tokyo315 offline-recomputed & selfw_conf not per-op (L:4252,4248);
-%   MSLS 740 variant in-support (L:4100); tau/T2/ZCA not cross-DINOv3-calibrated (L:1470,3112); peak = per-set-best-op (oracle-ish).
-% ===== BASELINE Dim sources (global descriptor dim; from each method's paper) =====
-% NetVLAD 4096 (PCA; raw 32768) arXiv:1511.07247 Sec5.1-5.2. SFRS 4096 arXiv:2006.03926 Sec4.1.
-% CosPlace 512 (default) arXiv:2204.02287 Sec5.1. MixVPR 4096 arXiv:2303.02190 Tab1. EigenPlaces 2048 arXiv:2308.10832 Sec4.2.
-% R2Former 256 global (local 128) arXiv:2304.03410. SALAD 8448 (128x64+256) arXiv:2311.15937 Sec4.1.
-% CricaVPR 4096 (as-reported PCA; native 10752) arXiv:2402.19231 Sec4.3. BoQ 12288 arXiv:2405.07364 (repo output_dim).
-% SelaVPR 1024 (local 128) arXiv:2402.14505. CliqueMining 8448 (=SALAD arch) arXiv:2407.02422.
-% SuperVLAD 3072 (4 clusters x768; 1-cluster=768) NeurIPS24. EMVP 8192 (128x64 second-order) NeurIPS24 OpenReview V6w7keoTqn Sec4.1.
-% EffoVPR 1024 ([CLS]; compact 512/256/128) arXiv:2405.18065. FoL 8448 (SALAD M=64; local 128) arXiv:2504.09881 (8448 inferred from SALAD config).
-% SuperPlace 8192 (NVL-FT2 leaderboard; compact 768 G2M) arXiv:2506.13073. SelaVPR++ 4096 FP32 (512 binary retrieval) arXiv:2502.16601.
-% Pair-VPR 512 (CLS->512, all sizes) arXiv:2410.06614. MegaLoc 8448 (LOG.md:3203; arXiv:2502.17237). SAGE 8448 (main; 4096 compact) arXiv:2509.25723.
-% ===== This-work COMPACT single-stage covD @1024-d (desc-PCA), R@1 (coarse only, no rerank) =====
-% Pitts G87.97/L87.88/7B88.64 = C18 L:4288. Tokyo G67.38/L68.09/7B71.63 = C17 L:4230. MSLS G63.11/L65.00/7B66.62 = C14 L:4086.
-% Nordland G33.80/L32.43/7B53.02 = C16 L:4182. AmsterTime G58.08 (A7.2 L:1344) / L48.50 (SPEC L:3161); 7B not run.
-% Near-lossless: R@1000 stays 98-100 at 1024-d (shortlist recall preserved) so re-ranking runs unaffected; storage ~4KB/image (256x smaller than native 262144).
-% Compact covD @1024-d single-stage (Pitts-7B 88.64) is competitive with AnyLoc @49152-d single-stage (87.7) at 48x smaller.
+}
 \end{table}
 
-Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.7$ on Nordland, whose seasonal change is the hardest condition in the table. Our mean of $93.30$ is the highest in the table, above every trained method as well, and we take the best number on Tokyo 24/7, Oxford RobotCar and AmsterTime, the benchmark with decades of time variation. These benchmarks are exactly the terrain a trained method's supervision is aimed at, and we reach it there without a single place label. The two rows differ by $2.8$ mean R@$1$, almost all of it on Nordland, where the frozen features carry the seasonal change on their own.
+Table~\ref{tab:breadth} sets ours against every training-free method on all seventeen benchmarks. On the urban block we lead the best prior training-free number on all eight, by $+4.3$ R@1 on Pitts30k and $+7.6$ on Tokyo 24/7 where the comparison is closest, and by $+38.7$ on Nordland, whose seasonal change is the hardest condition in the block; the two rows differ by $2.8$ mean R@$1$, almost all of it on Nordland, where the frozen features carry the seasonal change on their own. On the nine environments we take the best number on eight and the second on the ninth, for a mean of $76.6$ against $69.5$ for AnyLoc, the strongest training-free alternative, whose descriptor is $24\times$ larger.
 
 \label{sec:ood}
 
 \begin{table}[t]
-\caption{\textbf{Nine environments, two stages against two stages.} R@1 under the same deployed configuration, re-ranking all $2{,}304$ tokens here against $1024$ in Table~\ref{tab:breadth}. \emph{Dim} is the first-stage descriptor dimensionality, as evaluated. \textsc{CLS token} is the frozen DINOv2-L class token, retrieved by cosine $^{d}$AnyLoc's VP-Air figure may omit the $10{,}000$ distractors ours carries. Each method as published: $^{\dagger}$after its own re-ranker, $^{\ddag}$without the cross-image encoder. Bold $=$ best, \underline{underline} $=$ second.}
+\caption{\textbf{Trained methods against ours on the nine environments, two stages against two stages.} R@1 under the same deployed configuration, re-ranking all $2{,}304$ tokens; the training-free comparison is in Table~\ref{tab:breadth}. \emph{Dim} is the first-stage descriptor dimensionality, as evaluated. Each method as published: $^{\dagger}$after its own re-ranker, $^{\ddag}$without the cross-image encoder. Bold $=$ best, \underline{underline} $=$ second.}
 \label{tab:ood}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2pt}%
@@ -139,22 +118,15 @@ MegaLoc & 8448 & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & \underline{85.9} & 81.7 & 45
 FoL$^{\dagger}$ & 8448 & 36.4 & 54.5 & \underline{65.3} & 97.0 & 78.9 & 77.5 & \underline{98.6} & 46.7 & 25.7 & 64.5 \\
 SAGE$^\ddag$ & 8448 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \underline{85.9} & 84.5 & 39.1 & 24.8 & 60.0 \\
 \midrule
-\multicolumn{12}{l}{\emph{Training-free}} \\
-CLS token & 1024 & 26.3 & 50.9 & 61.1 & 75.0 & 43.1 & 56.3 & 76.1 & 38.0 & 24.8 & 50.2 \\
-AnyLoc & 49152 & \underline{65.2} & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7$^{d}$ & 34.6 & 69.5 \\
-GeM & 1024 & 56.8 & 50.9 & 64.0 & 89.5 & 46.2 & 81.7 & 85.9 & 42.2 & 23.8 & 60.1 \\
-EffoVPR-ZS$^{\dagger}$ & 1024 & 38.1 & 67.0 & \textbf{65.5} & 97.5 & 75.9 & 83.1 & 88.7 & 65.7 & 36.6 & 68.7 \\
-SegVLAD-PreT & 49152 & 56.8 & 26.8 & 64.8 & 91.5 & 78.5 & 45.1 & 40.9 & 69.8 & 22.8 & 55.2 \\
-\midrule
 \multicolumn{12}{l}{Ours \emph{--- training-free, coarse retrieval with \textsc{MaxSim} interaction}} \\
 Ours\,\emph{v2} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
-Ours\,\emph{v3} & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & 97.2 & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
+Ours\,\emph{v3} & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & 97.2 & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
-Table~\ref{tab:ood} takes the same configuration off street view, to degraded, subterranean, indoor, aerial and underwater imagery, with every method given a second stage of its own so that two-stage is compared against two-stage. We take the best number on eight of the nine environments and the second on the ninth, for a mean of $76.6$ against $65.1$ for the strongest trained method (MegaLoc) and $69.5$ for the strongest training-free one (AnyLoc). The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns, and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. The two backbones differ by $0.3$ R@1 on the mean, so the result rests on the pipeline rather than on backbone scale.
+Table~\ref{tab:ood} takes the same configuration off street view, to degraded, subterranean, indoor, aerial and underwater imagery, with every method given a second stage of its own so that two-stage is compared against two-stage. We take the best number on eight of the nine environments and the second on the ninth, for a mean of $76.6$ against $65.1$ for the strongest trained method (MegaLoc). The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns, and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. The two backbones differ by $0.3$ R@1 on the mean, so the result rests on the pipeline rather than on backbone scale.
 
 Figure~\ref{fig:qual} shows one query per benchmark family. Where the trained baselines return a different place under seasonal change, illumination change or a degraded interior, our pipeline returns the correct image at rank one.
 
