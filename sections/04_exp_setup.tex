@@ -35,7 +35,7 @@ Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
 }
 \end{table}
 
-\paragraph{Implementation details.} One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch importance is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from each image's $1024$ most important tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks by \eqref{eq:stage2} at $\theta{=}0.65$, scoring those $1024$ tokens on the urban benchmarks and all $2{,}304$ on the environments (Appendix~\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
+\paragraph{Implementation details.} One configuration is used for every benchmark: frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}), $2{,}304$ tokens per image, $\tau{=}0.5$, $\theta{=}0.65$, a $2048$-d whitened first-stage descriptor and a shortlist of $K{=}\min(1000,|\mathcal D|)$. Every constant, and the sweep that fixed it, is given in Appendix~\ref{app:impl}.
 
 \paragraph{Evaluation metric.} We follow the standard VPR protocol and report Recall@$1$, the share of queries whose top-ranked database image lies within the benchmark's own distance of the query's true location,
 \begin{equation*}
