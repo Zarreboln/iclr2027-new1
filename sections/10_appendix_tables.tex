@@ -144,32 +144,7 @@ Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fix
 
 \FloatBarrier
 
-\subsection{Alternative patch-importance signals}
-\label{app:weight-extra}
-\begin{table}[H]
-\caption{\textbf{Which patch-importance signal.} Pitts30k, $6816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ pool. Every row changes only $w$. \emph{Source} names the work the signal is taken from.}
-\label{tab:w-signal}
-\centering
-{\footnotesize
-\begin{tabular}{ll c l}
-\toprule
-Signal for $w$   &   Source   &  R@1 &   \\
-\midrule
-none (bare \textsc{MaxSim})   &   ---   &  87.62 &   baseline \\
-\midrule
-\textbf{self-similarity, down-weighted}   &   this work   &  \textbf{93.03} &   best \\
-class-token attention, up-weighted    &    \citep{effovpr}    &  92.62 &    close second \\
-patch-graph centrality, up-weighted    &    SAP    &  90.44 &    works, weaker \\
-\midrule
-patch-graph centrality, \emph{down}-weighted   &   ---   &  83.94 &   direction reversed \\
-token norm, up-weighted    &    \citep{registers}    &  87.72 &    neutral \\
-token norm, down-weighted    &    \citep{registers}    &  87.53 &    neutral \\
-inverse document frequency    &    Video Google    &  86.53 &    below baseline \\
-cross-referencing    &    DeepEMD    &  81.78 &    below baseline \\
-rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below baseline \\
-\bottomrule
-\end{tabular}%
-}\end{table}
+
 
 \FloatBarrier
 
