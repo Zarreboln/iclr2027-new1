@@ -97,7 +97,7 @@ Table~\ref{tab:breadth} reports Recall@1 on the standard urban benchmarks. We le
 \label{sec:ood}
 
 \begin{table}[t]
-\caption{\textbf{Nine environments, two stages against two stages.} R@1 under the same deployed configuration, re-ranking all $2{,}304$ tokens here against $1024$ in Table~\ref{tab:breadth}. \emph{Dim} is the first-stage descriptor dimensionality, as evaluated. \textsc{CLS token} is the frozen DINOv2-L class token, retrieved by cosine. $^{d}$AnyLoc's VP-Air figure may omit the $10{,}000$ distractors ours carries. Each method as published: $^{\dagger}$after its own re-ranker, $^{\ddag}$without the cross-image encoder. Bold $=$ best, \underline{underline} $=$ second.}
+\caption{\textbf{Nine environments, two stages against two stages.} R@1 under the same deployed configuration, re-ranking all $2{,}304$ tokens here against $1024$ in Table~\ref{tab:breadth}. \emph{Dim} is the first-stage descriptor dimensionality, as evaluated. \textsc{CLS token} is the frozen DINOv2-L class token, retrieved by cosine; \textsc{SegVLAD-PreT} is \citet{segvlad} at its published training-free setting, our run, with the domain vocabularies both it and AnyLoc ship. $^{d}$AnyLoc's VP-Air figure may omit the $10{,}000$ distractors ours carries. Each method as published: $^{\dagger}$after its own re-ranker, $^{\ddag}$without the cross-image encoder. Bold $=$ best, \underline{underline} $=$ second.}
 \label{tab:ood}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2pt}%
@@ -130,6 +130,7 @@ CLS token & 1024 & 26.3 & 50.9 & 61.1 & 75.0 & 43.1 & 56.3 & 76.1 & 38.0 & 24.8 
 AnyLoc & 49152 & \underline{65.2} & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7$^{d}$ & 34.6 & 69.5 \\
 GeM & 1024 & 56.8 & 50.9 & 64.0 & 89.5 & 46.2 & 81.7 & 85.9 & 42.2 & 23.8 & 60.1 \\
 EffoVPR-ZS$^{\dagger}$ & 1024 & 38.1 & 67.0 & \textbf{65.5} & 97.5 & 75.9 & 83.1 & 88.7 & 65.7 & 36.6 & 68.7 \\
+SegVLAD-PreT & 49152 & 56.8 & 26.8 & 64.8 & 91.5 & 80.1 & 45.1 & 40.9 & --- & 22.8 & --- \\
 \midrule
 \multicolumn{12}{l}{Ours \emph{--- training-free, coarse retrieval with late interaction}} \\
 Ours\,\emph{v2} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
