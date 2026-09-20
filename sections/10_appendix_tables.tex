@@ -7,40 +7,40 @@
 \centering
 {\scriptsize\setlength{\tabcolsep}{3.2pt}%
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrll}
+\begin{tabular}{lll}
 \toprule
-Dataset & Database & Queries & Positives & Ground truth & Notes \\
+Dataset & Ground truth & Notes \\
 \midrule
-\multicolumn{6}{l}{\emph{Urban / standard benchmarks}} \\
+\multicolumn{3}{l}{\emph{Urban / standard benchmarks}} \\
 \midrule
-Pitts30k & 10{,}000 & 6{,}816 & 142.1 & UTM $\le 25$\,m & NetVLAD's official pitts30k\_test.mat split \\
-Pitts250k & 83{,}952 & 8{,}280 & 153.6 & UTM $\le 25$\,m & same convention, different .mat \\
-Tokyo 24/7 & 75{,}984 & 315 & 118.3 & filename UTM $\le 25$\,m & the official \textbf{315} subset, not the 1125 one \\
-MSLS-val & 18{,}871 & 740 & 10.8 & filename UTM $\le 25$\,m, distance only (no heading) & the \textbf{740} subset of \citet{patchnetvlad}; \citet{effovpr} report the 11k variant \\
-Nordland & 27{,}592 & 27{,}592 & 21.0 & $\pm 10$ frames (\textbf{lenient}) & papers using $\pm 1$ frame report markedly lower numbers \\
-St Lucia & 1{,}549 & 1{,}464 & 14.9 & filename UTM $\le 25$\,m & gmberton format \\
-Oxford RobotCar & 191 & 191 & 14.2 & the .mat's own posDistThr $=16$\,m & the small vehicular split used by \citet{anyloc} \\
-AmsterTime & 1{,}231 & 1{,}231 & 1.0 & old\_X$\leftrightarrow$new\_X, one positive & historical against present-day photographs \\
+Pitts30k & UTM $\le 25$\,m & NetVLAD's official pitts30k\_test.mat split \\
+Pitts250k & UTM $\le 25$\,m & same convention, different .mat \\
+Tokyo 24/7 & filename UTM $\le 25$\,m & the official \textbf{315} subset, not the 1125 one \\
+MSLS-val & filename UTM $\le 25$\,m, distance only (no heading) & the \textbf{740} subset of \citet{patchnetvlad}; \citet{effovpr} report the 11k variant \\
+Nordland & $\pm 10$ frames (\textbf{lenient}) & papers using $\pm 1$ frame report markedly lower numbers \\
+St Lucia & filename UTM $\le 25$\,m & gmberton format \\
+Oxford RobotCar & the .mat's own posDistThr $=16$\,m & the small vehicular split used by \citet{anyloc} \\
+AmsterTime & old\_X$\leftrightarrow$new\_X, one positive & historical against present-day photographs \\
 \midrule
-\multicolumn{6}{l}{\emph{SF-XL (one imagery set: a design split and four test splits)}} \\
+\multicolumn{3}{l}{\emph{SF-XL (one imagery set: a design split and four test splits)}} \\
 \midrule
-SF-XL val$^\ast$ & 8{,}015 & 7{,}983 & 9.3 & UTM $\le 25$\,m & \textbf{design split}; appears in no main table \\
-SF-XL test v1 & 2{,}805{,}840 & 1{,}000 & 124.2 & UTM $\le 25$\,m & the four test splits share one $2.8$M database \\
-SF-XL test v2 & 2{,}805{,}840 & 598 & 188.3 & UTM $\le 25$\,m & not yet re-run for the baselines (\S\ref{sec:setup}) \\
-SF-XL test night & 2{,}805{,}840 & 466 & 114.1 & UTM $\le 25$\,m &  \\
-SF-XL test occl. & 2{,}805{,}840 & 76 & 151.9 & UTM $\le 25$\,m & $74$ queries have a positive \\
+SF-XL val$^\ast$ & UTM $\le 25$\,m & \textbf{design split}; appears in no main table \\
+SF-XL test v1 & UTM $\le 25$\,m & the four test splits share one $2.8$M database \\
+SF-XL test v2 & UTM $\le 25$\,m & not yet re-run for the baselines (\S\ref{sec:setup}) \\
+SF-XL test night & UTM $\le 25$\,m &  \\
+SF-XL test occl. & UTM $\le 25$\,m & $74$ queries have a positive \\
 \midrule
-\multicolumn{6}{l}{\emph{Beyond street view (AnyLoc suite)}} \\
+\multicolumn{3}{l}{\emph{Beyond street view (AnyLoc suite)}} \\
 \midrule
-VP-Air \emph{(aerial)} & 12{,}706 & 2{,}706 & 7.0 & provided correspondences & AnyLoc convention: database $=$ references $+$ $10{,}000$ distractors \\
-Nardo-Air \emph{(aerial)} & 102 & 71 & 6.1 & gt\_matches.csv, distance $\le 60$\,m &  \\
-Nardo-Air R \emph{(aerial)} & 102 & 71 & 6.1 & as above & reference images rotated $90^\circ$ \\
-Hawkins \emph{(subterranean)} & 127 & 118 & 10.6 & 2-D pose $\le 8$\,m & long corridor \\
-Laurel Caverns \emph{(subterranean)} & 141 & 112 & 23.8 & 2-D pose $\le 8$\,m &  \\
-17 Places \emph{(indoor)} & 406 & 406 & 10.9 & official ground\_truth\_new.npy &  \\
-Baidu Mall \emph{(indoor)} & 689 & 2{,}292 & 35.1 & 2-D camera pose $\le 10$\,m & $2{,}248$ queries have a positive \\
-Gardens Point \emph{(day/night)} & 200 & 200 & 5.0 & official gardens\_gt.npy & database $=$ day-right, queries $=$ night-right \\
-Mid-Atlantic Ridge \emph{(underwater)} & 65 & 101 & 3.0 & eiffel\_gt[101:] & the Eiffel Tower deep-sea site \citep{eiffeltower}, which \citet{anyloc} files under the ridge it sits on \\
+VP-Air \emph{(aerial)} & provided correspondences & AnyLoc convention: database $=$ references $+$ $10{,}000$ distractors \\
+Nardo-Air \emph{(aerial)} & gt\_matches.csv, distance $\le 60$\,m &  \\
+Nardo-Air R \emph{(aerial)} & as above & reference images rotated $90^\circ$ \\
+Hawkins \emph{(subterranean)} & 2-D pose $\le 8$\,m & long corridor \\
+Laurel Caverns \emph{(subterranean)} & 2-D pose $\le 8$\,m &  \\
+17 Places \emph{(indoor)} & official ground\_truth\_new.npy &  \\
+Baidu Mall \emph{(indoor)} & 2-D camera pose $\le 10$\,m & $2{,}248$ queries have a positive \\
+Gardens Point \emph{(day/night)} & official gardens\_gt.npy & database $=$ day-right, queries $=$ night-right \\
+Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower deep-sea site \citep{eiffeltower}, which \citet{anyloc} files under the ridge it sits on \\
 \bottomrule
 \end{tabular}%
 }%
