@@ -133,7 +133,7 @@ GeM & 1024 & 56.8 & 50.9 & 64.0 & 89.5 & 46.2 & 81.7 & 85.9 & 42.2 & 23.8 & 60.1
 EffoVPR-ZS$^{\dagger}$ & 1024 & 38.1 & 67.0 & \textbf{65.5} & 97.5 & 75.9 & 83.1 & 88.7 & 65.7 & 36.6 & 68.7 \\
 SegVLAD-PreT & 49152 & 56.8 & 26.8 & 64.8 & 91.5 & 78.5 & 45.1 & 40.9 & 69.8 & 22.8 & 55.2 \\
 \midrule
-\multicolumn{12}{l}{Ours \emph{--- training-free, coarse retrieval with late interaction}} \\
+\multicolumn{12}{l}{Ours \emph{--- training-free, coarse retrieval with \textsc{MaxSim} interaction}} \\
 Ours\,\emph{v2} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
 Ours\,\emph{v3} & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & 97.2 & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
 \bottomrule
@@ -145,14 +145,6 @@ Table~\ref{tab:ood} takes the same configuration off street view, to degraded, s
 
 Figure~\ref{fig:qual} shows one query per benchmark family. Where the trained baselines return a different place under seasonal change, illumination change or a degraded interior, our pipeline returns the correct image at rank one.
 
-Figure~\ref{fig:blocktsne} looks at the score itself rather than at its ranking. Every image of a place is embedded from each method's own similarity, and the separation between places, measured as the gap between within-place and between-place similarity in units of the latter's spread, grows from $3.3$ on Pitts30k to $11.2$ indoors and $22.9$ on the aerial set, where a single descriptor has least to work with.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.88\textwidth]{figures/block_tsne.pdf}
-\caption{\textbf{Places under each method's own similarity.} All images of a place, embedded by t-SNE on the method's own pairwise scores taken as distances (perplexity $10$, seed $0$); colour is the place. \emph{sep} is the within-place minus between-place mean similarity, in units of the between-place standard deviation, and is the only quantity comparable across panels.}
-\label{fig:blocktsne}
-\end{figure}
 
 \subsection{Ablation study}
 \label{sec:swap}

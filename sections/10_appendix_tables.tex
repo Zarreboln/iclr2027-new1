@@ -198,7 +198,7 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 
 \subsection{Why the second moment factorizes}
 \label{app:factorize}
-Section~\ref{sec:global} contracts the cross-similarity table from both sides, $\sum_{i,j} w_{Q,i}w_{D,j}\,\sigma(S_{ij})$ with $\sigma$ applied entrywise, and states the case $\sigma(u)=u^{2}$. The same regrouping holds for any monomial $\sigma(u)=u^{\gamma}$: the entrywise power $S^{\circ\gamma}$ equals $Q^{[\gamma]}\big(D^{[\gamma]}\big)^{\top}$, where $Q^{[\gamma]}$ is the row-wise Kronecker power whose $i$-th row is $\mathbf q_i^{\otimes\gamma}$. The contraction therefore becomes one inner product of width $C^{\gamma}$ between two vectors, each computed from a single image. At $\gamma{=}1$ that vector is the weighted mean of the tokens, the first-order instance of a VLAD-style descriptor; at $\gamma{=}2$ it is the weighted second moment $G_C$ we deploy. Table~\ref{tab:firstsecond} measures the devices that act on it.
+Section~\ref{sec:global} contracts the cross-similarity table from both sides, $\sum_{i,j} w_{Q,i}w_{D,j}\,\sigma(S_{ij})$ with $\sigma$ applied entrywise, and states the case $\sigma(u)=u^{2}$. The same regrouping holds for any monomial $\sigma(u)=u^{\gamma}$: the entrywise power $S^{\circ\gamma}$ equals $Q^{[\gamma]}\big(D^{[\gamma]}\big)^{\top}$, where $Q^{[\gamma]}$ is the row-wise Kronecker power whose $i$-th row is $\mathbf q_i^{\otimes\gamma}$. The contraction therefore becomes one inner product of width $C^{\gamma}$ between two vectors, each computed from a single image. At $\gamma{=}1$ that vector is the weighted mean of the tokens, the first-order instance of a VLAD-style descriptor; at $\gamma{=}2$ it is the weighted second moment $G_C$ we deploy. the factorial in \S\ref{sec:compact} measures the devices that act on it.
 
 
 \FloatBarrier
@@ -256,50 +256,7 @@ Ours    &    DINOv3-7B    &  52.5  &  60.7  &  \underline{65.5}  &  95.5  &  77.
 \end{tabular}%
 }
 \end{table}
-\begin{table}[H]
-\caption{\textbf{Devices on the second-moment descriptor at a matched $1024$-d budget} (compressed before scoring). Bold marks the best value in each column; the weight is the largest device ($18.7$ mean R@1).}
-\label{tab:firstsecond}
-\centering
-{\scriptsize\setlength{\tabcolsep}{2.2pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccccc|c}
-\toprule
- & \multicolumn{6}{c}{per database} & \multicolumn{1}{c}{summary$^\dagger$} \\
-\cmidrule(lr){2-7}\cmidrule(lr){8-8}
-Configuration   &   Amst   &   SF$^\ast$   &   Pitts   &   VP-Air   &   MSLS   &   Nord   &   mean  \\
-    &  \tiny 1.2k &  \tiny 8.0k &  \tiny 10k &  \tiny 12.7k &  \tiny 18.9k &  \tiny 27.6k &  \\
-\midrule \multicolumn{8}{l}{\emph{\textbf{R@1}} \ \ \scriptsize mean over the $6$ databases} \\
-\ \ \ none & 21.85 & 38.67 & 72.84 & 37.14 & 24.86 & 4.90 & 33.38 \\
-\ \ \ spectral $\alpha{=}\tfrac12$ & 34.12 & 54.68 & 80.55 & 40.06 & 36.89 & 10.93 & 42.87 \\
-\ \ \ power law & 33.79 & 52.99 & 77.14 & 38.54 & 33.65 & 15.19 & 41.88 \\
-\ \ \ spectral $+$ power law & 41.27 & 64.44 & 81.94 & 35.66 & 44.32 & 23.33 & 48.49 \\
-\ \ \ $w$ & 42.32 & 75.06 & 87.05 & 42.13 & 69.19 & 35.21 & 58.49 \\
-\ \ \ $w$ $+$ spectral & 45.90 & 75.26 & \textbf{88.12} & 44.68 & 68.92 & 39.63 & 60.42 \\
-\ \ \ $w$ $+$ spectral $+$ power law & 46.71 & 73.61 & 88.04 & 38.06 & 67.84 & 51.19 & 60.91 \\
-\ \ \ $w$ $+$ power law & 45.49 & 74.46 & 87.40 & 43.83 & 68.11 & \textbf{51.39} & \textbf{61.78} \\
-\midrule \multicolumn{8}{l}{\emph{\textbf{R@100}} \ \ \scriptsize mean over the $6$ databases} \\
-\ \ \ none & 71.32 & 69.26 & 93.79 & 71.91 & 53.92 & 24.28 & 64.08 \\
-\ \ \ spectral $\alpha{=}\tfrac12$ & 87.00 & 87.71 & 96.96 & 72.84 & 71.62 & 40.56 & 76.11 \\
-\ \ \ power law & 88.87 & 87.86 & 96.13 & 74.32 & 67.70 & 47.43 & 77.05 \\
-\ \ \ spectral $+$ power law & 91.96 & 94.23 & 97.48 & 68.96 & 77.84 & 59.82 & 81.72 \\
-\ \ \ $w$ & 92.36 & 96.73 & 99.19 & 84.29 & 94.32 & 77.41 & 90.72 \\
-\ \ \ $w$ $+$ spectral & 93.34 & 96.78 & 99.33 & 82.22 & 93.65 & 77.82 & 90.52 \\
-\ \ \ $w$ $+$ spectral $+$ power law & 93.99 & 96.72 & \textbf{99.35} & 76.09 & 93.24 & 84.06 & 90.58 \\
-\ \ \ $w$ $+$ power law & 93.74 & 97.03 & 99.24 & 85.03 & 94.19 & \textbf{85.63} & \textbf{92.48} \\
-\midrule \multicolumn{8}{l}{\emph{\textbf{R@1000}} \ \ \scriptsize mean over the $4$ databases; AmsterTime and SF-XL val are shown but excluded from the summary, where a top-$1000$ list is $81\%$ and $12.5\%$ of the database} \\
-\ \ \ none & 99.76 & 90.81 & 99.88 & 94.09 & 77.70 & 60.02 & 82.92 \\
-\ \ \ spectral $\alpha{=}\tfrac12$ & 99.92 & 98.91 & \textbf{100.00} & 95.45 & 90.00 & 75.87 & 90.33 \\
-\ \ \ power law & 99.92 & 99.36 & \textbf{100.00} & 93.31 & 90.54 & 82.27 & 91.53 \\
-\ \ \ spectral $+$ power law & \textbf{100.00} & 99.76 & \textbf{100.00} & 94.38 & 96.22 & 86.25 & 94.21 \\
-\ \ \ $w$ & \textbf{100.00} & 99.85 & \textbf{100.00} & 99.19 & 98.24 & 94.32 & 97.94 \\
-\ \ \ $w$ $+$ spectral & \textbf{100.00} & 99.89 & \textbf{100.00} & 98.97 & 98.38 & 94.30 & 97.91 \\
-\ \ \ $w$ $+$ spectral $+$ power law & \textbf{100.00} & 99.87 & \textbf{100.00} & 99.26 & 98.24 & 96.84 & 98.59 \\
-\ \ \ $w$ $+$ power law & \textbf{100.00} & 99.84 & \textbf{100.00} & 99.67 & 98.24 & \textbf{98.12} & \textbf{99.01} \\
-\bottomrule
-\end{tabular}%
-}%
-}
-\end{table}
+
 \begin{table}[H]
 \caption{\textbf{Token pruning $\times$ whitened compression, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). Both backbones, one protocol; keep-$N$ selects by $w_i$ computed on the full token set. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ (7B) / $96.3$ (L) anywhere in the grid.}
 \label{tab:prunecomp}
@@ -375,56 +332,21 @@ DINOv3-7B & all $2{,}304$ & 71.68 & 74.90 & 69.04 & \textbf{76.57} & 70.46 & 72.
 
 \subsection{Against \textsc{EffoVPR}'s criterion at a matched stage 1}
 \label{app:effo-matched}
-\begin{table}[H]
-\caption{\textbf{Scoring rules at a matched stage 1} (Pitts30k, R@1; shortlist and features identical). \emph{lift} is over the class-token retrieval that produced the shortlist. $T_1$ is \textsc{EffoVPR}'s attention threshold, reported at the keypoint budget it induces.}
-\label{tab:effo-matched}
-\centering
-{\small
-\begin{tabular}{lcc}
-\toprule
-Stage 2 & R@1 & lift \\
-\midrule
-none (class-token retrieval) & 77.93 & --- \\
-\midrule
-\multicolumn{3}{l}{\emph{Selection by attention} (\textsc{EffoVPR})} \\
-keep all, mutual NN & 87.82 & $+9.89$ \\
-$T_1$ at $512$ keypoints & \underline{88.70} & $+10.77$ \\
-$T_1$ at $256$ & 86.66 & $+8.73$ \\
-$T_1$ at $130$ & 82.51 & $+4.58$ \\
-$T_1$ at $65$ & 77.93 & $+0.00$ \\
-\midrule
-\multicolumn{3}{l}{\emph{Weighting by self-similarity} (ours)} \\
-\textsc{MaxSim}, unweighted & 86.53 & $+8.60$ \\
-\textsc{selfw} & \textbf{91.31} & $+13.38$ \\
-\textsc{selfw\_conf} & 91.24 & $+13.31$ \\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[H]
-\caption{\textbf{Which patches to keep} (Pitts30k, R@1; survivors re-weighted by $w$ in every column). Symmetric keeps $N$ tokens in the query and in the database image; database-only keeps all query tokens. Keep-all reads $91.31$.}
-\label{tab:keepn}
-\centering
-{\small
-\begin{tabular}{llccc}
-\toprule
- & keep-$N$ & self-similarity & attention & random \\
-\midrule
-\multirow{4}{*}{symmetric}
- & $256$ ($5\times$)  & \textbf{91.08} & 87.62 & 87.49 \\
- & $128$ ($10\times$) & \textbf{88.44} & 82.91 & 81.92 \\
- & $64$ ($20\times$)  & \textbf{82.75} & 76.88 & 70.79 \\
- & $32$ ($40\times$)  & \textbf{72.17} & 70.42 & 55.59 \\
-\midrule
-\multirow{4}{*}{database only}
- & $256$ & 89.08 & 80.97 & \textbf{89.80} \\
- & $128$ & 82.72 & 69.53 & \textbf{87.65} \\
- & $64$  & 71.41 & 56.31 & \textbf{84.86} \\
- & $32$  & 58.98 & 45.70 & \textbf{80.05} \\
-\bottomrule
-\end{tabular}}
-\end{table}
+
+
 
 \FloatBarrier
+
+\subsection{Places under each method's own similarity}
+\label{app:blocktsne}
+Figure~\ref{fig:blocktsne} looks at the score itself rather than at its ranking. Every image of a place is embedded from each method's own similarity, and the separation between places, measured as the gap between within-place and between-place similarity in units of the latter's spread, grows from $3.3$ on Pitts30k to $11.2$ indoors and $22.9$ on the aerial set, where a single descriptor has least to work with.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{figures/block_tsne.pdf}
+\caption{\textbf{Places under each method's own similarity.} All images of a place, embedded by t-SNE on the method's own pairwise scores taken as distances (perplexity $10$, seed $0$); colour is the place. \emph{sep} is the within-place minus between-place mean similarity, in units of the between-place standard deviation, and is the only quantity comparable across panels.}
+\label{fig:blocktsne}
+\end{figure}
 
 \subsection{\textsc{MaxSim} matches on every benchmark}
 \label{app:patchvis-maxsim}

@@ -2,7 +2,7 @@
 \centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
 \includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
-\caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages and prunes the store. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
+\caption{\textbf{One frozen forward, one weight, two reductions.} Thresholding and row-summing $G{=}FF^{\top}$ gives $w_i{=}1/n_i$, which weights both stages. Stage 1 scans the whitened second moment $G_C{=}F^{\top}WF$; stage 2 re-ranks its shortlist by the row-max reduction of $S{=}QD^{\top}$.}
 \label{fig:method}
 \end{figure}
 \section{Method}
@@ -49,4 +49,4 @@ For each query patch we find its most similar patch in the candidate image and a
   \qquad
   m_i=\max_{j} S_{ij},
 \end{equation}
-the \textsc{MaxSim} rule of \citet{colbert}, weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
+the \textsc{MaxSim} interaction of \citet{colbert}, weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the shortlisted candidates (Appendix~\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
