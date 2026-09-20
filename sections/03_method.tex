@@ -40,7 +40,7 @@ A patch recurring twenty times in its image therefore receives one twentieth of 
 
 \subsection{First stage \textcolor{red}{Chen: Coarse Ranking?}}
 \label{sec:global}
-This stage reads all of $S(Q,D)$ at once, yet never forms it. Stage 1 needs a fixed-size descriptor per image so that the whole database can be searched, and a sum over the entries of $S(Q,D)$ delivers one. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
+This stage uses every entry of $S(Q,D)$, but the table itself is never built: the sum over its entries splits into one fixed-size descriptor per image, which is what searching the whole database requires. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
 \begin{equation}\label{eq:so-deriv}
   \sum_{i,j} w_{Q,i}\,w_{D,j}\,S(Q,D)_{ij}^{2}
   =\big\langle\, G_C(Q),\ G_C(D)\,\big\rangle,
