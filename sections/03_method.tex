@@ -39,7 +39,7 @@ Stage 1 needs a fixed-size descriptor for each image so that all database images
   \qquad
   G_C(F)=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top}.
 \end{equation}
-$G_C$ records how an image's features co-occur across channels, ignoring where in the frame they appeared, and it keeps much more of the image than an average of the same tokens would (Appendix~\ref{app:coarsegrid}). Appendix~\ref{app:factorize} treats other powers. The matrix is flattened into a single vector, each entry is replaced by its signed square root \citep{improvedfisher}, and the vector is $\ell_2$-normalized. A whitened PCA reduces it to $2048$ dimensions, the scan returns the $K$ nearest candidates, and the same weight prunes the store to each image's $1024$ highest-weight patches (\S\ref{sec:stage1abl}).
+$G_C$ records how an image's features co-occur across channels, ignoring where in the frame they appeared, and it keeps much more of the image than an average of the same tokens would (Appendix~\ref{app:coarsegrid}). Appendix~\ref{app:factorize} treats other powers.
 
 \subsection{Second stage \textcolor{red}{Chen: Fine Ranking?}}
 \label{sec:core}
