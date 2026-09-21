@@ -15,6 +15,6 @@ To address these issues, we propose \method{}, a training-free VPR pipeline that
 
 \noindent Our contributions are summarized as follows:
 \begin{itemize}[leftmargin=*,itemsep=1pt,topsep=3pt]
-\item We remove the reliance of VPR on annotated data and on criteria imported from outside the image pair, and propose \method{}, a simple and effective training-free pipeline in which every quantity is read from two tables of patch similarity and the importance of each patch is obtained in closed form.
+\item We remove the reliance of VPR on annotated data and on criteria imported from outside the image pair, and propose \method{}, a simple and effective training-free pipeline in which every quantity is read from two tables of patch similarity and the importance of each patch is the inverse of its multiplicity within the image.
 \item We achieve strong results both in domain and out of domain under one fixed configuration, reaching $93.3$ mean Recall@$1$ on eight urban benchmarks, on par with supervised systems trained on tens of millions of labels, and $76.6$ on nine out-of-domain environments where the strongest of those systems attains $65.1$. As a plug-in module, our second-stage rule further improves twelve published pipelines, by $+5.5$ to $+12.5$ R@1 when it replaces an existing re-ranker and by $+9.1$ to $+17.8$ when it is added to a single-stage method.
 \end{itemize}
