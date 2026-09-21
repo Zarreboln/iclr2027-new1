@@ -84,7 +84,7 @@ Ours\,\emph{v3} & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99
 }
 \end{table}
 
-Table~\ref{tab:trained} sets the same two rows against the trained methods. On the urban block, the terrain their supervision is aimed at, our mean of $93.3$ edges the strongest of them, FoL at $93.2$, and we tie FoL on Tokyo 24/7 and take the best number on AmsterTime, the benchmark with decades of time variation, without a single place label. Off street view the picture changes: the fifteen trained methods above $80$ on the urban block each give up between $26$ and $40$ mean R@1 on moving to the environments, while ours gives up $16.7$, and we take the best number on seven of the nine environments and are within $3$ points of the best on the other two, for a mean of $76.6$ against $65.1$ for MegaLoc, the strongest trained method. The margins are largest where a single descriptor has least to work with, $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. Figure~\ref{fig:qual} shows one query per benchmark family: where the trained methods return a different place under seasonal change, illumination change or a degraded interior, the pipeline returns the correct image at rank one.
+Table~\ref{tab:trained} sets the same two rows against the trained methods. On the urban block, the terrain their supervision is aimed at, our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, and we take the best number on Tokyo 24/7 and AmsterTime, the benchmark with decades of time variation, without a single place label. Off street view the picture changes: the thirteen trained methods above $80$ on the urban block each give up between $26$ and $40$ mean R@1 on moving to the environments, while ours gives up $16.7$, and we take the best number on seven of the nine environments and are within $3$ points of the best on the other two, for a mean of $76.6$ against $65.1$ for MegaLoc, the strongest trained method. The margins are largest where a single descriptor has least to work with, $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $46.7$ on VP-Air, the aerial set with the deepest database. Figure~\ref{fig:qual} shows one query per benchmark family: where the trained methods return a different place under seasonal change, illumination change or a degraded interior, the pipeline returns the correct image at rank one.
 
 \begin{table}[tp]
 \caption{Comparison with trained methods on all seventeen benchmarks. Recall@1 (\%), same splits, ground truth and configuration as Table~\ref{tab:breadth}. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold and underline as in Table~\ref{tab:breadth}.}
@@ -106,17 +106,15 @@ R2Former$^{\dagger}$ & 256 & 93.2 & 91.1 & 88.6 & 89.7 & 60.5 & 99.7 & 92.7 & 29
 SALAD & 8448 & 95.1 & 92.4 & 94.6 & 92.2 & 86.5 & \textbf{100.0} & 97.9 & 58.4 &  & 89.6 \\
 CricaVPR$^\ddag$ & 10752 & 94.6 & 91.8 & 90.2 & 89.2 & 80.5 & 99.8 & 98.4 & 49.0 &  & 86.7 \\
 SelaVPR$^{\dagger}$ & 1024 & 95.7 & 92.8 & 94.0 & 90.8 & 85.2 & 99.8 & 99.0 & 50.3 &  & 88.4 \\
-BoQ & 12288 & 96.6 & 93.7 & \underline{98.1} & 93.8 & 90.6 & \textbf{100.0} & \underline{99.5} & 63.0 &  & 91.9 \\
-CliqueMining & 8448 & 95.2 & 92.6 & 96.8 & \underline{94.2} & 95.9 & \textbf{100.0} & 98.4 & 57.7 &  & 91.4 \\
+BoQ & 12288 & \underline{96.6} & 93.7 & \underline{98.1} & 93.8 & 90.6 & \textbf{100.0} & \underline{99.5} & 63.0 &  & 91.9 \\
+CliqueMining & 8448 & 95.2 & 92.6 & 96.8 & \underline{94.2} & \underline{95.9} & \textbf{100.0} & 98.4 & 57.7 &  & 91.4 \\
 SuperVLAD$^\ddag$ & 3072 & 95.2 & 92.6 & 93.7 & 91.5 & 79.2 & \underline{99.9} & \textbf{100.0} & 54.7 &  & 88.3 \\
 VLAD-BuFF & 4096 & 95.6 & 92.5 & 96.5 & 92.4 & 84.9 & \textbf{100.0} & 99.0 & 61.4 &  & 90.3 \\
-SelaVPR++$^{\dagger}$ & 2048 & 96.7 & 94.4 & \underline{98.1} & \textbf{94.5} & \textbf{97.2} & \textbf{100.0} & \underline{99.5} & 61.2 &  & 92.7 \\
-MegaLoc & 8448 & 96.4 & 94.1 & 96.5 & 91.0 & 94.3 & \textbf{100.0} & 99.0 & 62.5 &  & 91.7 \\
-FoL$^{\dagger}$ & 8448 & \textbf{97.0} & \underline{94.5} & \textbf{98.4} & 93.5 & 92.6 & \underline{99.9} & \textbf{100.0} & \underline{70.1} &  & \underline{93.2} \\
-SAGE$^\ddag$ & 8448 & \underline{96.8} & \textbf{94.7} & 97.8 & \textbf{94.5} & 95.1 & \underline{99.9} & \underline{99.5} & 66.0 &  & 93.0 \\
+MegaLoc & 8448 & 96.4 & \underline{94.1} & 96.5 & 91.0 & 94.3 & \textbf{100.0} & 99.0 & 62.5 &  & 91.7 \\
+SAGE$^\ddag$ & 8448 & \textbf{96.8} & \textbf{94.7} & 97.8 & \textbf{94.5} & 95.1 & \underline{99.9} & \underline{99.5} & 66.0 &  & \underline{93.0} \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.7 & 92.5 & 97.5 & 89.0 & 83.0 & 99.1 & 99.0 & 68.1 &  & 90.5 \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & 89.3 & \underline{96.6} & 99.7 & 99.0 & \textbf{73.6} &  & \textbf{93.3} \\
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.7 & 92.5 & 97.5 & 89.0 & 83.0 & 99.1 & 99.0 & \underline{68.1} &  & 90.5 \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & 89.3 & \textbf{96.6} & 99.7 & 99.0 & \textbf{73.6} &  & \textbf{93.3} \\
 \midrule\midrule
 \multicolumn{12}{l}{\emph{Nine environments}} \\
 Method & Dim & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
@@ -135,13 +133,11 @@ BoQ & 12288 & 33.9 & 60.7 & 64.3 & \underline{98.0} & 77.4 & 62.0 & 91.5 & 29.5 
 CliqueMining & 8448 & 22.9 & 38.4 & \underline{65.3} & 93.0 & 69.1 & 62.0 & 84.5 & 22.9 & 35.6 & 54.9 \\
 SuperVLAD$^\ddag$ & 3072 & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 51.1 \\
 VLAD-BuFF & 4096 & 37.3 & 33.9 & 64.5 & 96.5 & 76.4 & 57.7 & 88.7 & 33.3 & 27.7 & 57.4 \\
-SelaVPR++$^{\dagger}$ & 2048 & 21.2 & 35.7 & 65.0 & 95.5 & 73.6 & 81.7 & 87.3 & 42.7 & 27.7 & 58.9 \\
 MegaLoc & 8448 & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & \underline{85.9} & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
-FoL$^{\dagger}$ & 8448 & 36.4 & 54.5 & \underline{65.3} & 97.0 & 78.9 & 77.5 & \underline{98.6} & 46.7 & 25.7 & 64.5 \\
 SAGE$^\ddag$ & 8448 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \underline{85.9} & 84.5 & 39.1 & 24.8 & 60.0 \\
 \midrule
 Ours\,\emph{v2} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
-Ours\,\emph{v3} & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & 97.2 & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
+Ours\,\emph{v3} & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \underline{97.2} & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
 \bottomrule
 \end{tabular}%
 }
@@ -183,7 +179,7 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \end{tabular}%
 }\end{table}
 
-\paragraph{Our second stage on other methods' first stages.} Table~\ref{tab:stage2swap} isolates the re-ranking rule by dropping it into other pipelines: each method keeps its resolution and shortlist, and only the scoring rule changes. The upper block replaces the re-ranker of the four methods that ship one, and all four improve on the nine-environment mean, FoL by $+5.5$, R2Former $+5.6$, SelaVPR $+9.7$ and SelaVPR++ $+12.5$ R@1, better on $28$ of the $36$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
+\paragraph{Our second stage on other methods' first stages.} Table~\ref{tab:stage2swap} isolates the re-ranking rule by dropping it into other pipelines: each method keeps its resolution and shortlist, and only the scoring rule changes. The upper block replaces the re-ranker of the two methods that ship one, and both improve on the nine-environment mean, R2Former by $+5.6$ and SelaVPR by $+9.7$ R@1, better on $15$ of the $18$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
 
 \begin{table}[tp]
 \caption{Our second stage plugged into other pipelines on the nine environments. Each figure is the method's published result, after its own re-ranker in the upper block and from its global descriptor in the lower; the subscript is the change from replacing or adding our re-ranking rule \eqref{eq:stage2}, with the method's resolution and shortlist left unchanged.}
@@ -198,8 +194,6 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 Method & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
 \midrule
 \multicolumn{11}{l}{\emph{Replacing each method's own re-ranking stage}} \\
-FoL & 36.4\dlt{+14.4} & 54.5\dlt{+18.7} & 65.3\dlt{-0.5} & 97.0\dlt{+1.0} & 78.9\dlt{+2.4} & 77.5\dlt{+4.2} & 98.6\dlt{-4.2} & 46.7\dlt{+10.1} & 25.7\dlt{+3.0} & 64.5\dltg{+5.5} \\
-SelaVPR++ & 21.2\dlt{+44.9} & 35.7\dlt{+39.3} & 65.0\dlt{-0.0} & 95.5\dlt{+3.0} & 73.6\dlt{+8.0} & 81.7\dlt{-5.6} & 87.3\dlt{+2.8} & 42.7\dlt{+25.0} & 27.7\dlt{-4.9} & 58.9\dltg{+12.5} \\
 SelaVPR & 25.4\dlt{+38.2} & 53.6\dlt{+13.4} & 63.3\dlt{+2.5} & 94.5\dlt{+1.5} & 68.5\dlt{+7.5} & 59.1\dlt{+1.5} & 83.1\dlt{+1.4} & 32.6\dlt{+23.5} & 21.8\dlt{-2.0} & 55.8\dltg{+9.7} \\
 R2Former & 17.8\dlt{+22.9} & 30.4\dlt{+16.1} & 63.8\dlt{+0.7} & 84.0\dlt{-3.5} & 74.7\dlt{+0.6} & 26.8\dlt{+5.6} & 83.1\dlt{-1.4} & 15.0\dlt{+2.8} & 22.8\dlt{+6.9} & 46.5\dltg{+5.6} \\
 \midrule
