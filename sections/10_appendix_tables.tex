@@ -204,6 +204,31 @@ It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-
 \end{equation}
 Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and an importance built on them needs a larger exponent to match.
 
+\paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat G$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in \eqref{eq:demo}. Table~\ref{tab:residual} measures the residual $r_i=|(\hat G\mathbf w)_i-1|$ on real images. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
+
+\begin{table}[H]
+\caption{Residual of the democratic condition on real images, $r_i=|(\hat G\mathbf w)_i-1|$ with $w_i=1/n_i$ and $\tau{=}0.5$, over all tokens of $200$ database images per benchmark (DINOv2-G, block 31). Under the block model every $r_i$ is $0$.}
+\label{tab:residual}
+\centering
+{\footnotesize\setlength{\tabcolsep}{5pt}%
+\begin{tabular}{lccc}
+\toprule
+Benchmark & mean $r_i$ & median $r_i$ & share of tokens with $r_i<0.2$ \\
+\midrule
+Pitts30k & --- & --- & --- \\
+Tokyo 24/7 & --- & --- & --- \\
+Nordland & --- & --- & --- \\
+AmsterTime & --- & --- & --- \\
+Hawkins & --- & --- & --- \\
+Baidu Mall & --- & --- & --- \\
+VP-Air & --- & --- & --- \\
+Mid-Atlantic Ridge & --- & --- & --- \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+
 \FloatBarrier
 
 \FloatBarrier
