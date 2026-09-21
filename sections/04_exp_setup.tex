@@ -37,11 +37,7 @@ Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
 
 \paragraph{Implementation details.} One configuration is used for every benchmark; every constant, and the sweep that fixed it, is given in Appendix~\ref{app:impl}.
 
-\paragraph{Evaluation metric.} We follow the standard VPR protocol and report Recall@$1$, the share of queries whose top-ranked database image lies within the benchmark's own distance of the query's true location,
-\begin{equation*}
-\text{R@}K=\frac{1}{|\mathcal{Q}|}\sum_{q\in\mathcal{Q}}\mathbb{1}\big[\exists\,d\in\text{top-}K(q):\ \delta(d,q)\le\epsilon\big],
-\end{equation*}
-with $\delta$ and $\epsilon$ as each benchmark defines them, $25$\,m in UTM on the urban sets and the provided correspondences, frame windows or pose thresholds elsewhere (Appendix~\ref{app:protocol}). Every baseline we run is scored against the same ground truth and the same query and database lists as ours, at its own default resolution and, for two-stage methods, its own shortlist depth; published numbers are quoted only where the paper's protocol coincides with this one.
+\paragraph{Evaluation metric.} Following standard practice \citep{netvlad,patchnetvlad}, we report Recall@1: a query is correctly localized if the top-ranked database image lies within the benchmark's ground-truth tolerance, $25$\,m on the urban sets and the provided correspondences, frame windows or pose thresholds elsewhere (Appendix~\ref{app:protocol}). Every baseline we run uses the same ground truth, query and database lists as ours, at its own default resolution and, for two-stage methods, its own shortlist depth; published numbers are quoted only where the paper's protocol coincides with this one.
 
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
