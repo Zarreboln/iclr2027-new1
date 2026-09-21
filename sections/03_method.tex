@@ -38,13 +38,11 @@ Sky, pavement and a facade of identical windows fill an image with near-copies o
 \end{equation}
 the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat S_{ij}=\mathbb 1[\,S(F,F)_{ij}>\tau\,]$, which counts near-copies rather than grading them. When repeated content forms blocks of mutual near-duplicates, the block model of Appendix~\ref{app:ridge}, the condition is solved by the inverse multiplicity of each patch,
 \begin{equation}\label{eq:weight}
-  \hat S\,\mathbf w=\mathbf 1
-  \quad\Longrightarrow\quad
   w_i=\frac{1}{n_i},
   \qquad
-  n_i=\sum_j \mathbb 1[\,S(F,F)_{ij}>\tau\,].
+  n_i=\sum_j \hat S_{ij}=\sum_j \mathbb 1[\,S(F,F)_{ij}>\tau\,],
 \end{equation}
-and we use this inverse multiplicity as the importance throughout. A patch recurring twenty times in its image therefore receives one twentieth of the importance of a patch that occurs once (Figure~\ref{fig:blocks}). Appendix~\ref{app:ridge} gives the derivation.
+and we use this inverse multiplicity as the importance throughout; outside the block model it satisfies \eqref{eq:demo} only approximately. A patch recurring twenty times in its image therefore receives one twentieth of the importance of a patch that occurs once (Figure~\ref{fig:blocks}). Appendix~\ref{app:ridge} gives the derivation.
 
 \begin{figure}[t]
 \centering
