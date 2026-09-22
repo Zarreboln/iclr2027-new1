@@ -8,7 +8,7 @@ We evaluate the pipeline from three perspectives. First, we compare it with trai
 \vspace{0pt}
 \paragraph{Datasets.} We evaluate on seventeen benchmarks, grouped by imaging domain in Table~\ref{tab:datasets}: seven are street-level imagery, the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS), and ten come from other imaging domains, nine of them the suite of \citet{anyloc}. Appendix~\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.
 
-\paragraph{Implementation details.} All experiments run on one NVIDIA H100. The feature extractor is a frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}) with $2{,}304$ patch tokens per image; $\tau{=}0.5$, $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ for all benchmarks. Baselines use their own default settings; Appendix~\ref{app:impl} lists the remaining details.
+\paragraph{Implementation details.} All experiments run on one NVIDIA H100. The feature extractor is a frozen DINOv2 (\emph{v2}) or DINOv3 (\emph{v3}) backbone; we set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks. Baselines use their own default settings; Appendix~\ref{app:impl} lists the remaining details.
 
 \paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the benchmark's tolerance, $25$\,m on the street-level sets, $16$\,m on Oxford RobotCar, $\pm10$ frames on Nordland, the paired image on AmsterTime, and the provided correspondences or pose thresholds elsewhere (Appendix~\ref{app:protocol}).
 \end{minipage}\hspace{0.015\textwidth}%
