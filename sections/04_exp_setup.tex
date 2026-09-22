@@ -206,7 +206,7 @@ Ours\,\emph{v3} & 2048 & 93.74 & \underline{98.41} & 89.32 & \textbf{96.56} & \u
 }
 \end{table}
 
-\paragraph{Cost per query.} Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning a database of $83{,}952$ descriptors, and re-ranking the top-$100$. The stages pull in opposite directions. Our extraction is the most expensive, $44$\,ms for the DINOv2-G forward pass at $672$\,px against $4$ to $17$\,ms for the smaller backbones; the scan is under a millisecond for every method; and our re-ranking is the cheapest, $13.7$\,ms with all $2{,}304$ tokens and $3.1$\,ms with $1024$, against $21.9$ to $64.8$\,ms for the learned or attention-based matchers and $6.7$\,s for Patch-NetVLAD's RANSAC. Per query the pipeline takes $48$ to $58$\,ms, within a factor of $1.5$ of the fastest two-stage method, and only the re-ranking grows with the shortlist: at $K{=}1000$ it takes $27.8$ and $167$\,ms for $1024$ and $2{,}304$ tokens. Per-image storage is of the same order as SelaVPR and EffoVPR-ZS.
+\paragraph{Cost per query.} Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning a database of $83{,}952$ descriptors, and re-ranking the top-$100$. The stages pull in opposite directions. Our extraction is the most expensive, $44$\,ms for the DINOv2-G forward pass of \emph{v2} at $672$\,px against $4$ to $17$\,ms for the smaller backbones; the scan is under a millisecond for every method; and our re-ranking is the cheapest, $13.7$\,ms with all $2{,}304$ tokens and $3.1$\,ms with $1024$, against $21.9$ to $64.8$\,ms for the learned or attention-based matchers and $6.7$\,s for Patch-NetVLAD's RANSAC. Per query the pipeline takes $48$ to $58$\,ms, within a factor of $1.5$ of the fastest two-stage method, and only the re-ranking grows with the shortlist: at $K{=}1000$ it takes $27.8$ and $167$\,ms for $1024$ and $2{,}304$ tokens. Per-image storage is of the same order as SelaVPR and EffoVPR-ZS.
 
 \begin{table}[!htb]
 \caption{Per-query cost of the two-stage methods in ms on one H100. Extraction: the query's global and local features at each method's own resolution (batch 1, fp16), median over $25$ calls, best of $40$ repeats. Scan: cosine search over $83{,}952$ descriptors to the top-$100$. Re-ranking: each method's released code on the AmsterTime top-$100$, median over $200$ queries, fp32. Storage: the local features kept per database image (fp16).}
@@ -222,8 +222,8 @@ R2Former & \textbf{3.9} & $<1$ & 64.8 & 68.8 & $500\times131$ (0.13\,MB) \\
 SelaVPR & 11.9 & $<1$ & 29.6 & 41.9 & $61\times61\times128$ (0.95\,MB) \\
 EffoVPR-ZS & 17.5 & $<1$ & 21.9 & \textbf{39.5} & $518\times1024$ (1.06\,MB) \\
 \midrule
-Ours, $2{,}304$ tokens & 44.0 & $<1$ & 13.7 & 58.2 & $2{,}304\times512$ (2.36\,MB) \\
-Ours, $1024$ tokens & 44.0 & $<1$ & \textbf{3.1} & 47.6 & $1024\times512$ (1.05\,MB) \\
+Ours\,\emph{v2}, $2{,}304$ tokens & 44.0 & $<1$ & 13.7 & 58.2 & $2{,}304\times512$ (2.36\,MB) \\
+Ours\,\emph{v2}, $1024$ tokens & 44.0 & $<1$ & \textbf{3.1} & 47.6 & $1024\times512$ (1.05\,MB) \\
 \bottomrule
 \end{tabular}%
 }
