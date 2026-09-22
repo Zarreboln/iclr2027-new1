@@ -1,36 +1,36 @@
 \section{Evaluation}
 \label{sec:exp}
-We evaluate the pipeline from three perspectives. First, we compare it with training-free and with trained methods on seventeen benchmarks, seven of them street-level imagery, the domain of the training corpora, and ten from other imaging domains (\S\ref{sec:sota}). Second, we ask which part of the pipeline the result comes from, by changing the patch-distinctiveness signal alone, by plugging our second stage into other methods' first stages, and by holding the backbone fixed while everything else varies (\S\ref{sec:swap}). Third, we show retrievals on four benchmarks (Figure~\ref{fig:qual}). Every number for our method comes from one configuration; nothing is tuned per benchmark.
+We evaluate the pipeline from three perspectives. First, we compare it with training-free and with trained methods on seventeen benchmarks, eight of them ground-level outdoor imagery, the seven street-level benchmarks that form the domain of the training corpora and the Nordland railway, and nine from other viewpoints and environments (\S\ref{sec:sota}). Second, we ask which part of the pipeline the result comes from, by changing the patch-distinctiveness signal alone, by plugging our second stage into other methods' first stages, and by holding the backbone fixed while everything else varies (\S\ref{sec:swap}). Third, we show retrievals on four benchmarks (Figure~\ref{fig:qual}). Every number for our method comes from one configuration; nothing is tuned per benchmark.
 
 \subsection{Experimental setup}
 \label{sec:setup}
 \noindent\begin{minipage}[t]{0.585\textwidth}
 \vspace{0pt}
-\paragraph{Datasets.} We evaluate on seventeen benchmarks, grouped by imaging domain in Table~\ref{tab:datasets}: seven are street-level imagery, the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS), and ten come from other imaging domains, nine of them the suite of \citet{anyloc}. Appendix~\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.
+\paragraph{Datasets.} We evaluate on seventeen benchmarks, grouped by viewpoint and environment in Table~\ref{tab:datasets}: eight are ground-level outdoor imagery, the seven street-level benchmarks that form the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS) plus the Nordland railway, and nine come from other viewpoints and environments, the suite of \citet{anyloc}. Appendix~\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.
 
 \paragraph{Implementation details.} All experiments run on one NVIDIA H100. The feature extractor is a frozen DINOv2 (\emph{v2}) or DINOv3 (\emph{v3}) backbone; we set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks. Baselines use their own default settings; Appendix~\ref{app:impl} lists the remaining details.
 
-\paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the tolerance of its benchmark, following the order of Table~\ref{tab:datasets}. For the street-level benchmarks this is $25$\,m, except Oxford RobotCar ($16$\,m) and AmsterTime (the paired present-day image); for the other domains it is $\pm10$ frames on Nordland and the provided correspondences or pose thresholds elsewhere (Appendix~\ref{app:protocol}).
+\paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the tolerance of its benchmark, following the order of Table~\ref{tab:datasets}. For the ground-level benchmarks this is $25$\,m, except Nordland ($\pm10$ frames), Oxford RobotCar ($16$\,m) and AmsterTime (the paired present-day image); for the other viewpoints and environments it is the provided correspondences or pose thresholds (Appendix~\ref{app:protocol}).
 \end{minipage}\hspace{0.015\textwidth}%
 \begin{minipage}[t]{0.40\textwidth}
 \vspace{0pt}
 \centering
-\captionof{table}{The seventeen benchmarks by imaging domain and the condition each one tests.}
+\captionof{table}{The seventeen benchmarks by viewpoint and environment, and the condition each one tests.}
 \label{tab:datasets}
 {\scriptsize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.3}%
 \begin{tabular}{@{}ll@{}}
 \toprule
 Condition & Benchmarks \\
 \midrule
-\multicolumn{2}{@{}l}{\emph{Street-level imagery}} \\
+\multicolumn{2}{@{}l}{\emph{Ground-level outdoor imagery}} \\
 Viewpoint & Pitts30k, Pitts250k \\
 Illumination & Tokyo 24/7 \\
 Season, weather & MSLS-val \\
+Railway, seasons & Nordland \\
 Route repetition & St Lucia, Oxford RobotCar \\
 Long-term change & AmsterTime \\
 \midrule
-\multicolumn{2}{@{}l}{\emph{Other imaging domains}} \\
-Railway, seasons & Nordland \\
+\multicolumn{2}{@{}l}{\emph{Other viewpoints and environments}} \\
 Indoor & 17 Places, Baidu Mall \\
  & Gardens Point \\
 Aerial & VP-Air, Nardo-Air \\
@@ -44,63 +44,63 @@ Underwater & Mid-Atlantic Ridge \\
 \FloatBarrier
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
-Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of, on all seventeen benchmarks. On street-level imagery we lead the best prior training-free number on six of the seven benchmarks and are within $0.5$ of AnyLoc on the seventh, Oxford (Appendix~\ref{app:trained-full}), by $+4.3$ R@1 on Pitts30k and $+4.1$ on Tokyo 24/7 where the comparison is closest, for a mean of $92.8$ against $83.5$ for EffoVPR-ZS. On the other domains we are best or tied on nine of the ten, for a mean of $78.6$ against $67.6$ for EffoVPR-ZS and $65.0$ for AnyLoc, whose first-stage descriptor is $24\times$ larger than ours; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. The two rows differ by $1.2$ mean R@1 on street-level imagery and $1.6$ on the other domains, most of it on Nordland and AmsterTime, where the newer backbone's features carry seasonal and decades-long change on their own. The frozen class token and GeM, the two training-free baselines that do nothing but pool, sit at $56.5$ and $62.6$ on street-level imagery: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
+Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of, on all seventeen benchmarks. On ground-level outdoor imagery we lead the best prior training-free number on seven of the eight benchmarks and are within $0.5$ of AnyLoc on the eighth, Oxford (Appendix~\ref{app:trained-full}), by $+4.3$ R@1 on Pitts30k and $+4.1$ on Tokyo 24/7 where the comparison is closest and by $+38.7$ on Nordland, whose seasonal change no training-free method handled before, for a mean of $93.3$ against $80.3$ for EffoVPR-ZS. On the other viewpoints and environments we are best or tied on all nine, for a mean of $76.6$ against $69.5$ for AnyLoc, whose first-stage descriptor is $24\times$ larger than ours, and $68.7$ for EffoVPR-ZS. The two rows differ by $2.8$ mean R@1 on ground-level imagery and $0.3$ elsewhere, most of it on Nordland and AmsterTime, where the newer backbone's features carry seasonal and decades-long change on their own. The frozen class token and GeM, the two training-free baselines that do nothing but pool, sit at $51.5$ and $56.7$ on ground-level imagery: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
 
 \begin{table}[!htb]
-\caption{Comparison with training-free methods. Recall@1 (\%) on the same four street-level and four other-domain benchmarks as Table~\ref{tab:trained}, with the mean over all seven street-level benchmarks, over all ten other-domain benchmarks and over all seventeen; the full tables in Appendix~\ref{app:trained-full} list every benchmark. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated; \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with training-free methods. Recall@1 (\%) on the same four ground-level and four other benchmarks as Table~\ref{tab:trained}, with the mean over all eight ground-level benchmarks, over all nine from other viewpoints and environments, and over all seventeen; the full tables in Appendix~\ref{app:trained-full} list every benchmark. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated; \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
 \label{tab:breadth}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll cccc|M cccc|M M}
 \toprule
-& & \multicolumn{5}{c}{Street-level imagery} & \multicolumn{5}{c}{Other imaging domains} & \\
+& & \multicolumn{5}{c}{Ground-level outdoor imagery} & \multicolumn{5}{c}{Other viewpoints and environments} & \\
 \cmidrule(lr){3-7}\cmidrule(lr){8-12}
-Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & AmsterTime & mean (7) & Nordland & Hawk & Laurel & VP-Air & mean (10) & mean (17) \\
+Method & Dim & Pitts30k & Tokyo24/7 & Nordland & AmsterTime & mean (8) & Hawk & Laurel & Baidu & VP-Air & mean (9) & mean (17) \\
 \midrule
-CLS token & 1024 & 80.3 & 78.7 & 46.0 & 45.8 & 56.5 & 15.9 & 26.3 & 50.9 & 38.0 & 46.8 & 50.8 \\
-GeM & 1024 & 80.4 & 78.5 & 69.8 & 27.9 & 62.6 & 15.0 & 56.8 & 50.9 & 42.2 & 55.6 & 58.5 \\
-AnyLoc & 49152 & 87.1 & 87.7 & 82.9 & 37.8 & 79.0 & 23.9 & \underline{65.2} & 61.6 & 66.7 & 65.0 & 70.8 \\
-EffoVPR-ZS$^{\dagger}$ & 1024 & 93.4 & 89.4 & 90.8 & 65.8 & 83.5 & 57.9 & 38.1 & 67.0 & 65.7 & 67.6 & 74.1 \\
-SegVLAD-PreT & 49152 & 86.0 & 86.7 & 94.3 & 62.4 & 82.4 & 26.3 & 56.8 & 26.8 & 69.8 & 52.3 & 64.7 \\
+CLS token & 1024 & 78.7 & 46.0 & 15.9 & 45.8 & 51.5 & 26.3 & 50.9 & 43.1 & 38.0 & 50.2 & 50.8 \\
+GeM & 1024 & 78.5 & 69.8 & 15.0 & 27.9 & 56.7 & 56.8 & 50.9 & 46.2 & 42.2 & 60.1 & 58.5 \\
+AnyLoc & 49152 & 87.7 & 82.9 & 23.9 & 37.8 & 72.1 & \underline{65.2} & 61.6 & 75.2 & 66.7 & 69.5 & 70.8 \\
+EffoVPR-ZS$^{\dagger}$ & 1024 & 89.4 & 90.8 & 57.9 & 65.8 & 80.3 & 38.1 & 67.0 & 75.9 & 65.7 & 68.7 & 74.1 \\
+SegVLAD-PreT & 49152 & 86.7 & 94.3 & 26.3 & 62.4 & 75.4 & 56.8 & 26.8 & 78.5 & 69.8 & 55.2 & 64.7 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{95.7} & \underline{92.5} & \underline{97.5} & \underline{68.1} & \underline{91.6} & \underline{83.0} & \textbf{67.0} & \textbf{83.0} & \underline{72.1} & \underline{77.0} & \underline{83.0} \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{73.6} & \textbf{92.8} & \textbf{96.6} & 61.0 & \underline{75.9} & \textbf{77.6} & \textbf{78.6} & \textbf{84.4} \\
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{92.5} & \underline{97.5} & \underline{83.0} & \underline{68.1} & \underline{90.5} & \textbf{67.0} & \textbf{83.0} & \textbf{84.5} & \underline{72.1} & \underline{76.3} & \underline{83.0} \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{93.7} & \textbf{98.4} & \textbf{96.6} & \textbf{73.6} & \textbf{93.3} & 61.0 & \underline{75.9} & \underline{83.5} & \textbf{77.6} & \textbf{76.6} & \textbf{84.4} \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
-Table~\ref{tab:trained} sets the same two rows against the trained methods. On street-level imagery, the domain their supervision is aimed at, our mean of $92.8$ edges the strongest of them, SAGE at $92.7$, and we take the best number on Tokyo 24/7 and on AmsterTime, the benchmark with decades of time variation, without a single place label. Outside that domain the picture changes: the thirteen trained methods above $80$ on street-level imagery each give up between $23$ and $40$ mean R@1 on moving to the other domains, while ours gives up $14.2$, and we take the best number on eight of the ten and are within $3$ points of the best on the other two, for a mean of $78.6$ against $68.0$ for MegaLoc, the strongest trained method. The margins are largest where a single descriptor has least to work with, $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air, the aerial set with the deepest database. Figure~\ref{fig:qual} shows four queries: where the trained methods return a different place under seasonal change, illumination change, decades of time or a degraded corridor, the pipeline returns the correct image at rank one.
+Table~\ref{tab:trained} sets the same two rows against the trained methods. On ground-level outdoor imagery, the domain their supervision is aimed at, our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, and we take the best number on Tokyo 24/7, on Nordland and on AmsterTime, the benchmark with decades of time variation, without a single place label. Outside that domain the picture changes: the thirteen trained methods above $80$ on ground-level imagery each give up between $27$ and $40$ mean R@1 on moving to the other viewpoints and environments, while ours gives up $16.7$, and we take the best number on seven of the nine and are within $3$ points of the best on the other two, for a mean of $76.6$ against $65.1$ for MegaLoc, the strongest trained method. The margins are largest where a single descriptor has least to work with, $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air, the aerial set with the deepest database. Figure~\ref{fig:qual} shows four queries: where the trained methods return a different place under seasonal change, illumination change, decades of time or a degraded corridor, the pipeline returns the correct image at rank one.
 
 \begin{table}[!htb]
-\caption{Comparison with trained methods. Recall@1 (\%) on four street-level and four other-domain benchmarks, with the mean over all seven street-level benchmarks, over all ten other-domain benchmarks and over all seventeen; the two block means are the mean columns of the full tables in Appendix~\ref{app:trained-full}, which list every benchmark. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with trained methods. Recall@1 (\%) on four ground-level and four other benchmarks, with the mean over all eight ground-level benchmarks, over all nine from other viewpoints and environments, and over all seventeen; the two block means are the mean columns of the full tables in Appendix~\ref{app:trained-full}, which list every benchmark. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
 \label{tab:trained}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll cccc|M cccc|M M}
 \toprule
-& & \multicolumn{5}{c}{Street-level imagery} & \multicolumn{5}{c}{Other imaging domains} & \\
+& & \multicolumn{5}{c}{Ground-level outdoor imagery} & \multicolumn{5}{c}{Other viewpoints and environments} & \\
 \cmidrule(lr){3-7}\cmidrule(lr){8-12}
-Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & AmsterTime & mean (7) & Nordland & Hawk & Laurel & VP-Air & mean (10) & mean (17) \\
+Method & Dim & Pitts30k & Tokyo24/7 & Nordland & AmsterTime & mean (8) & Hawk & Laurel & Baidu & VP-Air & mean (9) & mean (17) \\
 \midrule
-NetVLAD & 32768 & 81.5 & 82.1 & 54.9 & 20.6 & 53.8 & 6.4 & 38.1 & 42.9 & 14.7 & 36.6 & 43.7 \\
-SFRS & 4096 & 90.7 & 70.9 & 85.4 & 19.3 & 59.1 & 8.8 & 29.7 & 21.4 & 9.4 & 29.2 & 41.5 \\
-CosPlace & 2048 & 92.2 & 90.9 & 87.3 & 49.7 & 83.8 & 63.0 & 33.9 & 25.9 & 10.4 & 43.7 & 60.2 \\
-MixVPR & 4096 & 94.6 & 91.6 & 86.3 & 40.9 & 84.5 & 76.6 & 26.3 & 32.1 & 12.9 & 51.5 & 65.1 \\
-EigenPlaces & 2048 & 94.1 & 92.5 & 93.0 & 48.9 & 86.7 & 63.6 & 28.8 & 27.7 & 13.1 & 49.2 & 64.6 \\
-R2Former$^{\dagger}$ & 256 & 93.2 & 91.1 & 88.6 & 29.5 & 83.5 & 60.5 & 17.8 & 30.4 & 15.0 & 47.9 & 62.6 \\
-SALAD & 8448 & 95.1 & 92.4 & 94.6 & 58.4 & 90.1 & 86.5 & 38.1 & 46.4 & 24.0 & 58.9 & 71.7 \\
-CricaVPR$^\ddag$ & 10752 & 94.6 & 91.8 & 90.2 & 49.0 & 87.6 & 80.5 & 28.0 & 34.8 & 19.9 & 56.0 & 69.0 \\
-SelaVPR$^{\dagger}$ & 1024 & 95.7 & 92.8 & 94.0 & 50.3 & 88.9 & 85.2 & 25.4 & 53.6 & 32.6 & 58.7 & 71.1 \\
-BoQ & 12288 & \underline{96.6} & 93.7 & \underline{98.1} & 63.0 & 92.1 & 90.6 & 33.9 & 60.7 & 29.5 & 64.3 & 75.7 \\
-CliqueMining & 8448 & 95.2 & 92.6 & 96.8 & 57.7 & 90.7 & \underline{95.9} & 22.9 & 38.4 & 22.9 & 59.0 & 72.1 \\
-SuperVLAD$^\ddag$ & 3072 & 95.2 & 92.6 & 93.7 & 54.7 & 89.7 & 79.2 & 37.3 & 51.8 & 23.8 & 53.9 & 68.6 \\
-VLAD-BuFF & 4096 & 95.6 & 92.5 & 96.5 & 61.4 & 91.1 & 84.9 & 37.3 & 33.9 & 33.3 & 60.1 & 72.9 \\
-MegaLoc & 8448 & 96.4 & \underline{94.1} & 96.5 & 62.5 & 91.4 & 94.3 & 37.3 & 55.4 & 45.6 & 68.0 & 77.6 \\
-SAGE$^\ddag$ & 8448 & \textbf{96.8} & \textbf{94.7} & 97.8 & 66.0 & \underline{92.7} & 95.1 & 27.1 & 46.4 & 39.1 & 63.5 & 75.5 \\
+NetVLAD & 32768 & 82.1 & 54.9 & 6.4 & 20.6 & 47.9 & 38.1 & 42.9 & 57.8 & 14.7 & 39.9 & 43.7 \\
+SFRS & 4096 & 70.9 & 85.4 & 8.8 & 19.3 & 52.8 & 29.7 & 21.4 & 51.3 & 9.4 & 31.5 & 41.5 \\
+CosPlace & 2048 & 90.9 & 87.3 & 63.0 & 49.7 & 81.2 & 33.9 & 25.9 & 47.1 & 10.4 & 41.5 & 60.2 \\
+MixVPR & 4096 & 91.6 & 86.3 & 76.6 & 40.9 & 83.5 & 26.3 & 32.1 & 68.4 & 12.9 & 48.7 & 65.1 \\
+EigenPlaces & 2048 & 92.5 & 93.0 & 63.6 & 48.9 & 83.8 & 28.8 & 27.7 & 66.6 & 13.1 & 47.6 & 64.6 \\
+R2Former$^{\dagger}$ & 256 & 91.1 & 88.6 & 60.5 & 29.5 & 80.6 & 17.8 & 30.4 & 74.7 & 15.0 & 46.5 & 62.6 \\
+SALAD & 8448 & 92.4 & 94.6 & 86.5 & 58.4 & 89.6 & 38.1 & 46.4 & 69.9 & 24.0 & 55.9 & 71.8 \\
+CricaVPR$^\ddag$ & 10752 & 91.8 & 90.2 & 80.5 & 49.0 & 86.7 & 28.0 & 34.8 & 65.8 & 19.9 & 53.3 & 69.0 \\
+SelaVPR$^{\dagger}$ & 1024 & 92.8 & 94.0 & 85.2 & 50.3 & 88.5 & 25.4 & 53.6 & 68.5 & 32.6 & 55.8 & 71.1 \\
+BoQ & 12288 & 93.7 & \underline{98.1} & 90.6 & 63.0 & 91.9 & 33.9 & 60.7 & 77.4 & 29.5 & 61.4 & 75.8 \\
+CliqueMining & 8448 & 92.6 & 96.8 & \underline{95.9} & 57.7 & 91.3 & 22.9 & 38.4 & 69.1 & 22.9 & 54.9 & 72.0 \\
+SuperVLAD$^\ddag$ & 3072 & 92.6 & 93.7 & 79.2 & 54.7 & 88.3 & 37.3 & 51.8 & 70.3 & 23.8 & 51.1 & 68.6 \\
+VLAD-BuFF & 4096 & 92.5 & 96.5 & 84.9 & 61.4 & 90.3 & 37.3 & 33.9 & 76.4 & 33.3 & 57.3 & 72.8 \\
+MegaLoc & 8448 & \underline{94.1} & 96.5 & 94.3 & 62.5 & 91.7 & 37.3 & 55.4 & 79.4 & 45.6 & 65.1 & 77.6 \\
+SAGE$^\ddag$ & 8448 & \textbf{94.7} & 97.8 & 95.1 & 66.0 & \underline{93.0} & 27.1 & 46.4 & 74.6 & 39.1 & 60.0 & 75.5 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.7 & 92.5 & 97.5 & \underline{68.1} & 91.6 & 83.0 & \textbf{67.0} & \textbf{83.0} & \underline{72.1} & \underline{77.0} & \underline{83.0} \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & \textbf{73.6} & \textbf{92.8} & \textbf{96.6} & \underline{61.0} & \underline{75.9} & \textbf{77.6} & \textbf{78.6} & \textbf{84.4} \\
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & 92.5 & 97.5 & 83.0 & \underline{68.1} & 90.5 & \textbf{67.0} & \textbf{83.0} & \textbf{84.5} & \underline{72.1} & \underline{76.3} & \underline{83.0} \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & 93.7 & \textbf{98.4} & \textbf{96.6} & \textbf{73.6} & \textbf{93.3} & \underline{61.0} & \underline{75.9} & \underline{83.5} & \textbf{77.6} & \textbf{76.6} & \textbf{84.4} \\
 \bottomrule
 \end{tabular}%
 }
