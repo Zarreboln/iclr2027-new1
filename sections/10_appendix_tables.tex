@@ -218,7 +218,7 @@ One configuration is used for every benchmark. Tokens are the value facet of a f
 \subsection{Hyperparameters and calibration}
 \label{app:hyper}
 \label{app:calib}
-\paragraph{Why a threshold is the right form for the gate.} Write the row maximum $m_i$ of \eqref{eq:stage2} as evidence for the hypothesis that patch $i$ has a counterpart in the candidate, against the alternative that its best match is accidental. The likelihood ratio between the two increases with $m_i$, so the Bayes-optimal decision is to accept patch $i$ when $m_i$ exceeds a constant \citep{kay}. The gate of \eqref{eq:stage2} is that decision, with the constant fixed at $\theta{=}0.65$ for every backbone and dataset; the sweep below reports what other values cost.
+\paragraph{Why a threshold is the right form for the gate.} Write the row maximum $m_i$ of \eqref{eq:stage2} as evidence for the hypothesis that patch $i$ has a counterpart in the candidate, against the alternative that its best match is accidental. The likelihood ratio between the two increases with $m_i$, so the Bayes-optimal decision is to accept patch $i$ when $m_i$ exceeds a constant. The gate of \eqref{eq:stage2} is that decision, with the constant fixed at $\theta{=}0.65$ for every backbone and dataset; the sweep below reports what other values cost.
 
 \label{sec:exp-hp}
 \label{app:abl}
