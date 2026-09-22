@@ -1,6 +1,6 @@
 \section{Evaluation}
 \label{sec:exp}
-We evaluate the pipeline from three perspectives. First, we compare it with training-free and with trained methods on seventeen benchmarks, eight of them the standard urban suite and nine drawn from environments the training corpora never cover (\S\ref{sec:sota}). Second, we ask which part of the pipeline the result comes from, by changing the patch-importance signal alone, by plugging our second stage into other methods' first stages, and by holding the backbone fixed while everything else varies (\S\ref{sec:swap}). Third, we show retrievals on one query per benchmark family (Figure~\ref{fig:qual}). Every number for our method comes from one configuration; nothing is tuned per benchmark.
+We evaluate the pipeline from three perspectives. First, we compare it with training-free and with trained methods on seventeen benchmarks, eight of them the standard urban suite and nine drawn from environments the training corpora never cover (\S\ref{sec:sota}). Second, we ask which part of the pipeline the result comes from, by changing the patch-distinctiveness signal alone, by plugging our second stage into other methods' first stages, and by holding the backbone fixed while everything else varies (\S\ref{sec:swap}). Third, we show retrievals on one query per benchmark family (Figure~\ref{fig:qual}). Every number for our method comes from one configuration; nothing is tuned per benchmark.
 
 \subsection{Experimental setup}
 \label{sec:setup}
@@ -123,10 +123,10 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 93.7 & \textbf{98.4} & \textbf{96.6} & \tex
 
 \subsection{Ablation study}
 \label{sec:swap}
-\paragraph{Which signal patch importance should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity, down-weighted, leads at $93.03$ R@1; class-token attention, the signal of \citet{effovpr}, is the closest alternative at $92.62$; reversing the direction of a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification all sit at or below the unweighted baseline of $87.62$. Repetition within the image is the signal to read, and it should count against a patch, not for it.
+\paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity, down-weighted, leads at $93.03$ R@1; class-token attention, the signal of \citet{effovpr}, is the closest alternative at $92.62$; reversing the direction of a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification all sit at or below the unweighted baseline of $87.62$. Repetition within the image is the signal to read, and it should count against a patch, not for it.
 
 \begin{table}[tp]
-\caption{Choice of the patch-importance signal on Pitts30k ($6{,}816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
+\caption{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
 \label{tab:w-signal}
 \centering
 {\footnotesize

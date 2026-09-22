@@ -111,7 +111,7 @@ Ours\,\emph{v3} & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} 
 
 \subsection{Implementation details}
 \label{app:impl}
-One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch importance is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks by \eqref{eq:stage2} at $\theta{=}0.65$; on the urban benchmarks only each image's $1024$ highest-importance tokens are stored and scored, on the environments all $2{,}304$ (Appendix~\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
+One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks by \eqref{eq:stage2} at $\theta{=}0.65$; on the urban benchmarks only each image's $1024$ most distinctive tokens are stored and scored, on the environments all $2{,}304$ (Appendix~\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
 
 \subsection{Hyperparameters and calibration}
 \label{app:hyper}
@@ -175,7 +175,7 @@ $\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0
 \par\smallskip{\scriptsize\emph{Notes.} That last figure is the ceiling---no gate can retrieve what the shortlist does not contain---so the best column converts $80.46$ into $90.76$ of an available $98.17$. \textbf{The curve is not monotone}: it falls from $86.95$ at the open gate to a minimum of $81.96$ at $0.40$ before rising to $90.76$ at $0.65$. A gate in the middle of the similarity distribution is worse than no gate at all, because it discards moderate matches while keeping neither the confident ones alone nor all of them. The second-order instance has the same dip at the same place ($82.17$ at $0.40$). Our runs (ND21).}
 \end{table}
 
-\section{Patch importance}
+\section{Patch distinctiveness}
 
 \FloatBarrier
 
@@ -202,7 +202,7 @@ It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-
   \qquad\text{and}\qquad
   w_i=\frac{1}{n_i}\quad\text{with}\quad n_i=\sum_{j=1}^{N}\hat G_{ij} .
 \end{equation}
-Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and an importance built on them needs a larger exponent to match.
+Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a distinctiveness built on them needs a larger exponent to match.
 
 \paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat G$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in \eqref{eq:demo}. Table~\ref{tab:residual} measures the residual $r_i=|(\hat G\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across eight benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
 
@@ -331,12 +331,12 @@ WPCA-1024 & 90.45 & 84.86 & 70.78 & 92.70 & 66.04 & 80.97 \\
 
 \FloatBarrier
 
-\subsection{What patch importance does to the spectrum}
+\subsection{What patch distinctiveness does to the spectrum}
 \label{app:patchvis-main}
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.50\textwidth]{figures/patch_cov.pdf}
-\caption{\textbf{What patch importance does to the descriptor.} One query and the database image our first stage retrieves for it. The right column reads $F^{\top}F$ and $G_C{=}F^{\top}WF$ as a distribution of the image's energy over directions: keeping the $k$ strongest directions captures the plotted share of the total, so a curve that rises early is one where a few directions carry the image. An element covering much of the frame arrives as many near-identical patches pointing the same way and concentrates the unweighted moment; the importance spreads it back, by $6.9$ and $8.0$ points averaged over the first $32$ directions.}
+\caption{\textbf{What patch distinctiveness does to the descriptor.} One query and the database image our first stage retrieves for it. The right column reads $F^{\top}F$ and $G_C{=}F^{\top}WF$ as a distribution of the image's energy over directions: keeping the $k$ strongest directions captures the plotted share of the total, so a curve that rises early is one where a few directions carry the image. An element covering much of the frame arrives as many near-identical patches pointing the same way and concentrates the unweighted moment; the distinctiveness spreads it back, by $6.9$ and $8.0$ points averaged over the first $32$ directions.}
 \label{fig:patchcov}
 \end{figure}
 
