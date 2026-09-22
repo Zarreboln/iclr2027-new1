@@ -258,7 +258,7 @@ $\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.7
 \ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
 \bottomrule
 \end{tabular}}
-\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: the coarse stage prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-moment instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
+\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: stage 1 alone prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-moment instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
 \end{table}
 \begin{table}[H]
 \caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the re-ranking score, so every column re-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
@@ -453,7 +453,7 @@ The first stage factorizes because its contraction is bilinear in the two token 
 \subsection{Re-ranking operators}
 \label{app:s2grid}
 \begin{table}[h]
-\caption{\textbf{Seven re-ranking operators}, mean R@1 over the nine AnyLoc-suite benchmarks of Table~\ref{tab:breadth}. The coarse stage is the deployed one throughout; only the second stage changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
+\caption{\textbf{Seven re-ranking operators}, mean R@1 over the nine AnyLoc-suite benchmarks of Table~\ref{tab:breadth}. Stage 1 is the deployed one throughout; only stage 2 changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
 \label{tab:s2grid}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3pt}%
