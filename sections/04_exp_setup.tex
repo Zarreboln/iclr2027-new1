@@ -40,11 +40,13 @@ Underwater & Mid-Atlantic Ridge \\
 \end{minipage}
 
 
+
+\FloatBarrier
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
 Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of, on all seventeen benchmarks. On street-level imagery we lead the best prior training-free number on six of the seven benchmarks and are within $0.5$ of AnyLoc on the seventh, Oxford (Appendix~\ref{app:trained-full}), by $+4.3$ R@1 on Pitts30k and $+4.1$ on Tokyo 24/7 where the comparison is closest, for a mean of $92.8$ against $83.5$ for EffoVPR-ZS. On the other domains we are best or tied on nine of the ten, for a mean of $78.6$ against $67.6$ for EffoVPR-ZS and $65.0$ for AnyLoc, whose first-stage descriptor is $24\times$ larger than ours; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. The two rows differ by $1.2$ mean R@1 on street-level imagery and $1.6$ on the other domains, most of it on Nordland and AmsterTime, where the newer backbone's features carry seasonal and decades-long change on their own. The frozen class token and GeM, the two training-free baselines that do nothing but pool, sit at $56.5$ and $62.6$ on street-level imagery: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
 
-\begin{table}[!b]
+\begin{table}[!htb]
 \caption{Comparison with training-free methods. Recall@1 (\%) on the same four street-level and four other-domain benchmarks as Table~\ref{tab:trained}, with the mean over all seven street-level benchmarks, over all ten other-domain benchmarks and over all seventeen; the full tables in Appendix~\ref{app:trained-full} list every benchmark. The street-level benchmarks and Nordland re-rank $1024$ tokens per image, the other benchmarks all $2{,}304$. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated. \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
 \label{tab:breadth}
 \centering
@@ -70,7 +72,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.
 
 Table~\ref{tab:trained} sets the same two rows against the trained methods. On street-level imagery, the domain their supervision is aimed at, our mean of $92.8$ edges the strongest of them, SAGE at $92.7$, and we take the best number on Tokyo 24/7 and on AmsterTime, the benchmark with decades of time variation, without a single place label. Outside that domain the picture changes: the thirteen trained methods above $80$ on street-level imagery each give up between $23$ and $40$ mean R@1 on moving to the other domains, while ours gives up $14.2$, and we take the best number on eight of the ten and are within $3$ points of the best on the other two, for a mean of $78.6$ against $68.0$ for MegaLoc, the strongest trained method. The margins are largest where a single descriptor has least to work with, $67.0$ against $38.1$ on the degraded Hawkins corridor, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air, the aerial set with the deepest database. Figure~\ref{fig:qual} shows four queries: where the trained methods return a different place under seasonal change, illumination change, decades of time or a degraded corridor, the pipeline returns the correct image at rank one.
 
-\begin{table}[tp]
+\begin{table}[!htb]
 \caption{Comparison with trained methods. Recall@1 (\%) on four street-level and four other-domain benchmarks, with the mean over all seven street-level benchmarks, over all ten other-domain benchmarks and over all seventeen; the two block means are the mean columns of the full tables in Appendix~\ref{app:trained-full}, which list every benchmark. Same splits, ground truth and configuration as Table~\ref{tab:breadth}. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
 \label{tab:trained}
 \centering
@@ -104,18 +106,20 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & \textbf{73.6}
 }
 \end{table}
 
-\begin{figure}[tp]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_qualitative.png}
 \caption{Rank-1 retrievals on four benchmarks, each method at its own single stage. A green border marks a correct rank-1 and a red one an incorrect one; training-free methods are left of the line; right of it, trained methods from newest to oldest: SAGE, MegaLoc, BoQ, CosPlace and NetVLAD. Queries are chosen automatically among those our pipeline retrieves correctly, as the ones whose correct image sits furthest down the rankings of the methods that fail.}
 \label{fig:qual}
 \end{figure}
 
+
+\FloatBarrier
 \subsection{Ablation study}
 \label{sec:swap}
 \paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity, down-weighted, leads at $93.03$ R@1; class-token attention, the signal of \citet{effovpr}, is the closest alternative at $92.62$; reversing the direction of a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification all sit at or below the unweighted baseline of $87.62$. Repetition within the image is the signal to read, and it should count against a patch, not for it.
 
-\begin{table}[tp]
+\begin{table}[!htb]
 \caption{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
 \label{tab:w-signal}
 \centering
@@ -142,7 +146,7 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 
 \paragraph{Our second stage on other methods' first stages.} Table~\ref{tab:stage2swap} isolates the re-ranking rule by dropping it into other pipelines: each method keeps its resolution and shortlist, and only the scoring rule changes. The upper block replaces the re-ranker of the two methods that ship one, and both improve on the mean over the nine AnyLoc-suite benchmarks, R2Former by $+5.6$ and SelaVPR by $+9.7$ R@1, better on $15$ of the $18$ cells. The lower block adds it where a method ships none, and all eight improve, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of the $72$ cells. The gain is largest exactly where a single descriptor is weakest, and the rule needs no training, no fitted part and no access to a method's internals.
 
-\begin{table}[tp]
+\begin{table}[!htb]
 \caption{Our second stage plugged into other pipelines on the nine benchmarks of the AnyLoc suite. Each figure is the method's published result, after its own re-ranker in the upper block and from its global descriptor in the lower; the subscript is the change from replacing or adding our re-ranking rule \eqref{eq:stage2}, with the method's resolution and shortlist left unchanged.}
 \label{tab:stage2swap}
 \centering
@@ -175,7 +179,7 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 
 \paragraph{Is it the backbone?} To compare aggregation at equal capacity, we retrain three baselines on DINOv3-7B, each under its own published recipe with nothing changed but the backbone. Table~\ref{tab:perdataset} gives Recall@1 on all thirteen benchmarks. Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen and ahead by more than $14$ on three; and moving from the DINOv2 backbone to the DINOv3 one raises our mean by $1.4$ with nothing else changed. A larger backbone helps every method, by $1.4$ to $4.5$ mean R@1, and it does not close the gap. The comparison also carries a broader point. The backbones the field builds on have grown from $86$M parameters in DINOv2-B to $6.7$B in DINOv3-7B, and a method that learns its aggregation pays for that growth again with every new backbone, in the labelled corpus, the GPU memory and the days of fine-tuning that retraining three baselines here required. A training-free pipeline adopts the new backbone by loading it, and the gap in Table~\ref{tab:perdataset} is what that costs in accuracy: nothing.
 
-\begin{table}[tp]
+\begin{table}[!htb]
 \caption{Matched-backbone comparison on the thirteen benchmarks. \emph{v2} denotes a DINOv2 backbone and \emph{v3} a DINOv3 one: the published backbone and a retraining on DINOv3-7B for the baselines, frozen DINOv2-G and DINOv3-7B for ours. \emph{Dim.} is the first-stage descriptor dimensionality. Bold indicates the best value and underline the second best over all rows. Our runs.}
 \label{tab:perdataset}
 \centering
@@ -202,3 +206,4 @@ Ours\,\emph{v3} & 2048 & 93.74 & \underline{98.41} & 89.32 & \textbf{96.56} & \u
 }%
 }
 \end{table}
+\FloatBarrier

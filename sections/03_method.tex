@@ -1,4 +1,4 @@
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
 \includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
@@ -44,7 +44,7 @@ the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We imp
 \end{equation}
 and we use it as the distinctiveness throughout. On real images the blocks are approximate: at $\tau{=}0.5$ the row sums in \eqref{eq:demo} lie within $0.2$ of one for half of all tokens and within $0.5$ for nine in ten (Table~\ref{tab:residual}); what both stages rely on, that $w_i$ falls with the amount of similar content around patch $i$, holds regardless. A patch recurring twenty times in its image therefore receives one twentieth of the distinctiveness of a patch that occurs once (Figure~\ref{fig:blocks}). Appendix~\ref{app:ridge} gives the derivation.
 
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/blocks_nordland.pdf}
 \caption{Near-duplicate blocks and patch distinctiveness on one Nordland pair. Left, the query; right, the database image our pipeline retrieves at rank one. Colours mark blocks of mutually near-duplicate patches under $\hat S$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little weight, the sparse distinctive content receives most. Every benchmark is shown in Appendix~\ref{app:patchvis}.}
