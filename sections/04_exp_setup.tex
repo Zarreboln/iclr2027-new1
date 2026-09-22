@@ -114,7 +114,6 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & \textbf{73.6}
 \end{figure}
 
 
-\FloatBarrier
 \subsection{Ablation study}
 \label{sec:swap}
 \paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity, down-weighted, leads at $93.03$ R@1; class-token attention, the signal of \citet{effovpr}, is the closest alternative at $92.62$; reversing the direction of a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification all sit at or below the unweighted baseline of $87.62$. Repetition within the image is the signal to read, and it should count against a patch, not for it.
