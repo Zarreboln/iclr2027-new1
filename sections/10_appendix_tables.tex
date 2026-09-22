@@ -211,6 +211,30 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 \end{table}
 \FloatBarrier
 
+\subsection{Per-query cost}
+\label{app:cost}
+Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and re-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2-G at $672$\,px. The scan is under a millisecond for every method. Re-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.
+\begin{table}[H]
+\caption{Per-query cost of the two-stage methods on Pitts30k, in ms on one H100. Extraction: the query's global and local features at each method's own resolution (batch 1, fp16), median over $25$ calls, best of $40$ repeats. Stage 1: cosine search of one descriptor against the $10{,}000$ database descriptors to the top-$100$. Stage 2: each method's released code on its Pitts30k top-$100$, with the candidates' local features fetched from host memory per query as the released code does, fp32; per query the best of $20$ passes, median over $200$ queries.}
+\label{tab:s2cost}
+\centering
+{\footnotesize\setlength{\tabcolsep}{5pt}%
+\begin{tabular}{llrrrr}
+\toprule
+Method & Backbone & Extraction & Stage 1: scan & Stage 2: re-rank & Total \\
+\midrule
+Patch-NetVLAD & VGG16 @\,$640{\times}480$ & 15.5 & 0.3 & 5302 & 5318 \\
+R2Former & DeiT-S @\,$640{\times}480$ & \textbf{4.3} & 0.1 & 62.4 & 66.8 \\
+SelaVPR & DINOv2-L @\,$224$ & 14.7 & 0.1 & 28.6 & 43.4 \\
+EffoVPR-ZS & DINOv2-L @\,$504$ & 15.3 & 0.1 & 19.3 & \textbf{34.7} \\
+\midrule
+Ours\,\emph{v2} & DINOv2-G @\,$672$, $1024$ tokens & 31.5 & 0.2 & \textbf{15.5} & 47.2 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+\FloatBarrier
+
 \subsection{Implementation details}
 \label{app:impl}
 One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Appendix~\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
