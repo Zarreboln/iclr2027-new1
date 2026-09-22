@@ -10,7 +10,7 @@ We evaluate the pipeline from three perspectives. First, we compare it with trai
 
 \paragraph{Implementation details.} All experiments run on one NVIDIA H100. The feature extractor is a frozen DINOv2 (\emph{v2}) or DINOv3 (\emph{v3}) backbone; we set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks. Baselines use their own default settings; Appendix~\ref{app:impl} lists the remaining details.
 
-\paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the benchmark's tolerance: $25$\,m on Pitts30k, Pitts250k, Tokyo 24/7, MSLS-val and St Lucia, $16$\,m on Oxford RobotCar, the paired image on AmsterTime, $\pm10$ frames on Nordland, and the provided correspondences or pose thresholds on the remaining nine (Appendix~\ref{app:protocol}).
+\paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the tolerance of its benchmark, following the order of Table~\ref{tab:datasets}. For the street-level benchmarks this is $25$\,m, except Oxford RobotCar ($16$\,m) and AmsterTime (the paired present-day image); for the other domains it is $\pm10$ frames on Nordland and the provided correspondences or pose thresholds elsewhere (Appendix~\ref{app:protocol}).
 \end{minipage}\hspace{0.015\textwidth}%
 \begin{minipage}[t]{0.40\textwidth}
 \vspace{0pt}
