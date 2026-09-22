@@ -56,53 +56,60 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 \label{tab:trained-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
-\begin{tabular}{ll ccccccccc|M}
+\begin{tabular}{ll ccccccc c|M}
 \toprule
-\multicolumn{12}{l}{\emph{Standard benchmarks (urban)}} \\
-Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & Nordland & St Lucia & Oxford & AmsterTime & & mean \\
+\multicolumn{11}{l}{\emph{Street-level imagery}} \\
+Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & St Lucia & Oxford & AmsterTime & & mean \\
 \midrule
-\multicolumn{12}{l}{\emph{Trained or fine-tuned}} \\
-NetVLAD & 32768 & 81.5 & 82.1 & 54.9 & 53.1 & 6.4 & 49.9 & 34.6 & 20.6 &  & 47.9 \\
-SFRS & 4096 & 90.7 & 70.9 & 85.4 & 59.3 & 8.8 & 58.6 & 29.3 & 19.3 &  & 52.8 \\
-CosPlace & 2048 & 92.2 & 90.9 & 87.3 & 87.7 & 63.0 & \underline{99.9} & 79.1 & 49.7 &  & 81.2 \\
-MixVPR & 4096 & 94.6 & 91.6 & 86.3 & 88.0 & 76.6 & 99.6 & 90.6 & 40.9 &  & 83.5 \\
-EigenPlaces & 2048 & 94.1 & 92.5 & 93.0 & 89.1 & 63.6 & 99.5 & 89.5 & 48.9 &  & 83.8 \\
-R2Former$^{\dagger}$ & 256 & 93.2 & 91.1 & 88.6 & 89.7 & 60.5 & 99.7 & 92.7 & 29.5 &  & 80.6 \\
-SALAD & 8448 & 95.1 & 92.4 & 94.6 & 92.2 & 86.5 & \textbf{100.0} & 97.9 & 58.4 &  & 89.6 \\
-CricaVPR$^\ddag$ & 10752 & 94.6 & 91.8 & 90.2 & 89.2 & 80.5 & 99.8 & 98.4 & 49.0 &  & 86.7 \\
-SelaVPR$^{\dagger}$ & 1024 & 95.7 & 92.8 & 94.0 & 90.8 & 85.2 & 99.8 & 99.0 & 50.3 &  & 88.4 \\
-BoQ & 12288 & \underline{96.6} & 93.7 & \underline{98.1} & 93.8 & 90.6 & \textbf{100.0} & \underline{99.5} & 63.0 &  & 91.9 \\
-CliqueMining & 8448 & 95.2 & 92.6 & 96.8 & \underline{94.2} & \underline{95.9} & \textbf{100.0} & 98.4 & 57.7 &  & 91.4 \\
-SuperVLAD$^\ddag$ & 3072 & 95.2 & 92.6 & 93.7 & 91.5 & 79.2 & \underline{99.9} & \textbf{100.0} & 54.7 &  & 88.3 \\
-VLAD-BuFF & 4096 & 95.6 & 92.5 & 96.5 & 92.4 & 84.9 & \textbf{100.0} & 99.0 & 61.4 &  & 90.3 \\
-MegaLoc & 8448 & 96.4 & \underline{94.1} & 96.5 & 91.0 & 94.3 & \textbf{100.0} & 99.0 & 62.5 &  & 91.7 \\
-SAGE$^\ddag$ & 8448 & \textbf{96.8} & \textbf{94.7} & 97.8 & \textbf{94.5} & 95.1 & \underline{99.9} & \underline{99.5} & 66.0 &  & \underline{93.0} \\
+\multicolumn{11}{l}{\emph{Trained or fine-tuned}} \\
+NetVLAD & 32768 & 81.5 & 82.1 & 54.9 & 53.1 & 49.9 & 34.6 & 20.6 &  & 53.8 \\
+SFRS & 4096 & 90.7 & 70.9 & 85.4 & 59.3 & 58.6 & 29.3 & 19.3 &  & 59.1 \\
+CosPlace & 2048 & 92.2 & 90.9 & 87.3 & 87.7 & \underline{99.9} & 79.1 & 49.7 &  & 83.8 \\
+MixVPR & 4096 & 94.6 & 91.6 & 86.3 & 88.0 & 99.6 & 90.6 & 40.9 &  & 84.5 \\
+EigenPlaces & 2048 & 94.1 & 92.5 & 93.0 & 89.1 & 99.5 & 89.5 & 48.9 &  & 86.7 \\
+R2Former$^{\dagger}$ & 256 & 93.2 & 91.1 & 88.6 & 89.7 & 99.7 & 92.7 & 29.5 &  & 83.5 \\
+SALAD & 8448 & 95.1 & 92.4 & 94.6 & 92.2 & \textbf{100.0} & 97.9 & 58.4 &  & 90.1 \\
+CricaVPR$^\ddag$ & 10752 & 94.6 & 91.8 & 90.2 & 89.2 & 99.8 & 98.4 & 49.0 &  & 87.6 \\
+SelaVPR$^{\dagger}$ & 1024 & 95.7 & 92.8 & 94.0 & 90.8 & 99.8 & 99.0 & 50.3 &  & 88.9 \\
+BoQ & 12288 & \underline{96.6} & 93.7 & \underline{98.1} & 93.8 & \textbf{100.0} & \underline{99.5} & 63.0 &  & 92.1 \\
+CliqueMining & 8448 & 95.2 & 92.6 & 96.8 & \underline{94.2} & \textbf{100.0} & 98.4 & 57.7 &  & 90.7 \\
+SuperVLAD$^\ddag$ & 3072 & 95.2 & 92.6 & 93.7 & 91.5 & \underline{99.9} & \textbf{100.0} & 54.7 &  & 89.7 \\
+VLAD-BuFF & 4096 & 95.6 & 92.5 & 96.5 & 92.4 & \textbf{100.0} & 99.0 & 61.4 &  & 91.1 \\
+MegaLoc & 8448 & 96.4 & \underline{94.1} & 96.5 & 91.0 & \textbf{100.0} & 99.0 & 62.5 &  & 91.4 \\
+SAGE$^\ddag$ & 8448 & \textbf{96.8} & \textbf{94.7} & 97.8 & \textbf{94.5} & \underline{99.9} & \underline{99.5} & 66.0 &  & \underline{92.7} \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.7 & 92.5 & 97.5 & 89.0 & 83.0 & 99.1 & 99.0 & \underline{68.1} &  & 90.5 \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & 89.3 & \textbf{96.6} & 99.7 & 99.0 & \textbf{73.6} &  & \textbf{93.3} \\
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.7 & 92.5 & 97.5 & 89.0 & 99.1 & 99.0 & \underline{68.1} &  & 91.6 \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & 89.3 & 99.7 & 99.0 & \textbf{73.6} &  & \textbf{92.8} \\
 \midrule\midrule
-\multicolumn{12}{l}{\emph{Nine environments}} \\
-Method & Dim & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
+\multicolumn{11}{l}{\emph{Other imaging domains}} \\
+\end{tabular}%
+}
+\par\smallskip
+{\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
+\begin{tabular}{ll cccccccccc|M}
+\toprule
+\multicolumn{13}{l}{\emph{Other imaging domains}} \\
+Method & Dim & Nordland & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
 \midrule
-\multicolumn{12}{l}{\emph{Trained or fine-tuned}} \\
-NetVLAD & 32768 & 38.1 & 42.9 & 63.8 & 66.0 & 57.8 & 9.9 & 39.4 & 14.7 & 26.7 & 39.9 \\
-SFRS & 4096 & 29.7 & 21.4 & 59.1 & 55.0 & 51.3 & 0.0 & 47.9 & 9.4 & 9.9 & 31.5 \\
-CosPlace & 2048 & 33.9 & 25.9 & 63.3 & 84.5 & 47.1 & 0.0 & 76.1 & 10.4 & 32.7 & 41.5 \\
-MixVPR & 4096 & 26.3 & 32.1 & 63.8 & 92.0 & 68.4 & 39.4 & 78.9 & 12.9 & 24.8 & 48.7 \\
-EigenPlaces & 2048 & 28.8 & 27.7 & 63.8 & 86.0 & 66.6 & 12.7 & \textbf{100.0} & 13.1 & 29.7 & 47.6 \\
-R2Former$^{\dagger}$ & 256 & 17.8 & 30.4 & 63.8 & 84.0 & 74.7 & 26.8 & 83.1 & 15.0 & 22.8 & 46.5 \\
-SALAD & 8448 & 38.1 & 46.4 & 64.3 & 96.5 & 69.9 & 53.5 & 94.4 & 24.0 & 15.8 & 55.9 \\
-CricaVPR$^\ddag$ & 10752 & 28.0 & 34.8 & 64.0 & 94.0 & 65.8 & 45.1 & \textbf{100.0} & 19.9 & 27.7 & 53.3 \\
-SelaVPR$^{\dagger}$ & 1024 & 25.4 & 53.6 & 63.3 & 94.5 & 68.5 & 59.1 & 83.1 & 32.6 & 21.8 & 55.8 \\
-BoQ & 12288 & 33.9 & 60.7 & 64.3 & \underline{98.0} & 77.4 & 62.0 & 91.5 & 29.5 & 35.6 & 61.4 \\
-CliqueMining & 8448 & 22.9 & 38.4 & \underline{65.3} & 93.0 & 69.1 & 62.0 & 84.5 & 22.9 & 35.6 & 54.9 \\
-SuperVLAD$^\ddag$ & 3072 & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 51.1 \\
-VLAD-BuFF & 4096 & 37.3 & 33.9 & 64.5 & 96.5 & 76.4 & 57.7 & 88.7 & 33.3 & 27.7 & 57.4 \\
-MegaLoc & 8448 & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & \underline{85.9} & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
-SAGE$^\ddag$ & 8448 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \underline{85.9} & 84.5 & 39.1 & 24.8 & 60.0 \\
+\multicolumn{13}{l}{\emph{Trained or fine-tuned}} \\
+NetVLAD & 32768 & 6.4 & 38.1 & 42.9 & 63.8 & 66.0 & 57.8 & 9.9 & 39.4 & 14.7 & 26.7 & 36.6 \\
+SFRS & 4096 & 8.8 & 29.7 & 21.4 & 59.1 & 55.0 & 51.3 & 0.0 & 47.9 & 9.4 & 9.9 & 29.2 \\
+CosPlace & 2048 & 63.0 & 33.9 & 25.9 & 63.3 & 84.5 & 47.1 & 0.0 & 76.1 & 10.4 & 32.7 & 43.7 \\
+MixVPR & 4096 & 76.6 & 26.3 & 32.1 & 63.8 & 92.0 & 68.4 & 39.4 & 78.9 & 12.9 & 24.8 & 51.5 \\
+EigenPlaces & 2048 & 63.6 & 28.8 & 27.7 & 63.8 & 86.0 & 66.6 & 12.7 & \textbf{100.0} & 13.1 & 29.7 & 49.2 \\
+R2Former$^{\dagger}$ & 256 & 60.5 & 17.8 & 30.4 & 63.8 & 84.0 & 74.7 & 26.8 & 83.1 & 15.0 & 22.8 & 47.9 \\
+SALAD & 8448 & 86.5 & 38.1 & 46.4 & 64.3 & 96.5 & 69.9 & 53.5 & 94.4 & 24.0 & 15.8 & 58.9 \\
+CricaVPR$^\ddag$ & 10752 & 80.5 & 28.0 & 34.8 & 64.0 & 94.0 & 65.8 & 45.1 & \textbf{100.0} & 19.9 & 27.7 & 56.0 \\
+SelaVPR$^{\dagger}$ & 1024 & 85.2 & 25.4 & 53.6 & 63.3 & 94.5 & 68.5 & 59.1 & 83.1 & 32.6 & 21.8 & 58.7 \\
+BoQ & 12288 & 90.6 & 33.9 & 60.7 & 64.3 & \underline{98.0} & 77.4 & 62.0 & 91.5 & 29.5 & 35.6 & 64.3 \\
+CliqueMining & 8448 & \underline{95.9} & 22.9 & 38.4 & \underline{65.3} & 93.0 & 69.1 & 62.0 & 84.5 & 22.9 & 35.6 & 59.0 \\
+SuperVLAD$^\ddag$ & 3072 & 79.2 & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 53.9 \\
+VLAD-BuFF & 4096 & 84.9 & 37.3 & 33.9 & 64.5 & 96.5 & 76.4 & 57.7 & 88.7 & 33.3 & 27.7 & 60.1 \\
+MegaLoc & 8448 & 94.3 & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & \underline{85.9} & 81.7 & 45.6 & \textbf{40.6} & 68.0 \\
+SAGE$^\ddag$ & 8448 & 95.1 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \underline{85.9} & 84.5 & 39.1 & 24.8 & 63.5 \\
 \midrule
-Ours\,\emph{v2} & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
-Ours\,\emph{v3} & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \underline{97.2} & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
+Ours\,\emph{v2} & 2048 & 83.0 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{77.0} \\
+Ours\,\emph{v3} & 2048 & \textbf{96.6} & \underline{61.0} & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \underline{97.2} & \textbf{77.6} & \underline{37.6} & \textbf{78.6} \\
 \bottomrule
 \end{tabular}%
 }
@@ -111,7 +118,7 @@ Ours\,\emph{v3} & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} 
 
 \subsection{Implementation details}
 \label{app:impl}
-One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks by \eqref{eq:stage2} at $\theta{=}0.65$; on the urban benchmarks only each image's $1024$ most distinctive tokens are stored and scored, on the environments all $2{,}304$ (Appendix~\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
+One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks by \eqref{eq:stage2} at $\theta{=}0.65$; on the seven street-level benchmarks and Nordland only each image's $1024$ most distinctive tokens are stored and scored, on the other nine benchmarks all $2{,}304$ (Appendix~\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
 
 \subsection{Hyperparameters and calibration}
 \label{app:hyper}
@@ -264,13 +271,13 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 
 \subsection{Devices and compression}
 \label{app:coarsegrid}
-\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. In Table~\ref{tab:coarse} GeM reaches $60.1$ mean R@1 on the nine environments while our stage 1 reaches $68.6$ (v2) and $70.0$ (v3), and it takes the best number on Laurel Caverns, 17 Places and VP-Air with no re-ranking at all. The tables below cover the devices that act on it and its whitened compression.
+\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. In Table~\ref{tab:coarse} GeM reaches $60.1$ mean R@1 on the nine AnyLoc-suite benchmarks while our stage 1 reaches $68.6$ (v2) and $70.0$ (v3), and it takes the best number on Laurel Caverns, 17 Places and VP-Air with no re-ranking at all. The tables below cover the devices that act on it and its whitened compression.
 
 \label{sec:exp-stage1}
 \label{sec:stage1abl}
 \label{sec:compact}
 \begin{table}[H]
-\caption{\textbf{Stage 1 alone on the nine environments.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2-G row.}
+\caption{\textbf{Stage 1 alone on the nine benchmarks of the AnyLoc suite.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2-G row.}
 \label{tab:coarse}
 \centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
@@ -351,7 +358,7 @@ The first stage factorizes because its contraction is bilinear in the two token 
 \subsection{Token budget against re-ranking operator}
 \label{app:s2grid}
 \begin{table}[h]
-\caption{\textbf{Seven re-ranking operators $\times$ two token budgets}, mean R@1 over the nine environment sets of Table~\ref{tab:breadth}. The coarse stage is the deployed one throughout; only the second stage changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
+\caption{\textbf{Seven re-ranking operators $\times$ two token budgets}, mean R@1 over the nine AnyLoc-suite benchmarks of Table~\ref{tab:breadth}. The coarse stage is the deployed one throughout; only the second stage changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
 \label{tab:s2grid}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3pt}%
