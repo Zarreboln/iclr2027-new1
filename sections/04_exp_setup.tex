@@ -39,7 +39,7 @@ Underwater & Mid-Atlantic Ridge \\
 \end{tabular}}
 \end{minipage}
 
-\paragraph{Implementation.} One configuration serves every benchmark and both of our rows. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ (\emph{v2}) or DINOv3 ViT-7B/16 at block $32$ (\emph{v3}), at a resolution giving $2{,}304$ tokens per image, reduced to $C{=}512$ channels by a PCA fitted on database tokens. Distinctiveness uses $\tau{=}0.5$. Stage 1 stores a $2048$-d whitened descriptor per image and returns $K{=}\min(1000,|\mathcal D|)$ candidates; stage 2 re-ranks them with $\theta{=}0.65$, scoring all tokens on the other-domain benchmarks and, to bound storage, the $1024$ most distinctive per image on the street-level benchmarks and Nordland. Baselines run at their own resolution and shortlist depth. All runs use one H100; Appendix~\ref{app:impl} lists every constant and the sweep that fixed it.
+\paragraph{Implementation.} One configuration serves every benchmark: a frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}) backbone, $2{,}304$ tokens per image, $\tau{=}0.5$, $\theta{=}0.65$, a $2048$-d first-stage descriptor and $K{=}\min(1000,|\mathcal D|)$ candidates; on the street-level benchmarks and Nordland, stage 2 stores only the $1024$ most distinctive tokens per image. Baselines run at their own resolution and shortlist depth. Appendix~\ref{app:impl} gives every constant and the sweep that fixed it.
 
 \FloatBarrier
 \subsection{Comparison with state-of-the-art}
