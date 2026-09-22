@@ -4,36 +4,37 @@ We evaluate the pipeline from three perspectives. First, we compare it with trai
 
 \subsection{Experimental setup}
 \label{sec:setup}
+\noindent\begin{minipage}[t]{0.50\textwidth}
+\vspace{0pt}
 \paragraph{Datasets.} We evaluate on seventeen benchmarks and split them by whether their imaging conditions appear in the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS). Viewpoint change, illumination change, season and weather, and repeated vehicle routes on street imagery do; decades-long change, indoor, aerial, subterranean and underwater imagery do not. The results tables keep the two suites the field reports on, the eight standard benchmarks and the nine environments of \citet{anyloc}; AmsterTime is street imagery and sits in the first, although the change it tests lies outside the corpora. Table~\ref{tab:datasets} lists the benchmarks under the condition each one tests; Appendix~\ref{app:protocol} gives splits, ground-truth tolerances and the three conventions on which the published literature disagrees.
-
-\begin{table}[tp]
-\caption{The seventeen benchmarks, grouped by whether the condition they test is covered by the corpora VPR methods are trained on. Splits and ground-truth tolerances are listed in Appendix~\ref{app:protocol}.}
-\label{tab:datasets}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\textwidth}
+\vspace{0pt}
 \centering
-{\footnotesize\setlength{\tabcolsep}{3pt}%
-\begin{tabular}{@{}lll@{}}
+\captionof{table}{The seventeen benchmarks, grouped by whether the condition they test is covered by the VPR training corpora.}
+\label{tab:datasets}
+{\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.02}%
+\begin{tabular}{@{}ll@{}}
 \toprule
-Condition & Benchmark & What it tests \\
+Condition & Benchmarks \\
 \midrule
-\multicolumn{3}{l}{\emph{Covered by the training corpora}} \\
-Viewpoint & Pitts30k, Pitts250k & viewpoint change in a dense city survey \\
-Illumination & Tokyo 24/7 & the same places by day, at dusk and at night \\
-Season, weather & MSLS-val & a moving camera across cities, seasons and weather \\
- & Nordland & one railway line in four seasons, no viewpoint change \\
-Route repetition & St Lucia & a vehicle repeating a suburban route \\
- & Oxford RobotCar & a vehicle repeating a route months apart \\
+\multicolumn{2}{@{}l}{\emph{Covered by training corpora}} \\
+Viewpoint & Pitts30k, Pitts250k \\
+Illumination & Tokyo 24/7 \\
+Season, weather & MSLS-val, Nordland \\
+Route repetition & St Lucia, Oxford RobotCar \\
 \midrule
-\multicolumn{3}{l}{\emph{Outside the training corpora}} \\
-Long-term change & AmsterTime & historical photographs against present-day ones \\
-Indoor & 17 Places, Baidu Mall & indoor scenes that repeat themselves \\
- & Gardens Point & an indoor route walked by day and by night \\
-Aerial & VP-Air, Nardo-Air, Nardo-Air R & aerial imagery, the last one rotated \\
-Subterranean & Hawkins, Laurel Caverns & corridors and caves, little texture, poor light \\
-Underwater & Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
+\multicolumn{2}{@{}l}{\emph{Outside training corpora}} \\
+Long-term change & AmsterTime \\
+Indoor & 17 Places, Baidu Mall \\
+ & Gardens Point \\
+Aerial & VP-Air, Nardo-Air \\
+ & Nardo-Air R (rotated) \\
+Subterranean & Hawkins, Laurel Caverns \\
+Underwater & Mid-Atlantic Ridge \\
 \bottomrule
-\end{tabular}%
-}
-\end{table}
+\end{tabular}}
+\end{minipage}
 
 \paragraph{Evaluation metric.} Following standard practice \citep{netvlad,patchnetvlad}, we report Recall@1: a query is correctly localized if the top-ranked database image lies within the tolerance each benchmark defines: $25$\,m for the street-view sets, $16$\,m on Oxford RobotCar, a $\pm10$-frame window on Nordland, the single paired image on AmsterTime, and the provided correspondences or pose thresholds on the nine environments (Appendix~\ref{app:protocol}).
 
