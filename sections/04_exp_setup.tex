@@ -8,7 +8,7 @@ We evaluate the pipeline from three perspectives. First, we compare it with trai
 \vspace{0pt}
 \paragraph{Datasets.} We evaluate on seventeen benchmarks and split them by imaging domain. Seven are street-level imagery, the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS), and test viewpoint change, illumination, season and weather, repeated vehicle routes and decades-long change. Ten come from other imaging domains: a railway line across four seasons, indoor, aerial, subterranean and underwater imagery, nine of them the suite of \citet{anyloc}. Table~\ref{tab:datasets} lists the benchmarks under the condition each one tests; Appendix~\ref{app:protocol} gives splits, ground-truth tolerances and the three conventions on which the published literature disagrees.
 
-\paragraph{Evaluation metrics.} We adopt the standard VPR protocol \citep{netvlad,patchnetvlad} and report Recall@1 (R@1), the percentage of queries whose top-ranked database image lies within the ground-truth tolerance of the benchmark: $25$\,m on the street-level sets, $16$\,m on Oxford RobotCar, $\pm10$ frames on Nordland, the paired image on AmsterTime, and the provided correspondences or pose thresholds on the other domains (Appendix~\ref{app:protocol}).
+\paragraph{Implementation details.} All experiments are conducted on a single NVIDIA H100 GPU. We use frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}) as the feature extractor, with $2{,}304$ patch tokens per image. We set $\tau{=}0.5$, $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ for all benchmarks. Baselines are run with their own default settings. More details are provided in Appendix~\ref{app:impl}.
 \end{minipage}\hspace{0.015\textwidth}%
 \begin{minipage}[t]{0.415\textwidth}
 \vspace{0pt}
@@ -39,7 +39,8 @@ Underwater & Mid-Atlantic Ridge \\
 \end{tabular}}
 \end{minipage}
 
-\paragraph{Implementation details.} All experiments are conducted on a single NVIDIA H100 GPU. We use frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}) as the feature extractor, with $2{,}304$ patch tokens per image. We set $\tau{=}0.5$, $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ for all benchmarks. Baselines are run with their own default settings. More details are provided in Appendix~\ref{app:impl}.
+
+\paragraph{Evaluation metrics.} We adopt the standard VPR protocol \citep{netvlad,patchnetvlad} and report Recall@1 (R@1), the percentage of queries whose top-ranked database image lies within the ground-truth tolerance of the benchmark: $25$\,m on the street-level sets, $16$\,m on Oxford RobotCar, $\pm10$ frames on Nordland, the paired image on AmsterTime, and the provided correspondences or pose thresholds on the other domains (Appendix~\ref{app:protocol}).
 
 \FloatBarrier
 \subsection{Comparison with state-of-the-art}
