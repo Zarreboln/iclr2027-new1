@@ -205,4 +205,27 @@ Ours\,\emph{v3} & 2048 & 93.74 & \underline{98.41} & 89.32 & \textbf{96.56} & \u
 }%
 }
 \end{table}
+
+\paragraph{Cost of the second stage.} Table~\ref{tab:s2cost} times the re-ranking step of every two-stage method in our tables on the same queries, hardware and shortlist, each with its released code. Ours is the cheapest per query, $2.8$\,ms at $K{=}100$ with $1024$ tokens and $12.3$\,ms with all $2{,}304$, against $21.9$ to $64.8$\,ms for the learned or attention-based matchers and $6.7$\,s for Patch-NetVLAD's RANSAC; its per-image storage is of the same order as SelaVPR and EffoVPR-ZS.
+
+\begin{table}[!htb]
+\caption{Re-ranking cost per query on AmsterTime ($K{=}100$, median over $200$ queries, one H100, fp32, each method's released code) and the local features each method stores per database image (fp16). Our row also gives the time at $K{=}1000$.}
+\label{tab:s2cost}
+\centering
+{\footnotesize\setlength{\tabcolsep}{6pt}%
+\begin{tabular}{lrrl}
+\toprule
+Method & ms/query & $K{=}1000$ & Local features per image \\
+\midrule
+Patch-NetVLAD & 6747 & --- & $2{,}826\times4096$ (23.2\,MB) \\
+R2Former & 64.8 & --- & $500\times131$ (0.13\,MB) \\
+SelaVPR & 29.6 & --- & $61\times61\times128$ (0.95\,MB) \\
+EffoVPR-ZS & 21.9 & --- & $518\times1024$ (1.06\,MB) \\
+\midrule
+Ours, $1024$ tokens & \textbf{2.8} & 24.4 & $1024\times512$ (1.05\,MB) \\
+Ours, $2{,}304$ tokens & 12.3 & 117.6 & $2{,}304\times512$ (2.36\,MB) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 \FloatBarrier
