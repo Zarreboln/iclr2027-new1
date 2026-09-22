@@ -1,0 +1,39 @@
+{
+ "method": "patchnetvlad_pitts_wpca4096",
+ "ds": "amstertime",
+ "stage": "patchnetvlad_official_ransac",
+ "res": [
+  640,
+  480
+ ],
+ "patch_sizes": [
+  2,
+  5,
+  8
+ ],
+ "strides": [
+  1,
+  1,
+  1
+ ],
+ "weights": [
+  0.45,
+  0.15,
+  0.4
+ ],
+ "pool": 100,
+ "ckpt": "/home/tmp_l/ckpt/official/patchnetvlad_pitts_WPCA4096.pth.tar",
+ "ndb": 1231,
+ "nq": 1231,
+ "stage1": {
+  "1": 21.689683184402924,
+  "5": 38.18034118602762,
+  "10": 46.141348497156784
+ },
+ "recall": {
+  "1": 38.992688870836716,
+  "5": 55.56458164094232,
+  "10": 59.057676685621445
+ },
+ "sec": 10101.692177772522
+}
