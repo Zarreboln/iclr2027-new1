@@ -42,47 +42,27 @@ Underwater & Mid-Atlantic Ridge \\
 
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
-Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of, on all seventeen benchmarks. On street-level imagery we lead the best prior training-free number on six of the seven benchmarks and are within $0.5$ of AnyLoc on Oxford, by $+4.3$ R@1 on Pitts30k and $+4.1$ on Tokyo 24/7 where the comparison is closest, for a mean of $92.8$ against $83.5$ for EffoVPR-ZS. On the other domains we are best or tied on nine of the ten, for a mean of $78.6$ against $67.6$ for EffoVPR-ZS and $65.0$ for AnyLoc, whose first-stage descriptor is $24\times$ larger than ours; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. The two rows differ by $1.2$ mean R@1 on street-level imagery and $1.6$ on the other domains, most of it on Nordland and AmsterTime, where the newer backbone's features carry seasonal and decades-long change on their own. The frozen class token and GeM, the two training-free baselines that do nothing but pool, sit at $56.5$ and $62.6$ on street-level imagery: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
+Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of, on all seventeen benchmarks. On street-level imagery we lead the best prior training-free number on six of the seven benchmarks and are within $0.5$ of AnyLoc on the seventh, Oxford (Appendix~\ref{app:trained-full}), by $+4.3$ R@1 on Pitts30k and $+4.1$ on Tokyo 24/7 where the comparison is closest, for a mean of $92.8$ against $83.5$ for EffoVPR-ZS. On the other domains we are best or tied on nine of the ten, for a mean of $78.6$ against $67.6$ for EffoVPR-ZS and $65.0$ for AnyLoc, whose first-stage descriptor is $24\times$ larger than ours; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. The two rows differ by $1.2$ mean R@1 on street-level imagery and $1.6$ on the other domains, most of it on Nordland and AmsterTime, where the newer backbone's features carry seasonal and decades-long change on their own. The frozen class token and GeM, the two training-free baselines that do nothing but pool, sit at $56.5$ and $62.6$ on street-level imagery: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
 
 \begin{table}[tp]
-\caption{Comparison with training-free methods on all seventeen benchmarks. Recall@1 (\%); the street-level benchmarks and Nordland re-rank $1024$ tokens per image, the other benchmarks all $2{,}304$. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated. \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best within each block.}
+\caption{Comparison with training-free methods. Recall@1 (\%) on the same four street-level and four other-domain benchmarks as Table~\ref{tab:trained}, with the mean over all seven street-level benchmarks, over all ten other-domain benchmarks and over all seventeen; the full tables in Appendix~\ref{app:trained-full} list every benchmark. The street-level benchmarks and Nordland re-rank $1024$ tokens per image, the other benchmarks all $2{,}304$. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated. \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
 \label{tab:breadth}
 \centering
-{\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
-\begin{tabular}{ll ccccccc c|M}
+{\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
+\begin{tabular}{ll cccc|M cccc|M M}
 \toprule
-\multicolumn{11}{l}{\emph{Street-level imagery}} \\
-Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & St Lucia & Oxford & AmsterTime & & mean \\
+& & \multicolumn{5}{c}{Street-level imagery} & \multicolumn{5}{c}{Other imaging domains} & \\
+\cmidrule(lr){3-7}\cmidrule(lr){8-12}
+Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & AmsterTime & mean (7) & Nordland & Hawk & Laurel & VP-Air & mean (10) & mean (17) \\
 \midrule
-\multicolumn{11}{l}{\emph{Training-free}} \\
-CLS token & 1024 & 80.3 & 78.7 & 46.0 & 37.8 & 81.5 & 25.6 & 45.8 &  & 56.5 \\
-GeM & 1024 & 80.4 & 78.5 & 69.8 & 36.0 & 74.2 & 71.7 & 27.9 &  & 62.6 \\
-AnyLoc & 49152 & 87.1 & 87.7 & 82.9 & 61.9 & 96.2 & \textbf{99.5} & 37.8 &  & 79.0 \\
-EffoVPR-ZS$^{\dagger}$ & 1024 & 93.4 & 89.4 & 90.8 & 70.3 & 97.8 & 77.0 & 65.8 &  & 83.5 \\
-SegVLAD-PreT & 49152 & 86.0 & 86.7 & 94.3 & 76.6 & 97.1 & 73.8 & 62.4 &  & 82.4 \\
+CLS token & 1024 & 80.3 & 78.7 & 46.0 & 45.8 & 56.5 & 15.9 & 26.3 & 50.9 & 38.0 & 46.8 & 50.8 \\
+GeM & 1024 & 80.4 & 78.5 & 69.8 & 27.9 & 62.6 & 15.0 & 56.8 & 50.9 & 42.2 & 55.6 & 58.5 \\
+AnyLoc & 49152 & 87.1 & 87.7 & 82.9 & 37.8 & 79.0 & 23.9 & \underline{65.2} & 61.6 & 66.7 & 65.0 & 70.8 \\
+EffoVPR-ZS$^{\dagger}$ & 1024 & 93.4 & 89.4 & 90.8 & 65.8 & 83.5 & 57.9 & 38.1 & 67.0 & 65.7 & 67.6 & 74.1 \\
+SegVLAD-PreT & 49152 & 86.0 & 86.7 & 94.3 & 62.4 & 82.4 & 26.3 & 56.8 & 26.8 & 69.8 & 52.3 & 64.7 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{95.7} & \underline{92.5} & \underline{97.5} & \underline{89.0} & \underline{99.1} & \underline{99.0} & \underline{68.1} &  & \underline{91.6} \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{89.3} & \textbf{99.7} & \underline{99.0} & \textbf{73.6} &  & \textbf{92.8} \\
-\midrule\midrule
-\multicolumn{11}{l}{\emph{Other imaging domains}} \\
-\end{tabular}%
-}
-\par\smallskip
-{\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
-\begin{tabular}{ll cccccccccc|M}
-\toprule
-\multicolumn{13}{l}{\emph{Other imaging domains}} \\
-Method & Dim & Nordland & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
-\midrule
-\multicolumn{13}{l}{\emph{Training-free}} \\
-CLS token & 1024 & 15.9 & 26.3 & 50.9 & 61.1 & 75.0 & 43.1 & 56.3 & 76.1 & 38.0 & 24.8 & 46.8 \\
-GeM & 1024 & 15.0 & 56.8 & 50.9 & 64.0 & 89.5 & 46.2 & 81.7 & 85.9 & 42.2 & 23.8 & 55.6 \\
-AnyLoc & 49152 & 23.9 & \underline{65.2} & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7 & 34.6 & 65.0 \\
-EffoVPR-ZS$^{\dagger}$ & 1024 & 57.9 & 38.1 & 67.0 & \textbf{65.5} & \underline{97.5} & 75.9 & \underline{83.1} & 88.7 & 65.7 & \underline{36.6} & 67.6 \\
-SegVLAD-PreT & 49152 & 26.3 & 56.8 & 26.8 & 64.8 & 91.5 & 78.5 & 45.1 & 40.9 & 69.8 & 22.8 & 52.3 \\
-\midrule
-Ours\,\emph{v2} & 2048 & \underline{83.0} & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & \underline{83.1} & \underline{94.4} & \underline{72.1} & \textbf{37.6} & \underline{77.0} \\
-Ours\,\emph{v3} & 2048 & \textbf{96.6} & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \textbf{97.2} & \textbf{77.6} & \textbf{37.6} & \textbf{78.6} \\
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{95.7} & \underline{92.5} & \underline{97.5} & \underline{68.1} & \underline{91.6} & \underline{83.0} & \textbf{67.0} & \textbf{83.0} & \underline{72.1} & \underline{77.0} & \underline{83.0} \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{73.6} & \textbf{92.8} & \textbf{96.6} & 61.0 & \underline{75.9} & \textbf{77.6} & \textbf{78.6} & \textbf{84.4} \\
 \bottomrule
 \end{tabular}%
 }

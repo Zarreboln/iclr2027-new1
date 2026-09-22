@@ -49,8 +49,52 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 
 \FloatBarrier
 
-\subsection{Full comparison with trained methods}
+\subsection{Full comparison with training-free and trained methods}
 \label{app:trained-full}
+\begin{table}[H]
+\caption{Comparison with training-free methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:breadth}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there; markers as in Table~\ref{tab:breadth}.}
+\label{tab:breadth-full}
+\centering
+{\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
+\begin{tabular}{ll ccccccc c|M}
+\toprule
+\multicolumn{11}{l}{\emph{Street-level imagery}} \\
+Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & St Lucia & Oxford & AmsterTime & & mean \\
+\midrule
+\multicolumn{11}{l}{\emph{Training-free}} \\
+CLS token & 1024 & 80.3 & 78.7 & 46.0 & 37.8 & 81.5 & 25.6 & 45.8 &  & 56.5 \\
+GeM & 1024 & 80.4 & 78.5 & 69.8 & 36.0 & 74.2 & 71.7 & 27.9 &  & 62.6 \\
+AnyLoc & 49152 & 87.1 & 87.7 & 82.9 & 61.9 & 96.2 & \textbf{99.5} & 37.8 &  & 79.0 \\
+EffoVPR-ZS$^{\dagger}$ & 1024 & 93.4 & 89.4 & 90.8 & 70.3 & 97.8 & 77.0 & 65.8 &  & 83.5 \\
+SegVLAD-PreT & 49152 & 86.0 & 86.7 & 94.3 & 76.6 & 97.1 & 73.8 & 62.4 &  & 82.4 \\
+\midrule
+Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{95.7} & \underline{92.5} & \underline{97.5} & \underline{89.0} & \underline{99.1} & \underline{99.0} & \underline{68.1} &  & \underline{91.6} \\
+Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{89.3} & \textbf{99.7} & \underline{99.0} & \textbf{73.6} &  & \textbf{92.8} \\
+\midrule\midrule
+\multicolumn{11}{l}{\emph{Other imaging domains}} \\
+\end{tabular}%
+}
+\par\smallskip
+{\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
+\begin{tabular}{ll cccccccccc|M}
+\toprule
+\multicolumn{13}{l}{\emph{Other imaging domains}} \\
+Method & Dim & Nordland & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
+\midrule
+\multicolumn{13}{l}{\emph{Training-free}} \\
+CLS token & 1024 & 15.9 & 26.3 & 50.9 & 61.1 & 75.0 & 43.1 & 56.3 & 76.1 & 38.0 & 24.8 & 46.8 \\
+GeM & 1024 & 15.0 & 56.8 & 50.9 & 64.0 & 89.5 & 46.2 & 81.7 & 85.9 & 42.2 & 23.8 & 55.6 \\
+AnyLoc & 49152 & 23.9 & \underline{65.2} & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66.7 & 34.6 & 65.0 \\
+EffoVPR-ZS$^{\dagger}$ & 1024 & 57.9 & 38.1 & 67.0 & \textbf{65.5} & \underline{97.5} & 75.9 & \underline{83.1} & 88.7 & 65.7 & \underline{36.6} & 67.6 \\
+SegVLAD-PreT & 49152 & 26.3 & 56.8 & 26.8 & 64.8 & 91.5 & 78.5 & 45.1 & 40.9 & 69.8 & 22.8 & 52.3 \\
+\midrule
+Ours\,\emph{v2} & 2048 & \underline{83.0} & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & \underline{83.1} & \underline{94.4} & \underline{72.1} & \textbf{37.6} & \underline{77.0} \\
+Ours\,\emph{v3} & 2048 & \textbf{96.6} & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \textbf{97.2} & \textbf{77.6} & \textbf{37.6} & \textbf{78.6} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+\FloatBarrier
 \begin{table}[H]
 \caption{Comparison with trained methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:trained}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best within each block.}
 \label{tab:trained-full}
