@@ -164,57 +164,53 @@ Ours\,\emph{v3} & 2048 & \textbf{96.6} & \underline{61.0} & \underline{75.9} & \
 \label{app:oldbackbones}
 The pipeline of \S\ref{sec:method} runs unchanged on the backbones of the classic trained methods: VGG16 (conv5\_3, before the ReLU), ResNet-50 (layer3) and DeiT-S (value facet of block 11), all ImageNet-1k supervised, at $480\times640$ with the $1{,}200$ feature-map cells of an image as its tokens. Tokens are centred and PCA-projected as in \S\ref{sec:prelim}; $\tau$ is calibrated once per backbone on SF-XL val ($0.47$, $0.27$, $0.48$), $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ as everywhere else. Table~\ref{tab:oldbackbones} sets each run against the trained methods built on the same backbone. Without any training, the pipeline is ahead of both VGG16 methods on both domain groups and, on ResNet-50, ahead of CosPlace on the other imaging domains; the remaining same-backbone methods, all trained on street-level data, keep a clear margin, largest on street-level imagery. The gap to the DINOv2-G row shows how much of the headline result the foundation-model features carry.
 \begin{table}[H]
-\caption{Recall@1 of our pipeline on ImageNet-supervised backbones against the trained methods built on the same backbone (numbers from Table~\ref{tab:trained-full}). Bold marks the best value per column within each backbone group; the last row is our DINOv2-G result for reference.}
+\caption{Recall@1 of our pipeline on ImageNet-supervised backbones against the trained methods built on the same backbone (numbers from Table~\ref{tab:trained-full}). Bold marks the best value per column among the ImageNet-supervised rows; the last row is our DINOv2-G result for reference.}
 \label{tab:oldbackbones}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.6pt}\renewcommand{\arraystretch}{0.95}%
-\resizebox{\linewidth}{!}{\begin{tabular}{l ccccccc|M}
+\resizebox{\linewidth}{!}{\begin{tabular}{ll ccccccc|M}
 \toprule
-\multicolumn{9}{l}{\emph{Street-level imagery}} \\
-Method & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & St Lucia & Oxford & AmsterTime & mean \\
+\multicolumn{10}{l}{\emph{Street-level imagery}} \\
+Method & Backbone & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & St Lucia & Oxford & AmsterTime & mean \\
 \midrule
-\multicolumn{9}{l}{\emph{VGG16}} \\
-NetVLAD & 81.5 & 82.1 & 54.9 & 53.1 & 49.9 & 34.6 & 20.6 & 53.8 \\
-SFRS & \textbf{90.7} & 70.9 & \textbf{85.4} & \textbf{59.3} & 58.6 & 29.3 & 19.3 & 59.1 \\
-Ours & 85.5 & \textbf{84.2} & 73.7 & 54.2 & \textbf{79.4} & \textbf{53.4} & \textbf{25.8} & \textbf{65.2} \\
+\multicolumn{10}{l}{\emph{Trained on street-level data}} \\
+NetVLAD & VGG16 & 81.5 & 82.1 & 54.9 & 53.1 & 49.9 & 34.6 & 20.6 & 53.8 \\
+SFRS & VGG16 & 90.7 & 70.9 & 85.4 & 59.3 & 58.6 & 29.3 & 19.3 & 59.1 \\
+CosPlace & R50 & 92.2 & 90.9 & 87.3 & 87.7 & \textbf{99.9} & 79.1 & \textbf{49.7} & 83.8 \\
+EigenPlaces & R50 & 94.1 & \textbf{92.5} & \textbf{93.0} & 89.1 & 99.5 & 89.5 & 48.9 & \textbf{86.7} \\
+MixVPR & R50 & \textbf{94.6} & 91.6 & 86.3 & 88.0 & 99.6 & 90.6 & 40.9 & 84.5 \\
+R2Former & DeiT-S & 93.2 & 91.1 & 88.6 & \textbf{89.7} & 99.7 & \textbf{92.7} & 29.5 & 83.5 \\
 \midrule
-\multicolumn{9}{l}{\emph{ResNet-50}} \\
-CosPlace & 92.2 & 90.9 & 87.3 & 87.7 & \textbf{99.9} & 79.1 & \textbf{49.7} & 83.8 \\
-EigenPlaces & 94.1 & \textbf{92.5} & \textbf{93.0} & \textbf{89.1} & 99.5 & 89.5 & 48.9 & \textbf{86.7} \\
-MixVPR & \textbf{94.6} & 91.6 & 86.3 & 88.0 & 99.6 & \textbf{90.6} & 40.9 & 84.5 \\
-Ours & 77.3 & 77.5 & 63.2 & 50.5 & 70.7 & 57.1 & 19.6 & 59.4 \\
+\multicolumn{10}{l}{\emph{Ours, training-free}} \\
+Ours & VGG16 & 85.5 & 84.2 & 73.7 & 54.2 & 79.4 & 53.4 & 25.8 & 65.2 \\
+Ours & R50 & 77.3 & 77.5 & 63.2 & 50.5 & 70.7 & 57.1 & 19.6 & 59.4 \\
+Ours & DeiT-S & 54.7 & 58.1 & 58.1 & 36.2 & 76.8 & 17.3 & 12.5 & 44.8 \\
 \midrule
-\multicolumn{9}{l}{\emph{DeiT-S}} \\
-R2Former & \textbf{93.2} & \textbf{91.1} & \textbf{88.6} & \textbf{89.7} & \textbf{99.7} & \textbf{92.7} & \textbf{29.5} & \textbf{83.5} \\
-Ours & 54.7 & 58.1 & 58.1 & 36.2 & 76.8 & 17.3 & 12.5 & 44.8 \\
-\midrule
-\multicolumn{9}{l}{\emph{Reference}} \\
-Ours, DINOv2-G & 95.7 & 92.5 & 97.5 & 89.0 & 99.1 & 99.0 & 68.1 & 91.6 \\
+\multicolumn{10}{l}{\emph{Reference}} \\
+Ours & DINOv2-G & 95.7 & 92.5 & 97.5 & 89.0 & 99.1 & 99.0 & 68.1 & 91.6 \\
 \bottomrule
 \end{tabular}}%
 \par\smallskip
-\resizebox{\linewidth}{!}{\begin{tabular}{l cccccccccc|M}
+\resizebox{\linewidth}{!}{\begin{tabular}{ll cccccccccc|M}
 \toprule
-\multicolumn{12}{l}{\emph{Other imaging domains}} \\
-Method & Nordland & Hawkins & Laurel & 17Places & Gardens & Baidu & N-Air & N-Air-R & VP-Air & Mid-Atl & mean \\
+\multicolumn{13}{l}{\emph{Other imaging domains}} \\
+Method & Backbone & Nordland & Hawkins & Laurel & 17Places & Gardens & Baidu & N-Air & N-Air-R & VP-Air & Mid-Atl & mean \\
 \midrule
-\multicolumn{12}{l}{\emph{VGG16}} \\
-NetVLAD & 6.4 & 38.1 & 42.9 & 63.8 & 66.0 & 57.8 & 9.9 & 39.4 & 14.7 & 26.7 & 36.6 \\
-SFRS & 8.8 & 29.7 & 21.4 & 59.1 & 55.0 & 51.3 & 0.0 & 47.9 & 9.4 & 9.9 & 29.2 \\
-Ours & \textbf{13.0} & \textbf{44.9} & \textbf{49.1} & \textbf{64.5} & \textbf{69.5} & \textbf{80.8} & \textbf{36.6} & \textbf{73.2} & \textbf{16.6} & \textbf{34.7} & \textbf{48.3} \\
+\multicolumn{13}{l}{\emph{Trained on street-level data}} \\
+NetVLAD & VGG16 & 6.4 & 38.1 & 42.9 & 63.8 & 66.0 & 57.8 & 9.9 & 39.4 & 14.7 & 26.7 & 36.6 \\
+SFRS & VGG16 & 8.8 & 29.7 & 21.4 & 59.1 & 55.0 & 51.3 & 0.0 & 47.9 & 9.4 & 9.9 & 29.2 \\
+CosPlace & R50 & 63.0 & 33.9 & 25.9 & 63.3 & 84.5 & 47.1 & 0.0 & 76.1 & 10.4 & 32.7 & 43.7 \\
+EigenPlaces & R50 & 63.6 & 28.8 & 27.7 & 63.8 & 86.0 & 66.6 & 12.7 & \textbf{100.0} & 13.1 & 29.7 & 49.2 \\
+MixVPR & R50 & \textbf{76.6} & 26.3 & 32.1 & 63.8 & \textbf{92.0} & 68.4 & 39.4 & 78.9 & 12.9 & 24.8 & \textbf{51.5} \\
+R2Former & DeiT-S & 60.5 & 17.8 & 30.4 & 63.8 & 84.0 & 74.7 & 26.8 & 83.1 & 15.0 & 22.8 & 47.9 \\
 \midrule
-\multicolumn{12}{l}{\emph{ResNet-50}} \\
-CosPlace & 63.0 & \textbf{33.9} & 25.9 & 63.3 & 84.5 & 47.1 & 0.0 & 76.1 & 10.4 & \textbf{32.7} & 43.7 \\
-EigenPlaces & 63.6 & 28.8 & 27.7 & \textbf{63.8} & 86.0 & 66.6 & 12.7 & \textbf{100.0} & 13.1 & 29.7 & 49.2 \\
-MixVPR & \textbf{76.6} & 26.3 & 32.1 & \textbf{63.8} & \textbf{92.0} & 68.4 & 39.4 & 78.9 & 12.9 & 24.8 & \textbf{51.5} \\
-Ours & 15.5 & 30.5 & \textbf{45.5} & 63.8 & 52.0 & \textbf{74.3} & \textbf{53.5} & 73.2 & \textbf{13.1} & 19.8 & 44.1 \\
+\multicolumn{13}{l}{\emph{Ours, training-free}} \\
+Ours & VGG16 & 13.0 & 44.9 & \textbf{49.1} & \textbf{64.5} & 69.5 & \textbf{80.8} & 36.6 & 73.2 & 16.6 & \textbf{34.7} & 48.3 \\
+Ours & R50 & 15.5 & 30.5 & 45.5 & 63.8 & 52.0 & 74.3 & 53.5 & 73.2 & 13.1 & 19.8 & 44.1 \\
+Ours & DeiT-S & 3.1 & \textbf{49.2} & 45.5 & 57.9 & 45.5 & 72.5 & \textbf{54.9} & 50.7 & \textbf{19.7} & 15.8 & 41.5 \\
 \midrule
-\multicolumn{12}{l}{\emph{DeiT-S}} \\
-R2Former & \textbf{60.5} & 17.8 & 30.4 & \textbf{63.8} & \textbf{84.0} & \textbf{74.7} & 26.8 & \textbf{83.1} & 15.0 & \textbf{22.8} & \textbf{47.9} \\
-Ours & 3.1 & \textbf{49.2} & \textbf{45.5} & 57.9 & 45.5 & 72.5 & \textbf{54.9} & 50.7 & \textbf{19.7} & 15.8 & 41.5 \\
-\midrule
-\multicolumn{12}{l}{\emph{Reference}} \\
-Ours, DINOv2-G & 83.0 & 67.0 & 83.0 & 65.5 & 99.5 & 84.5 & 83.1 & 94.4 & 72.1 & 37.6 & 77.0 \\
+\multicolumn{13}{l}{\emph{Reference}} \\
+Ours & DINOv2-G & 83.0 & 67.0 & 83.0 & 65.5 & 99.5 & 84.5 & 83.1 & 94.4 & 72.1 & 37.6 & 77.0 \\
 \bottomrule
 \end{tabular}}%
 }
