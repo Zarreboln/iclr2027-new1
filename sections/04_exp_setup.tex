@@ -4,11 +4,13 @@ We evaluate the pipeline from three perspectives. First, we compare it with trai
 
 \subsection{Experimental setup}
 \label{sec:setup}
-\noindent\begin{minipage}[t]{0.50\textwidth}
+\noindent\begin{minipage}[t]{0.57\textwidth}
 \vspace{0pt}
 \paragraph{Datasets.} We evaluate on seventeen benchmarks and split them by imaging domain. Seven are street-level imagery, the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS), and test viewpoint change, illumination, season and weather, repeated vehicle routes and decades-long change. Ten come from other imaging domains: a railway line across four seasons, indoor, aerial, subterranean and underwater imagery, nine of them the suite of \citet{anyloc}. Table~\ref{tab:datasets} lists the benchmarks under the condition each one tests; Appendix~\ref{app:protocol} gives splits, ground-truth tolerances and the three conventions on which the published literature disagrees.
-\end{minipage}\hfill
-\begin{minipage}[t]{0.46\textwidth}
+
+\paragraph{Evaluation metric.} Following standard practice \citep{netvlad,patchnetvlad}, we report Recall@1: a query is correctly localized if the top-ranked database image lies within the tolerance each benchmark defines: $25$\,m for the street-view sets, $16$\,m on Oxford RobotCar, a $\pm10$-frame window on Nordland, the single paired image on AmsterTime, and the provided correspondences or pose thresholds on the other domains (Appendix~\ref{app:protocol}).
+\end{minipage}\hspace{0.015\textwidth}%
+\begin{minipage}[t]{0.415\textwidth}
 \vspace{0pt}
 \centering
 \captionof{table}{The seventeen benchmarks by imaging domain and the condition each one tests.}
@@ -37,7 +39,6 @@ Underwater & Mid-Atlantic Ridge \\
 \end{tabular}}
 \end{minipage}
 
-\paragraph{Evaluation metric.} Following standard practice \citep{netvlad,patchnetvlad}, we report Recall@1: a query is correctly localized if the top-ranked database image lies within the tolerance each benchmark defines: $25$\,m for the street-view sets, $16$\,m on Oxford RobotCar, a $\pm10$-frame window on Nordland, the single paired image on AmsterTime, and the provided correspondences or pose thresholds on the nine environments (Appendix~\ref{app:protocol}).
 
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
