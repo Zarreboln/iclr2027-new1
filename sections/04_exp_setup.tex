@@ -39,7 +39,7 @@ Underwater & Mid-Atlantic Ridge \\
 \end{tabular}}
 \end{minipage}
 
-\paragraph{Implementation details.} All experiments are conducted on a single NVIDIA H100 GPU. We use frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}) as the feature extractor, with $2{,}304$ patch tokens per image. We set $\tau{=}0.5$, $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ for all benchmarks; on the street-level benchmarks and Nordland, stage 2 keeps the $1024$ most distinctive tokens per image to bound storage. Baselines are run with their own default settings. More details are provided in Appendix~\ref{app:impl}.
+\paragraph{Implementation details.} All experiments are conducted on a single NVIDIA H100 GPU. We use frozen DINOv2 ViT-G/14 (\emph{v2}) or DINOv3 ViT-7B/16 (\emph{v3}) as the feature extractor, with $2{,}304$ patch tokens per image. We set $\tau{=}0.5$, $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ for all benchmarks. Baselines are run with their own default settings. More details are provided in Appendix~\ref{app:impl}.
 
 \FloatBarrier
 \subsection{Comparison with state-of-the-art}
