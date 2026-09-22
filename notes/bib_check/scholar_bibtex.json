@@ -1,0 +1,207 @@
+{
+ "allvlad": {
+  "title": "All about VLAD",
+  "scholar_title": "All about VLAD",
+  "bibtex": "@inproceedings{arandjelovic2013all,\n  title={All about VLAD},\n  author={Arandjelovic, Relja and Zisserman, Andrew},\n  booktitle={Proceedings of the IEEE conference on Computer Vision and Pattern Recognition},\n  pages={1578--1585},\n  year={2013}\n}"
+ },
+ "anisotropy": {
+  "title": "How Contextual are Contextualized Word Representations? Comparing the Geometry of BERT, ELMo, and GPT-2 Embeddings",
+  "scholar_title": "How contextual are contextualized word representations? Comparing the geometry of BERT, ELMo, and GPT-2 embeddings",
+  "bibtex": "@inproceedings{ethayarajh2019contextual,\n  title={How contextual are contextualized word representations? Comparing the geometry of BERT, ELMo, and GPT-2 embeddings},\n  author={Ethayarajh, Kawin},\n  booktitle={Proceedings of the 2019 conference on empirical methods in natural language processing and the 9th international joint conference on natural language processing (EMNLP-IJCNLP)},\n  pages={55--65},\n  year={2019}\n}"
+ },
+ "anyloc": {
+  "title": "AnyLoc: Towards universal visual place recognition",
+  "scholar_title": "AnyLoc: Towards Universal Visual Place Recognition",
+  "bibtex": "@article{keetha2023anyloc,\n  title={Anyloc: Towards universal visual place recognition},\n  author={Keetha, Nikhil and Mishra, Avneesh and Karhade, Jay and Jatavallabhula, Krishna Murthy and Scherer, Sebastian and Krishna, Madhava and Garg, Sourav},\n  journal={IEEE Robotics and Automation Letters},\n  volume={9},\n  number={2},\n  pages={1286--1293},\n  year={2023},\n  publisher={IEEE}\n}"
+ },
+ "boq": {
+  "title": "BoQ: A place is worth a bag of learnable queries",
+  "scholar_title": "BoQ: A place is worth a bag of learnable queries",
+  "bibtex": "@inproceedings{ali2024boq,\n  title={BoQ: A place is worth a bag of learnable queries},\n  author={Ali-Bey, Amar and Chaib-Draa, Brahim and Giguere, Philippe},\n  booktitle={2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  pages={17794--17803},\n  year={2024},\n  organization={IEEE}\n}"
+ },
+ "cliquemining": {
+  "title": "Close, but not there: Boosting geographic distance sensitivity in visual place recognition",
+  "scholar_title": "Close, but not there: Boosting geographic distance sensitivity in visual place recognition",
+  "bibtex": "@inproceedings{izquierdo2024close,\n  title={Close, but not there: Boosting geographic distance sensitivity in visual place recognition},\n  author={Izquierdo, Sergio and Civera, Javier},\n  booktitle={European Conference on Computer Vision},\n  pages={240--257},\n  year={2024},\n  organization={Springer}\n}"
+ },
+ "colbert": {
+  "title": "ColBERT: Efficient and effective passage search via contextualized late interaction over BERT",
+  "scholar_title": "Colbert: Efficient and effective passage search via contextualized late interaction over bert",
+  "bibtex": "@inproceedings{khattab2020colbert,\n  title={Colbert: Efficient and effective passage search via contextualized late interaction over bert},\n  author={Khattab, Omar and Zaharia, Matei},\n  booktitle={Proceedings of the 43rd International ACM SIGIR conference on research and development in Information Retrieval},\n  pages={39--48},\n  year={2020}\n}"
+ },
+ "cosplace": {
+  "title": "Rethinking visual geo-localization for large-scale applications",
+  "scholar_title": "Rethinking visual geo-localization for large-scale applications",
+  "bibtex": "@inproceedings{berton2022rethinking,\n  title={Rethinking visual geo-localization for large-scale applications},\n  author={Berton, Gabriele and Masone, Carlo and Caputo, Barbara},\n  booktitle={2022 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  pages={4868--4878},\n  year={2022},\n  organization={IEEE}\n}"
+ },
+ "cricavpr": {
+  "title": "CricaVPR: Cross-image correlation-aware representation learning for visual place recognition",
+  "scholar_title": "Cricavpr: Cross-image correlation-aware representation learning for visual place recognition",
+  "bibtex": "@inproceedings{lu2024cricavpr,\n  title={Cricavpr: Cross-image correlation-aware representation learning for visual place recognition},\n  author={Lu, Feng and Lan, Xiangyuan and Zhang, Lijun and Jiang, Dongmei and Wang, Yaowei and Yuan, Chun},\n  booktitle={2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  pages={16772--16782},\n  year={2024},\n  organization={IEEE}\n}"
+ },
+ "democratic": {
+  "title": "Triangulation embedding and democratic aggregation for image search",
+  "scholar_title": "Triangulation embedding and democratic aggregation for image search",
+  "bibtex": "@inproceedings{jegou2014triangulation,\n  title={Triangulation embedding and democratic aggregation for image search},\n  author={J{\\'e}gou, Herv{\\'e} and Zisserman, Andrew},\n  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},\n  pages={3310--3317},\n  year={2014}\n}"
+ },
+ "dinov2": {
+  "title": "DINOv2: Learning robust visual features without supervision",
+  "scholar_title": "Dinov2: Learning robust visual features without supervision",
+  "bibtex": "@article{oquab2023dinov2,\n  title={Dinov2: Learning robust visual features without supervision},\n  author={Oquab, Maxime and Darcet, Timoth{\\'e}e and Moutakanni, Th{\\'e}o and Vo, Huy and Szafraniec, Marc and Khalidov, Vasil and Fernandez, Pierre and Haziza, Daniel and Massa, Francisco and El-Nouby, Alaaeldin and others},\n  journal={arXiv preprint arXiv:2304.07193},\n  year={2023}\n}"
+ },
+ "dislocation": {
+  "title": "DisLocation: Scalable descriptor distinctiveness for location recognition",
+  "scholar_title": "DisLocation: Scalable descriptor distinctiveness for location recognition",
+  "bibtex": "@inproceedings{arandjelovic2014dislocation,\n  title={DisLocation: Scalable descriptor distinctiveness for location recognition},\n  author={Arandjelovi{\\'c}, Relja and Zisserman, Andrew},\n  booktitle={Asian conference on computer vision},\n  pages={188--204},\n  year={2014},\n  organization={Springer}\n}"
+ },
+ "effovpr": {
+  "title": "EffoVPR: Effective foundation model utilization for visual place recognition",
+  "scholar_title": "Effovpr: Effective foundation model utilization for visual place recognition",
+  "bibtex": "@inproceedings{tzachor2025effovpr,\n  title={Effovpr: Effective foundation model utilization for visual place recognition},\n  author={Tzachor, Issar and Lerner, Boaz and Levy, Matan and Green, Michael and Berkovitz Shalev, Tal and Habib, Gavriel and Samuel, Dvir and Zailer, Noam and Shimshi, Or and Darshan, Nir and others},\n  booktitle={International Conference on Learning Representations},\n  volume={2025},\n  pages={42817--42839},\n  year={2025}\n}"
+ },
+ "eiffeltower": {
+  "title": "Eiffel Tower: A deep-sea underwater dataset for long-term visual localization",
+  "scholar_title": "Eiffel tower: A deep-sea underwater dataset for long-term visual localization",
+  "bibtex": "@article{boittiaux2023eiffel,\n  title={Eiffel tower: A deep-sea underwater dataset for long-term visual localization},\n  author={Boittiaux, Cl{\\'e}mentin and Dune, Claire and Ferrera, Maxime and Arnaubec, Aur{\\'e}lien and Marxer, Ricard and Matabos, Marjolaine and Van Audenhaege, Lo{\\\"\\i}c and Hugel, Vincent},\n  journal={The International Journal of Robotics Research},\n  volume={42},\n  number={9},\n  pages={689--699},\n  year={2023},\n  publisher={SAGE Publications Sage UK: London, England}\n}"
+ },
+ "eigenplaces": {
+  "title": "EigenPlaces: Training viewpoint robust models for visual place recognition",
+  "scholar_title": "Eigenplaces: Training viewpoint robust models for visual place recognition",
+  "bibtex": "@inproceedings{berton2023eigenplaces,\n  title={Eigenplaces: Training viewpoint robust models for visual place recognition},\n  author={Berton, Gabriele and Trivigno, Gabriele and Caputo, Barbara and Masone, Carlo},\n  booktitle={2023 IEEE/CVF International Conference on Computer Vision (ICCV)},\n  pages={11046--11056},\n  year={2023},\n  organization={IEEE}\n}"
+ },
+ "emk": {
+  "title": "Efficient match kernel between sets of features for visual recognition",
+  "scholar_title": "Efficient match kernel between sets of features for visual recognition",
+  "bibtex": "@article{bo2009efficient,\n  title={Efficient match kernel between sets of features for visual recognition},\n  author={Bo, Liefeng and Sminchisescu, Cristian},\n  journal={Advances in neural information processing systems},\n  volume={22},\n  year={2009}\n}"
+ },
+ "emvp": {
+  "title": "EMVP: Embracing visual foundation model for visual place recognition with centroid-free probing",
+  "scholar_title": "Emvp: Embracing visual foundation model for visual place recognition with centroid-free probing",
+  "bibtex": "@article{qiu2024emvp,\n  title={Emvp: Embracing visual foundation model for visual place recognition with centroid-free probing},\n  author={Qiu, Qibo and Zhang, Shun and Gao, Haiming and Yang, Honghui and Ying, Haochao and Wang, Wenxiao and He, Xiaofei},\n  journal={Advances in Neural Information Processing Systems},\n  volume={37},\n  pages={120928--120950},\n  year={2024}\n}"
+ },
+ "gmp": {
+  "title": "Generalized max pooling",
+  "scholar_title": "Generalized max pooling",
+  "bibtex": "@inproceedings{murray2014generalized,\n  title={Generalized max pooling},\n  author={Murray, Naila and Perronnin, Florent},\n  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},\n  pages={2473--2480},\n  year={2014}\n}"
+ },
+ "gsvcities": {
+  "title": "GSV-Cities: Toward appropriate supervised visual place recognition",
+  "scholar_title": "Gsv-cities: Toward appropriate supervised visual place recognition",
+  "bibtex": "@article{ali2022gsv,\n  title={Gsv-cities: Toward appropriate supervised visual place recognition},\n  author={Ali-Bey, Amar and Chaib-Draa, Brahim and Giguere, Philippe},\n  journal={Neurocomputing},\n  volume={513},\n  pages={194--203},\n  year={2022},\n  publisher={Elsevier}\n}"
+ },
+ "knopp": {
+  "title": "Avoiding confusing features in place recognition",
+  "scholar_title": "Avoiding confusing features in place recognition",
+  "bibtex": "@inproceedings{knopp2010avoiding,\n  title={Avoiding confusing features in place recognition},\n  author={Knopp, Jan and Sivic, Josef and Pajdla, Tomas},\n  booktitle={European Conference on Computer Vision},\n  pages={748--761},\n  year={2010},\n  organization={Springer}\n}"
+ },
+ "megaloc": {
+  "title": "MegaLoc: One retrieval to place them all",
+  "scholar_title": "Megaloc: One retrieval to place them all",
+  "bibtex": "@inproceedings{berton2025megaloc,\n  title={Megaloc: One retrieval to place them all},\n  author={Berton, Gabriele and Masone, Carlo},\n  booktitle={2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)},\n  pages={2852--2858},\n  year={2025},\n  organization={IEEE}\n}"
+ },
+ "mixvpr": {
+  "title": "MixVPR: Feature mixing for visual place recognition",
+  "scholar_title": "Mixvpr: Feature mixing for visual place recognition",
+  "bibtex": "@inproceedings{ali2023mixvpr,\n  title={Mixvpr: Feature mixing for visual place recognition},\n  author={Ali-Bey, Amar and Chaib-Draa, Brahim and Giguere, Philippe},\n  booktitle={2023 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},\n  pages={2997--3006},\n  year={2023},\n  organization={IEEE}\n}"
+ },
+ "modalitygap": {
+  "title": "Mind the gap: Understanding the modality gap in multi-modal contrastive representation learning",
+  "scholar_title": "Mind the gap: Understanding the modality gap in multi-modal contrastive representation learning",
+  "bibtex": "@article{liang2022mind,\n  title={Mind the gap: Understanding the modality gap in multi-modal contrastive representation learning},\n  author={Liang, Victor Weixin and Zhang, Yuhui and Kwon, Yongchan and Yeung, Serena and Zou, James Y},\n  journal={Advances in neural information processing systems},\n  volume={35},\n  pages={17612--17625},\n  year={2022}\n}"
+ },
+ "modeseeking": {
+  "title": "Mid-level visual element discovery as discriminative mode seeking",
+  "scholar_title": "Mid-level visual element discovery as discriminative mode seeking",
+  "bibtex": "@article{doersch2013mid,\n  title={Mid-level visual element discovery as discriminative mode seeking},\n  author={Doersch, Carl and Gupta, Abhinav and Efros, Alexei A},\n  journal={Advances in neural information processing systems},\n  volume={26},\n  year={2013}\n}"
+ },
+ "netvlad": {
+  "title": "NetVLAD: CNN architecture for weakly supervised place recognition",
+  "scholar_title": "NetVLAD: CNN architecture for weakly supervised place recognition",
+  "bibtex": "@inproceedings{arandjelovic2016netvlad,\n  title={NetVLAD: CNN architecture for weakly supervised place recognition},\n  author={Arandjelovic, Relja and Gronat, Petr and Torii, Akihiko and Pajdla, Tomas and Sivic, Josef},\n  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},\n  pages={5297--5307},\n  year={2016}\n}"
+ },
+ "pairvpr": {
+  "title": "Pair-VPR: Place-aware pre-training and contrastive pair classification for visual place recognition with vision transformers",
+  "scholar_title": "Pair-vpr: Place-aware pre-training and contrastive pair classification for visual place recognition with vision transformers",
+  "bibtex": "@article{hausler2025pair,\n  title={Pair-vpr: Place-aware pre-training and contrastive pair classification for visual place recognition with vision transformers},\n  author={Hausler, Stephen and Moghadam, Peyman},\n  journal={IEEE Robotics and Automation Letters},\n  volume={10},\n  number={4},\n  pages={4013--4020},\n  year={2025},\n  publisher={IEEE}\n}"
+ },
+ "patchnetvlad": {
+  "title": "Patch-NetVLAD: Multi-scale fusion of locally-global descriptors for place recognition",
+  "scholar_title": "Patch-netvlad: Multi-scale fusion of locally-global descriptors for place recognition",
+  "bibtex": "@inproceedings{hausler2021patch,\n  title={Patch-netvlad: Multi-scale fusion of locally-global descriptors for place recognition},\n  author={Hausler, Stephen and Garg, Sourav and Xu, Ming and Milford, Michael and Fischer, Tobias},\n  booktitle={2021 IEEE/CVF conference on computer vision and pattern recognition (CVPR)},\n  pages={14136--14147},\n  year={2021},\n  organization={IEEE}\n}"
+ },
+ "perlocation": {
+  "title": "Learning and calibrating per-location classifiers for visual place recognition",
+  "scholar_title": "Learning and calibrating per-location classifiers for visual place recognition",
+  "bibtex": "@inproceedings{gronat2013learning,\n  title={Learning and calibrating per-location classifiers for visual place recognition},\n  author={Gronat, Petr and Obozinski, Guillaume and Sivic, Josef and Pajdla, Tomas},\n  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},\n  pages={907--914},\n  year={2013}\n}"
+ },
+ "r2former": {
+  "title": "R2Former: Unified retrieval and reranking transformer for place recognition",
+  "scholar_title": "Former: Unified Retrieval and Reranking Transformer for Place Recognition",
+  "bibtex": "@inproceedings{zhu2023r,\n  title={$ r\\^{}$\\{$2$\\}$ $ former: Unified retrieval and reranking transformer for place recognition},\n  author={Zhu, Sijie and Yang, Linjie and Chen, Chen and Shah, Mubarak and Shen, Xiaohui and Wang, Heng},\n  booktitle={2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  pages={19370--19380},\n  year={2023},\n  organization={IEEE}\n}"
+ },
+ "registers": {
+  "title": "Vision transformers need registers",
+  "scholar_title": "Vision transformers need registers",
+  "bibtex": "@inproceedings{darcet2024vision,\n  title={Vision transformers need registers},\n  author={Darcet, Timoth{\\'e}e and Oquab, Maxime and Mairal, Julien and Bojanowski, Piotr},\n  booktitle={International conference on learning representations},\n  volume={2024},\n  pages={2632--2652},\n  year={2024}\n}"
+ },
+ "repetitive": {
+  "title": "Visual place recognition with repetitive structures",
+  "scholar_title": "Visual place recognition with repetitive structures",
+  "bibtex": "@inproceedings{torii2013visual,\n  title={Visual place recognition with repetitive structures},\n  author={Torii, Akihiko and Sivic, Josef and Pajdla, Tomas and Okutomi, Masatoshi},\n  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},\n  pages={883--890},\n  year={2013}\n}"
+ },
+ "sage": {
+  "title": "SAGE: Spatial-visual adaptive graph exploration for efficient visual place recognition",
+  "scholar_title": "SAGE: Spatial-visual adaptive graph exploration for efficient visual place recognition",
+  "bibtex": "@inproceedings{chen2026sage,\n  title={SAGE: Spatial-visual adaptive graph exploration for efficient visual place recognition},\n  author={Chen, Shunpeng and Wang, Changwei and Xu, Rongtao and Lin, Jinzhou and Xu, Wenhao and Guo, Li and Xu, Shibiao and others},\n  booktitle={International conference on learning representations},\n  volume={2026},\n  pages={28660--28683},\n  year={2026}\n}"
+ },
+ "salad": {
+  "title": "Optimal transport aggregation for visual place recognition",
+  "scholar_title": "Optimal transport aggregation for visual place recognition",
+  "bibtex": "@inproceedings{izquierdo2024optimal,\n  title={Optimal transport aggregation for visual place recognition},\n  author={Izquierdo, Sergio and Civera, Javier},\n  booktitle={2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},\n  pages={17658--17668},\n  year={2024},\n  organization={IEEE}\n}"
+ },
+ "segvlad": {
+  "title": "Revisit anything: Visual place recognition via image segment retrieval",
+  "scholar_title": "Revisit anything: Visual place recognition via image segment retrieval",
+  "bibtex": "@inproceedings{garg2024revisit,\n  title={Revisit anything: Visual place recognition via image segment retrieval},\n  author={Garg, Kartik and Puligilla, Sai Shubodh and Kolathaya, Shishir and Krishna, Madhava and Garg, Sourav},\n  booktitle={European Conference on Computer Vision},\n  pages={326--343},\n  year={2024},\n  organization={Springer}\n}"
+ },
+ "selavpr": {
+  "title": "Towards seamless adaptation of pre-trained models for visual place recognition",
+  "scholar_title": "Towards seamless adaptation of pre-trained models for visual place recognition",
+  "bibtex": "@inproceedings{lu2024towards,\n  title={Towards seamless adaptation of pre-trained models for visual place recognition},\n  author={Lu, Feng and Zhang, Lijun and Lan, Xiangyuan and Dong, Shuting and Wang, Yaowei and Yuan, Chun},\n  booktitle={International conference on learning representations},\n  volume={2024},\n  pages={14314--14335},\n  year={2024}\n}"
+ },
+ "smk": {
+  "title": "To aggregate or not to aggregate: Selective match kernels for image search",
+  "scholar_title": "To aggregate or not to aggregate: Selective match kernels for image search",
+  "bibtex": "@inproceedings{tolias2013aggregate,\n  title={To aggregate or not to aggregate: Selective match kernels for image search},\n  author={Tolias, Giorgos and Avrithis, Yannis and J{\\'e}gou, Herv{\\'e}},\n  booktitle={Proceedings of the IEEE international conference on computer vision},\n  pages={1401--1408},\n  year={2013}\n}"
+ },
+ "superplace": {
+  "title": "SuperPlace: The renaissance of classical feature aggregation for visual place recognition in the era of foundation models",
+  "scholar_title": "Superplace: The renaissance of classical feature aggregation for visual place recognition in the era of foundation models",
+  "bibtex": "@article{liu2025superplace,\n  title={Superplace: The renaissance of classical feature aggregation for visual place recognition in the era of foundation models},\n  author={Liu, Bingxi and Zhang, Pengju and He, Li and Chen, Hao and Guo, Shiyi and Wu, Yihong and Cui, Jinqiang and Zhang, Hong},\n  journal={arXiv preprint arXiv:2506.13073},\n  year={2025}\n}"
+ },
+ "supervlad": {
+  "title": "SuperVLAD: Compact and robust image descriptors for visual place recognition",
+  "scholar_title": "Supervlad: Compact and robust image descriptors for visual place recognition",
+  "bibtex": "@article{lu2024supervlad,\n  title={Supervlad: Compact and robust image descriptors for visual place recognition},\n  author={Lu, Feng and Zhang, Xinyao and Ye, Canming and Dong, Shuting and Zhang, Lijun and Lan, Xiangyuan and Yuan, Chun},\n  journal={Advances in Neural Information Processing Systems},\n  volume={37},\n  pages={5789--5816},\n  year={2024}\n}"
+ },
+ "vitfacets": {
+  "title": "Deep ViT features as dense visual descriptors",
+  "scholar_title": "[PDF] Deep vit features as dense visual descriptors",
+  "bibtex": "@article{amir2021deep,\n  title={Deep vit features as dense visual descriptors},\n  author={Amir, Shir and Gandelsman, Yossi and Bagon, Shai and Dekel, Tali},\n  journal={arXiv preprint arXiv:2112.05814},\n  volume={2},\n  number={3},\n  pages={4},\n  year={2021}\n}"
+ },
+ "vladbuff": {
+  "title": "VLAD-BuFF: Burst-aware fast feature aggregation for visual place recognition",
+  "scholar_title": "VLAD-BuFF: Burst-aware fast feature aggregation for visual place recognition",
+  "bibtex": "@inproceedings{khaliq2024vlad,\n  title={VLAD-BuFF: Burst-aware fast feature aggregation for visual place recognition},\n  author={Khaliq, Ahmad and Xu, Ming and Hausler, Stephen and Milford, Michael and Garg, Sourav},\n  booktitle={European Conference on Computer Vision},\n  pages={447--466},\n  year={2024},\n  organization={Springer}\n}"
+ },
+ "kay": {
+  "title": "Fundamentals of Statistical Signal Processing, Volume II: Detection Theory",
+  "scholar_title": "[CITATION] Statistical Signal Processing, Volume II, Detection Theory",
+  "bibtex": "@misc{kay1998statistical,\n  title={Statistical Signal Processing, Volume II, Detection Theory},\n  author={Kay, Steven M},\n  year={1998},\n  publisher={Prentice Hall New Yersey}\n}"
+ },
+ "whatmakesparis": {
+  "title": "What makes Paris look like Paris?",
+  "scholar_title": "[CITATION] Data Analysis Project: What Makes Paris Look like Paris?",
+  "bibtex": "@article{doerschdata,\n  title={Data Analysis Project: What Makes Paris Look like Paris?},\n  author={Doersch, Carl},\n  publisher={Citeseer}\n}"
+ }
+}
