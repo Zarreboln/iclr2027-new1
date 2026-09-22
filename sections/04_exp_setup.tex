@@ -35,7 +35,7 @@ Underwater & Mid-Atlantic Ridge & deep-sea imagery from a hydrothermal vent \\
 }
 \end{table}
 
-\paragraph{Evaluation metric.} Following standard practice \citep{netvlad,patchnetvlad}, we report Recall@1: a query is correctly localized if the top-ranked database image lies within the benchmark's ground-truth tolerance, $25$\,m on the urban sets and the provided correspondences, frame windows or pose thresholds elsewhere (Appendix~\ref{app:protocol}).
+\paragraph{Evaluation metric.} Following standard practice \citep{netvlad,patchnetvlad}, we report Recall@1: a query is correctly localized if the top-ranked database image lies within the tolerance each benchmark defines: $25$\,m for the street-view sets, $16$\,m on Oxford RobotCar, a $\pm10$-frame window on Nordland, the single paired image on AmsterTime, and the provided correspondences or pose thresholds on the nine environments (Appendix~\ref{app:protocol}).
 
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
