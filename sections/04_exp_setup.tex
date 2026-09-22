@@ -119,7 +119,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & \textbf{73.6}
 \paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity, down-weighted, leads at $93.03$ R@1; class-token attention, the signal of \citet{effovpr}, is the closest alternative at $92.62$; reversing the direction of a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification all sit at or below the unweighted baseline of $87.62$. Repetition within the image is the signal to read, and it should count against a patch, not for it.
 
 \begin{table}[!htb]
-\caption{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over an AnyLoc top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
+\caption{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over a VLAD top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
 \label{tab:w-signal}
 \centering
 {\footnotesize
