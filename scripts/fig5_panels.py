@@ -63,10 +63,10 @@ for k,(title,c,sel) in enumerate([("without $w$",cu,su),("with $w$",cw,sw)]):
     for i in sel:
         if c[i]<=0: continue
         x0,y0=xy(i,0); x1,y1=xy(ji[i],RES+GAP); col=cmap((mi[i]-lo)/max(hi-lo,1e-6))
-        ax.plot([x0,x1],[y0,y1],color=col,lw=0.35+0.8*c[i]/cmax,alpha=0.95,solid_capstyle="round")
+        ax.plot([x0,x1],[y0,y1],color=col,lw=0.75,alpha=0.95,solid_capstyle="round")
         ax.plot([x0,x1],[y0,y1],ls="none",marker="o",ms=1.4,mec="none",mfc=col)
 cax=fig.add_subplot(grid[2]); cax.imshow(np.linspace(0,1,256)[None,:],aspect="auto",cmap=cmap); cax.set_yticks([])
 cax.set_xticks([0,255]); cax.set_xticklabels(["weaker","stronger"],fontsize=9.5); cax.tick_params(length=0,colors=INK)
 for s in cax.spines.values(): s.set_visible(False)
-cax.set_xlabel("match strength $m_i$   (line width: contribution $c_i$)",fontsize=9.5,labelpad=2)
+cax.set_xlabel("match strength $m_i$",fontsize=9.5,labelpad=2)
 plt.savefig(f"{OUT}/fig_maxsim_w_stack.pdf",bbox_inches="tight",dpi=220); plt.close(fig); print("saved 3 panels")
