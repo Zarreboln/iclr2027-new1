@@ -41,8 +41,6 @@ Underwater & Mid-Atlantic Ridge \\
 \end{tabular}}
 \end{minipage}
 
-\paragraph{Baselines.} Training-free: GeM \citep{gem}, AnyLoc \citep{anyloc}, EffoVPR-ZS \citep{effovpr} and SegVLAD \citep{segvlad}. Trained: NetVLAD \citep{netvlad}, SFRS \citep{sfrs}, CosPlace \citep{cosplace}, MixVPR \citep{mixvpr}, EigenPlaces \citep{eigenplaces}, R2Former \citep{r2former}, SALAD \citep{salad}, CricaVPR \citep{cricavpr}, SelaVPR \citep{selavpr}, BoQ \citep{boq}, CliqueMining \citep{cliquemining}, SuperVLAD \citep{supervlad}, VLAD-BuFF \citep{vladbuff}, MegaLoc \citep{megaloc} and SAGE \citep{sage}; the ablations also use Pair-VPR \citep{pairvpr} and Patch-NetVLAD \citep{patchnetvlad}.
-
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
 \paragraph{Against training-free methods.} Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of on all seventeen benchmarks. On the standard benchmarks we lead the best prior training-free number on seven of the eight benchmarks and are within $0.5$ of AnyLoc on Oxford, for a mean of $93.3$ against $80.3$ for EffoVPR-ZS; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. On the cross-environment benchmarks we are best or tied on all nine, $76.6$ against $69.5$ for AnyLoc, whose descriptor is $24\times$ larger than ours. Over all seventeen benchmarks our mean of $84.4$ is $10.3$ points above the best prior training-free method. The frozen class token and GeM, which only pool, reach $51.5$ and $56.7$ on the standard benchmarks: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
