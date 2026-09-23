@@ -164,7 +164,7 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 
 \noindent\begin{minipage}[t]{0.50\textwidth}
 \vspace{0pt}
-\paragraph{Patch importance signal.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity leads at $93.03$ R@1. The class-token attention of EffoVPR \citep{effovpr} is the closest alternative at $92.62$, and the patch-graph centrality of SAP \citep{sap} follows at $90.44$. Token norm \citep{registers} is neutral in either sign, and the inverse document frequency of Video Google \citep{videogoogle}, the cross-referencing of DeepEMD \citep{deepemd} and the rapid spatial verification of Patch-NetVLAD \citep{patchnetvlad} all fall below the unweighted $87.62$. Repetition within the image is the signal to read, and it should count against a patch.
+\paragraph{Patch importance signal.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only the signal that sets the patch importance $w$. Self-similarity leads at $93.03$ R@1. The class-token attention of EffoVPR \citep{effovpr} is the closest alternative at $92.62$, and the patch-graph centrality of SAP \citep{sap} follows at $90.44$. Token norm \citep{registers} is neutral in either version, and the inverse document frequency of Video Google \citep{videogoogle}, the cross-referencing of DeepEMD \citep{deepemd} and the rapid spatial verification of Patch-NetVLAD \citep{patchnetvlad} all fall below the unweighted $87.62$. Repetition within the image is the importance signal to read, and it should count against a patch.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.47\textwidth}
 \vspace{0pt}
