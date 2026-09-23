@@ -203,5 +203,40 @@
   "title": "What makes Paris look like Paris?",
   "scholar_title": "[CITATION] Data Analysis Project: What Makes Paris Look like Paris?",
   "bibtex": "@article{doerschdata,\n  title={Data Analysis Project: What Makes Paris Look like Paris?},\n  author={Doersch, Carl},\n  publisher={Citeseer}\n}"
+ },
+ "deepemd": {
+  "title": "Deepemd: Few-shot image classification with differentiable earth mover's distance and structured classifiers",
+  "scholar_title": "Deepemd: Few-shot image classification with differentiable earth mover's distance and structured classifiers",
+  "bibtex": "@inproceedings{zhang2020deepemd,\n  title={Deepemd: Few-shot image classification with differentiable earth mover’s distance and structured classifiers},\n  author={Zhang, Chi and Cai, Yujun and Lin, Guosheng and Shen, Chunhua},\n  booktitle={2020 IEEE/CVF conference on computer vision and pattern recognition (CVPR)},\n  pages={12200--12210},\n  year={2020},\n  organization={IEEE}\n}"
+ },
+ "dinov3": {
+  "title": "DINOv3",
+  "scholar_title": "Dinov3",
+  "bibtex": "@article{simeoni2025dinov3,\n  title={Dinov3},\n  author={Sim{\\'e}oni, Oriane and Vo, Huy V and Seitzer, Maximilian and Baldassarre, Federico and Oquab, Maxime and Jose, Cijo and Khalidov, Vasil and Szafraniec, Marc and Yi, Seungeun and Ramamonjisoa, Micha{\\\"e}l and others},\n  journal={arXiv preprint arXiv:2508.10104},\n  year={2025}\n}"
+ },
+ "gem": {
+  "title": "Fine-tuning CNN image retrieval with no human annotation",
+  "scholar_title": "Fine-tuning CNN image retrieval with no human annotation",
+  "bibtex": "@article{radenovic2018fine,\n  title={Fine-tuning CNN image retrieval with no human annotation},\n  author={Radenovi{\\'c}, Filip and Tolias, Giorgos and Chum, Ond{\\v{r}}ej},\n  journal={IEEE transactions on pattern analysis and machine intelligence},\n  volume={41},\n  number={7},\n  pages={1655--1668},\n  year={2018},\n  publisher={IEEE}\n}"
+ },
+ "sap": {
+  "title": "Structural Anchor Pruning: Training-Free Multi-Vector Compression for Visual Document Retrieval",
+  "scholar_title": "Structural Anchor Pruning: Training-Free Multi-Vector Compression for Visual Document Retrieval",
+  "bibtex": "@article{liu2026structural,\n  title={Structural Anchor Pruning: Training-Free Multi-Vector Compression for Visual Document Retrieval},\n  author={Liu, Zhuchenyang and Hu, Ziyu and Zhang, Yao and Xiao, Yu},\n  journal={arXiv preprint arXiv:2601.20107},\n  year={2026}\n}"
+ },
+ "sfrs": {
+  "title": "Self-supervising fine-grained region similarities for large-scale image localization",
+  "scholar_title": "Self-supervising fine-grained region similarities for large-scale image localization",
+  "bibtex": "@inproceedings{ge2020self,\n  title={Self-supervising fine-grained region similarities for large-scale image localization},\n  author={Ge, Yixiao and Wang, Haibo and Zhu, Feng and Zhao, Rui and Li, Hongsheng},\n  booktitle={European conference on computer vision},\n  pages={369--386},\n  year={2020},\n  organization={Springer}\n}"
+ },
+ "videogoogle": {
+  "title": "Video Google: A text retrieval approach to object matching in videos",
+  "scholar_title": "Video Google: A text retrieval approach to object matching in videos",
+  "bibtex": "@inproceedings{sivic2003video,\n  title={Video Google: A text retrieval approach to object matching in videos},\n  author={Sivic and Zisserman},\n  booktitle={Proceedings ninth IEEE international conference on computer vision},\n  pages={1470--1477},\n  year={2003},\n  organization={IEEE}\n}"
+ },
+ "chamfer": {
+  "title": "Parametric correspondence and chamfer matching: Two new techniques for image matching",
+  "scholar_title": "[PDF] Parametric correspondence and chamfer matching: Two new techniques for image matching",
+  "bibtex": "@inproceedings{tenenbaum1977parametric,\n  title={Parametric correspondence and chamfer matching: Two new techniques for image matching},\n  author={Tenenbaum, RC Bolles HG Barrow JM and Bolles, RC and Wolf, HC and others},\n  booktitle={Proceedings of the 5th international joint conference on Artificial intelligence},\n  pages={659--663},\n  year={1977}\n}"
  }
 }
