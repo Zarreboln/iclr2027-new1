@@ -59,7 +59,7 @@ Denoting the query and the $m$-th database descriptors by $\mathbf g_Q$ and $\ma
 
 \paragraph{Fine Ranking (P2PS-3).}
 \label{sec:core}
-Fine ranking compares the query with each of the $K$ shortlisted database images at the patch level. Given the query $Q$ and a candidate $D_m$, the P2PS template with $A=Q$ and $B=D_m$ gives the cross-image table $S(Q,D_m)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_m)_{ij}$ is the similarity between query patch $p_i$ and candidate patch $p_j$. Let $m_i=\max_j S(Q,D_m)_{ij}$ denote the best match of query patch $p_i$ in the candidate, $w_{Q,i}$ its weight from P2PS-1 \eqref{eq:weight}, and $\theta$ a confidence threshold on the match. The fine-ranking score adds up the best matches of the query patches,
+Fine ranking compares the query with each of the $K$ shortlisted database images at the patch level. Given the query $Q$ and a candidate $D_m$, the P2PS template with $A=Q$ and $B=D_m$ gives the cross-image table $S(Q,D_m)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_m)_{ij}$ is the similarity between query patch $p_i$ and candidate patch $p_j$. Let $m_i=\max_j S(Q,D_m)_{ij}$ denote the best match of query patch $p_i$ in the candidate, $w_{Q,i}$ its weight from P2PS-1 \eqref{eq:weight}, and $\theta$ a confidence threshold on the match. The fine-ranking score $s(Q,D_m)$, a scalar read from the table $S(Q,D_m)$, adds up the best matches of the query patches,
 \begin{equation}\label{eq:stage2}
   s(Q,D_m)=\sum_{i=1}^{N} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i ,
 \end{equation}
