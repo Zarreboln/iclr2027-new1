@@ -46,7 +46,7 @@ Underwater & Mid-Atlantic Ridge \\
 \paragraph{Against training-free methods.} Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of on all seventeen benchmarks. On the standard benchmarks we lead the best prior training-free number on seven of the eight benchmarks and are within $0.5$ of AnyLoc on Oxford, for a mean of $93.3$ against $80.3$ for EffoVPR-ZS; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. On the cross-environment benchmarks we are best or tied on all nine, $76.6$ against $69.5$ for AnyLoc, whose descriptor is $24\times$ larger than ours. The frozen class token and GeM, which only pool, reach $51.5$ and $56.7$ on the standard benchmarks: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
 
 \begin{table}[!htb]
-\caption{Comparison with training-free methods. Recall@1 (\%) on the same four standard and four cross-environment benchmarks as Table~\ref{tab:trained}, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the full tables in Supplementary~\S\ref{app:trained-full} list every benchmark. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated; \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with training-free methods. Recall@1 (\%) on the same four standard and four cross-environment benchmarks as Table~\ref{tab:trained}, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the full tables in Supplementary~\S\ref{app:trained-full} list every benchmark. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated; \textsc{CLS token} retrieves the frozen DINOv2 class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
 \label{tab:breadth}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
@@ -69,7 +69,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{93.7} & \textbf{98.4} & \textbf{96.
 }
 \end{table}
 
-\paragraph{Against trained methods.} Table~\ref{tab:trained} sets the same two rows against the trained methods. On the standard benchmarks, the domain their supervision targets, our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. On the cross-environment benchmarks the thirteen trained methods above $80$ on the standard ones each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the nine benchmarks, $76.6$ against $65.1$ for MegaLoc. The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air. The price is latency: a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2-G forward pass, against $35$ to $67$\,ms for the two-stage baselines (Supplementary~\S\ref{app:cost}).
+\paragraph{Against trained methods.} Table~\ref{tab:trained} sets the same two rows against the trained methods. On the standard benchmarks, the domain their supervision targets, our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. On the cross-environment benchmarks the thirteen trained methods above $80$ on the standard ones each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the nine benchmarks, $76.6$ against $65.1$ for MegaLoc. The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air. The price is latency: a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2 forward pass, against $35$ to $67$\,ms for the two-stage baselines (Supplementary~\S\ref{app:cost}).
 
 \begin{table}[!htb]
 \caption{Comparison with trained methods. Recall@1 (\%) on four standard and four cross-environment benchmarks, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the two block means are the mean columns of the full tables in Supplementary~\S\ref{app:trained-full}, which list every benchmark. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
@@ -152,7 +152,7 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 \paragraph{Components.} Table~\ref{tab:components} adds one component at a time on two benchmarks whose shortlist is a true top-$1000$. The second moment beats the class token and mean pooling; weighting it by patch distinctiveness adds $8$ to $17$ points; \textsc{MaxSim} re-ranking adds $3$ to $12$; weighting the re-ranking by the same $w$ adds another $7$ to $11$. Both stages profit from $w$, the second most.
 
 \begin{table}[!htb]
-\caption{What each component adds. Recall@1 with DINOv2-G on two benchmarks whose shortlist is a true top-$1000$; each row adds one component to the row above. $w$ is the patch distinctiveness of \S\ref{sec:feat}.}
+\caption{What each component adds. Recall@1 with DINOv2 on two benchmarks whose shortlist is a true top-$1000$; each row adds one component to the row above. $w$ is the patch distinctiveness of \S\ref{sec:feat}.}
 \label{tab:components}
 \centering
 {\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
@@ -173,7 +173,7 @@ weighted second moment & 58.6 & 48.2 \\
 \paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Down-weighted self-similarity leads at $93.03$ R@1; class-token attention, the signal of \citet{effovpr}, is the closest alternative at $92.62$; reversing a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification sit at or below the unweighted $87.62$. Repetition within the image is the signal to read, and it should count against a patch.
 
 \begin{table}[!htb]
-\caption{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2-G layer $31$, weighted \textsc{MaxSim} over a VLAD top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
+\caption{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2 layer $31$, weighted \textsc{MaxSim} over a VLAD top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
 \label{tab:w-signal}
 \centering
 {\footnotesize
@@ -197,10 +197,10 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 \end{tabular}%
 }\end{table}
 
-\paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3-7B under their published recipes (Table~\ref{tab:perdataset}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A larger backbone helps every method, by $1.4$ to $4.5$ mean R@1, and does not close the gap. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
+\paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Table~\ref{tab:perdataset}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A larger backbone helps every method, by $1.4$ to $4.5$ mean R@1, and does not close the gap. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
 
 \begin{table}[!htb]
-\caption{Matched-backbone comparison on thirteen benchmarks. For the baselines, \emph{v2} is the published DINOv2 model and \emph{v3} a retraining on DINOv3-7B under the published recipe; all rows are our runs. Bold indicates the best value and underline the second best over all rows.}
+\caption{Matched-backbone comparison on thirteen benchmarks. For the baselines, \emph{v2} is the published DINOv2 model and \emph{v3} a retraining on DINOv3 under the published recipe; all rows are our runs. Bold indicates the best value and underline the second best over all rows.}
 \label{tab:perdataset}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.6pt}%
@@ -210,7 +210,7 @@ rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below b
 Method & Dim & Pitts30k & Tokyo & MSLS & Nord & Baidu & 17Pl & Gard & Hawk & Laurel & N-Air & N-AirR & VP-Air & M-Atl & \emph{mean} \\
 
 \midrule
-\multicolumn{16}{l}{\emph{Trained, at its published backbone (\emph{v2}) and retrained on DINOv3-7B (\emph{v3})}} \\
+\multicolumn{16}{l}{\emph{Trained, at its published backbone (\emph{v2}) and retrained on DINOv3 (\emph{v3})}} \\
 SALAD\,\emph{v2} & 8448 & 92.37 & 94.60 & 92.03 & 86.42 & 70.02 & 64.29 & 96.50 & 38.14 & 47.32 & 53.52 & 94.37 & 23.98 & 15.84 & 66.88 \\
 SALAD\,\emph{v3} & 8448 & 93.31 & 97.78 & 89.05 & 90.99 & 64.41 & 62.32 & 95.50 & 44.07 & 61.61 & 78.87 & 87.32 & 42.65 & 19.80 & 71.36 \\
 BoQ\,\emph{v2} & 12288 & \underline{93.76} & 96.51 & \underline{93.78} & 90.60 & 77.36 & 64.29 & 98.00 & 32.20 & 60.71 & 61.97 & 91.55 & 29.45 & \underline{35.64} & 71.22 \\

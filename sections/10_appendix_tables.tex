@@ -210,7 +210,7 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 
 \subsection{Per-query cost}
 \label{app:cost}
-Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and re-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2-G at $672$\,px. The scan is under a millisecond for every method. Re-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.
+Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and re-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2 at $672$\,px. The scan is under a millisecond for every method. Re-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.
 \begin{table}[!htb]
 \caption{Per-query cost of the two-stage methods on Pitts30k, in ms on one H100. Extraction: the query's global and local features at each method's own resolution (batch 1, fp16), median over $25$ calls, best of $40$ repeats. Stage 1: cosine search of one descriptor against the $10{,}000$ database descriptors to the top-$100$. Stage 2: each method's released code on its Pitts30k top-$100$, with the candidates' local features fetched from host memory per query as the released code does, fp32; per query the best of $20$ passes, median over $200$ queries.}
 \label{tab:s2cost}
@@ -222,10 +222,10 @@ Method & Backbone & Extraction & Stage 1: scan & Stage 2: re-rank & Total \\
 \midrule
 Patch-NetVLAD & VGG16 @\,$640{\times}480$ & 15.5 & 0.3 & 5302 & 5318 \\
 R2Former & DeiT-S @\,$640{\times}480$ & \textbf{4.3} & 0.1 & 62.4 & 66.8 \\
-SelaVPR & DINOv2-L @\,$224$ & 14.7 & 0.1 & 28.6 & 43.4 \\
-EffoVPR-ZS & DINOv2-L @\,$504$ & 15.3 & 0.1 & 19.3 & \textbf{34.7} \\
+SelaVPR & DINOv2 @\,$224$ & 14.7 & 0.1 & 28.6 & 43.4 \\
+EffoVPR-ZS & DINOv2 @\,$504$ & 15.3 & 0.1 & 19.3 & \textbf{34.7} \\
 \midrule
-Ours\,\emph{v2} & DINOv2-G @\,$672$, $1024$ tokens & 31.5 & 0.2 & \textbf{15.5} & 47.2 \\
+Ours\,\emph{v2} & DINOv2 @\,$672$, $1024$ tokens & 31.5 & 0.2 & \textbf{15.5} & 47.2 \\
 \bottomrule
 \end{tabular}%
 }
@@ -234,7 +234,7 @@ Ours\,\emph{v2} & DINOv2-G @\,$672$, $1024$ tokens & 31.5 & 0.2 & \textbf{15.5} 
 
 \subsection{Implementation details}
 \label{app:impl}
-One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Supplementary~\S\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Supplementary~\S\ref{app:hyper}.
+One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 at block $31$ for \emph{v2} and DINOv3 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Supplementary~\S\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Supplementary~\S\ref{app:hyper}.
 
 \subsection{Hyperparameters and calibration}
 \label{app:hyper}
@@ -244,13 +244,13 @@ One configuration is used for every benchmark. Tokens are the value facet of a f
 \label{sec:exp-hp}
 \label{app:abl}
 \begin{table}[H]
-\caption{Backbone layer (Tokyo24/7, DINOv3-L, base \textsc{MaxSim} R@1). The peak sits at ${\sim}0.75$--$0.9$ depth (L20--21); the last layer degrades. All backbones agree (S$\cdot$L11, B$\cdot$L9, L$\cdot$L20, 7B$\cdot$L32). Our runs (B0).}
+\caption{Backbone layer (Tokyo24/7, DINOv3, base \textsc{MaxSim} R@1). The peak sits at ${\sim}0.75$--$0.9$ depth (L20--21); the last layer degrades. All backbones agree. Our runs (B0).}
 \label{tab:layer}
 \centering
 {\footnotesize\setlength{\tabcolsep}{2pt}%
 \begin{tabular}{lcccccc}
 \toprule
-DINOv3-L layer  & L15 & L19 & L20 & L21 & L23 & L24 (last)\\
+DINOv3 layer  & L15 & L19 & L20 & L21 & L23 & L24 (last)\\
 \midrule
 R@1  & 93.7 & 95.6 & \textbf{95.9} & \textbf{95.9} & 94.9 & 92.1\\
 \bottomrule
@@ -330,7 +330,7 @@ Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fix
 \paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat G$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in \eqref{eq:demo}. Table~\ref{tab:residual} measures the residual $r_i=|(\hat G\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across eight benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
 
 \begin{table}[H]
-\caption{Residual of the democratic condition on real images, $r_i=|(\hat G\mathbf w)_i-1|$ with $w_i=1/n_i$ and $\tau{=}0.5$, over all $2{,}304$ tokens of up to $200$ database images per benchmark (DINOv2-G, block $31$, $672$px). Under the block model every $r_i$ is $0$; the last two columns give the share of tokens whose row sum in \eqref{eq:demo} lies within $0.2$ and within $0.5$ of one.}
+\caption{Residual of the democratic condition on real images, $r_i=|(\hat G\mathbf w)_i-1|$ with $w_i=1/n_i$ and $\tau{=}0.5$, over all $2{,}304$ tokens of up to $200$ database images per benchmark (DINOv2, block $31$, $672$px). Under the block model every $r_i$ is $0$; the last two columns give the share of tokens whose row sum in \eqref{eq:demo} lies within $0.2$ and within $0.5$ of one.}
 \label{tab:residual}
 \centering
 {\footnotesize\setlength{\tabcolsep}{5pt}%
@@ -393,7 +393,7 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 \label{sec:stage1abl}
 \label{sec:compact}
 \begin{table}[H]
-\caption{\textbf{Stage 1 alone on the nine benchmarks of the AnyLoc suite.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2-G row.}
+\caption{\textbf{Stage 1 alone on the nine benchmarks of the AnyLoc suite.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2 row.}
 \label{tab:coarse}
 \centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
@@ -404,38 +404,37 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 Method   &   Backbone   &   Hawk   &   Laurel   &  17Pl &   Gard   &   Baidu   &   N-Air   &   N-AirR   &   VP-Air   & M-Atl &   mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Trained or fine-tuned, single global descriptor}} \\
-MegaLoc & DINOv2-B & 37.3 & 55.4 & 64.8 & 95.5 & \textbf{79.4} & \textbf{85.9} & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
-SAGE & DINOv2-L & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \textbf{85.9} & 84.5 & 39.1 & 24.8 & 60.0 \\
-BoQ & DINOv2-B & 33.9 & 60.7 & 64.3 & \textbf{98.0} & \underline{77.4} & 62.0 & 91.5 & 29.5 & \underline{35.6} & 61.4 \\
-CricaVPR & DINOv2-B & 28.0 & 34.8 & 64.0 & 94.0 & 65.8 & 45.1 & \textbf{100.0} & 19.9 & 27.7 & 53.3 \\
-SALAD & DINOv2-B & 38.1 & 46.4 & 64.3 & \underline{96.5} & 69.9 & 53.5 & 94.4 & 24.0 & 15.8 & 55.9 \\
-CliqueMining & DINOv2-B & 22.9 & 38.4 & \underline{65.3} & 93.0 & 69.2 & 62.0 & 84.5 & 22.8 & \underline{35.6} & 54.9 \\
+MegaLoc & DINOv2 & 37.3 & 55.4 & 64.8 & 95.5 & \textbf{79.4} & \textbf{85.9} & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
+SAGE & DINOv2 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \textbf{85.9} & 84.5 & 39.1 & 24.8 & 60.0 \\
+BoQ & DINOv2 & 33.9 & 60.7 & 64.3 & \textbf{98.0} & \underline{77.4} & 62.0 & 91.5 & 29.5 & \underline{35.6} & 61.4 \\
+CricaVPR & DINOv2 & 28.0 & 34.8 & 64.0 & 94.0 & 65.8 & 45.1 & \textbf{100.0} & 19.9 & 27.7 & 53.3 \\
+SALAD & DINOv2 & 38.1 & 46.4 & 64.3 & \underline{96.5} & 69.9 & 53.5 & 94.4 & 24.0 & 15.8 & 55.9 \\
+CliqueMining & DINOv2 & 22.9 & 38.4 & \underline{65.3} & 93.0 & 69.2 & 62.0 & 84.5 & 22.8 & \underline{35.6} & 54.9 \\
 EigenPlaces & R50 & 28.8 & 27.7 & 63.8 & 86.0 & 66.6 & 12.7 & \textbf{100.0} & 13.1 & 29.7 & 47.6 \\
 CosPlace & R50 & 33.9 & 25.9 & 63.3 & 84.5 & 47.1 & 0.0 & 76.1 & 10.4 & 32.7 & 41.5 \\
 SFRS & VGG16 & 29.7 & 21.4 & 59.1 & 55.0 & 51.3 & 0.0 & 47.9 & 9.4 & 9.9 & 31.5 \\
 Patch-NetVLAD & VGG16 & 39.0 & 59.8 & 63.1 & 74.5 & 66.8 & 63.4 & 71.8 & 16.0 & 23.8 & 53.1 \\
 R2Former$^{\dagger}$ & DeiT-S & 17.8 & 30.4 & 63.8 & 84.0 & 74.7 & 26.8 & 83.1 & 15.0 & 22.8 & 46.5 \\
-VLAD-BuFF & DINOv2-B & 37.3 & 33.9 & 64.5 & \underline{96.5} & 76.4 & 57.8 & 88.7 & 33.3 & 27.7 & 57.4 \\
-SuperVLAD & DINOv2-B & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 51.1 \\
-SelaVPR$^{\dagger}$ & DINOv2-L & 25.4 & 53.6 & 63.3 & 94.5 & 68.5 & 59.1 & 83.1 & 32.6 & 21.8 & 55.8 \\
+VLAD-BuFF & DINOv2 & 37.3 & 33.9 & 64.5 & \underline{96.5} & 76.4 & 57.8 & 88.7 & 33.3 & 27.7 & 57.4 \\
+SuperVLAD & DINOv2 & 37.3 & 51.8 & 64.8 & 95.5 & 70.3 & 14.1 & 88.7 & 23.8 & 13.9 & 51.1 \\
+SelaVPR$^{\dagger}$ & DINOv2 & 25.4 & 53.6 & 63.3 & 94.5 & 68.5 & 59.1 & 83.1 & 32.6 & 21.8 & 55.8 \\
 MixVPR & R50 & 26.3 & 32.1 & 63.8 & 92.0 & 68.4 & 39.4 & 78.9 & 12.9 & 24.8 & 48.7 \\
 NetVLAD & VGG16 & 38.1 & 42.9 & 63.8 & 66.0 & 57.8 & 9.9 & 39.4 & 14.7 & 26.7 & 39.9 \\
 \midrule
 \multicolumn{12}{l}{\emph{Training-free, frozen backbone, first-order pooling}} \\
-GeM & DINOv2-B & 54.2 & 56.3 & 63.8 & 90.5 & 48.1 & 66.2 & 85.9 & 37.0 & 20.8 & 58.1 \\
-GeM & DINOv2-L & \underline{56.8} & 50.9 & 64.0 & 89.5 & 46.2 & \underline{81.7} & 85.9 & 42.2 & 23.8 & 60.1 \\
-AnyLoc$^{p}$ & DINOv2-G & \textbf{65.2} & \underline{61.6} & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & \underline{66.7} & 34.6 & \underline{69.5} \\
+GeM & DINOv2 & \underline{56.8} & 50.9 & 64.0 & 89.5 & 46.2 & \underline{81.7} & 85.9 & 42.2 & 23.8 & 60.1 \\
+AnyLoc$^{p}$ & DINOv2 & \textbf{65.2} & \underline{61.6} & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & \underline{66.7} & 34.6 & \underline{69.5} \\
 \midrule
 \multicolumn{12}{l}{\emph{Ours: training-free, second-moment descriptor}} \\
-Ours v2 & DINOv2-G & \underline{56.8} & \textbf{67.9} & 65.0 & \underline{96.5} & 76.7 & 74.7 & \underline{95.8} & 48.2 & \underline{35.6} & 68.6 \\
-Ours v3 & DINOv3-7B & 52.5 & 60.7 & \textbf{65.5} & 95.5 & 77.2 & 74.7 & \underline{95.8} & \textbf{73.4} & 34.7$^{o}$ & \textbf{70.0} \\
+Ours v2 & DINOv2 & \underline{56.8} & \textbf{67.9} & 65.0 & \underline{96.5} & 76.7 & 74.7 & \underline{95.8} & 48.2 & \underline{35.6} & 68.6 \\
+Ours v3 & DINOv3 & 52.5 & 60.7 & \textbf{65.5} & 95.5 & 77.2 & 74.7 & \underline{95.8} & \textbf{73.4} & 34.7$^{o}$ & \textbf{70.0} \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
 \begin{table}[H]
-\caption{\textbf{Whitened compression of the second moment, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). DINOv3-7B, one protocol. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ in any row.}
+\caption{\textbf{Whitened compression of the second moment, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). DINOv3, one protocol. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ in any row.}
 \label{tab:prunecomp}
 \centering
 \scriptsize
@@ -482,7 +481,7 @@ The first stage factorizes because its contraction is bilinear in the two token 
 \toprule
 Backbone & base & \textsc{selfw} & \textsc{conf} & \textsc{selfw\_conf} & \textsc{mnn} & \textsc{mnn\_selfw} & comb. \\
 \midrule
-DINOv3-7B & 71.68 & 74.90 & 69.04 & \textbf{76.57} & 70.46 & 72.10 & 71.63 \\
+DINOv3 & 71.68 & 74.90 & 69.04 & \textbf{76.57} & 70.46 & 72.10 & 71.63 \\
 \bottomrule
 \end{tabular}%
 }
