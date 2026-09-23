@@ -164,27 +164,27 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 
 \noindent\begin{minipage}[t]{0.50\textwidth}
 \vspace{0pt}
-\paragraph{Patch importance signal.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only the signal that sets the patch importance $w$, on Pitts30k and AmsterTime. A signal is necessary: self-similarity, the class-token attention of EffoVPR \citep{effovpr} and the patch-graph centrality of SAP \citep{sap} each add $6$ to $8$ points to the bare \textsc{MaxSim}, and the three stay within one point of each other on both benchmarks. Token norm (a) \citep{registers} adds one to four points; its inverse, the inverse document frequency of Video Google \citep{videogoogle} and the cross-referencing of DeepEMD \citep{deepemd} fall below the unweighted baseline, and the rapid spatial verification of Patch-NetVLAD \citep{patchnetvlad} gains one point on Pitts30k and loses six on AmsterTime. Among the three leading signals, self-similarity is the only one read from the patch features alone; attention and centrality need the attention maps of a chosen layer, which the frozen convolutional backbones of Supplementary~\S\ref{app:oldbackbones} do not offer, whereas $w$ applies to any set of patch tokens.
+\paragraph{Patch importance signal.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only the signal that sets the patch importance $w$. Self-similarity leads at $93.03$ R@1. The class-token attention of EffoVPR \citep{effovpr} is the closest alternative at $92.62$, and the patch-graph centrality of SAP \citep{sap} follows at $90.44$. Token norm \citep{registers} is neutral in either version, and the inverse document frequency of Video Google \citep{videogoogle}, the cross-referencing of DeepEMD \citep{deepemd} and the rapid spatial verification of Patch-NetVLAD \citep{patchnetvlad} all fall below the unweighted $87.62$. Repetition within the image is the importance signal to read, and it should count against a patch.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.47\textwidth}
 \vspace{0pt}
 \centering
-\captionof{table}{Choice of the patch importance signal, Recall@1 in the configuration of the main tables. Every row changes only $w$; (a) and (b) are two versions of the token-norm signal.}
+\captionof{table}{Choice of the patch importance signal on Pitts30k. Every row changes only $w$; (a) and (b) are two versions of the token-norm signal.}
 \label{tab:w-signal}
 {\scriptsize\setlength{\tabcolsep}{3pt}
-\begin{tabular}{llcc}
+\begin{tabular}{llc}
 \toprule
-Patch importance signal & Source & Pitts30k & AmsterTime \\
+Patch importance signal & Source & R@1 \\
 \midrule
-none (bare \textsc{MaxSim}) & Chamfer matching & 86.4 & 60.5 \\
-\textbf{+ self-similarity} & ours & 92.5 & 68.1 \\
-+ class-token attention & EffoVPR & \textbf{93.0} & 68.1 \\
-+ patch-graph centrality & SAP & 90.9 & \textbf{68.9} \\
-+ token norm (a) & Registers & 87.7 & 64.3 \\
-+ token norm (b) & Registers & 79.6 & 35.8 \\
-+ inverse document frequency & Video Google & 79.4 & 39.6 \\
-+ cross-referencing & DeepEMD & 63.3 & 15.0 \\
-+ rapid spatial verification & Patch-NetVLAD & 87.3 & 54.4 \\
+none (bare \textsc{MaxSim}) & Chamfer matching & 87.62 \\
+\textbf{+ self-similarity} & ours & \textbf{93.03} \\
++ class-token attention & EffoVPR & 92.62 \\
++ patch-graph centrality & SAP & 90.44 \\
++ token norm (a) & Registers & 87.72 \\
++ token norm (b) & Registers & 87.53 \\
++ inverse document frequency & Video Google & 86.53 \\
++ cross-referencing & DeepEMD & 81.78 \\
++ rapid spatial verification & Patch-NetVLAD & 84.24 \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
