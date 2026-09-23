@@ -116,7 +116,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 93.7 & \textbf{98.4} & \textbf{96.6} & \tex
 
 \subsection{Ablation study}
 \label{sec:swap}
-\paragraph{Plug-in fine-ranking.} Our second stage attaches to any pipeline that exposes patch tokens: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes (Table~\ref{tab:stage2swap}). Replacing the fine-ranker of SelaVPR, R2Former and Pair-VPR raises their mean over the nine cross-environment benchmarks by $+9.7$, $+5.6$ and $+1.9$ R@1, better on $18$ of $27$ cells; adding it to eight single-stage methods improves all of them, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of $72$ cells. The rule needs no training, no fitted parameter and no access to a method's internals, so it moves between pipelines as a plug-in module; the gain is largest where the first stage is weakest.
+\paragraph{Plug-in fine-ranking.} Our second stage attaches to any pipeline that exposes patch tokens: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes (Table~\ref{tab:stage2swap}). Replacing the fine-ranker of SelaVPR and R2Former raises their mean over the nine cross-environment benchmarks by $+9.7$ and $+5.6$ R@1, better on $15$ of $18$ cells; adding it to eight single-stage methods improves all of them, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of $72$ cells. The rule needs no training, no fitted parameter and no access to a method's internals, so it moves between pipelines as a plug-in module; the gain is largest where the first stage is weakest.
 
 \begin{table}[!htb]
 \caption{Our fine-ranking rule plugged into other pipelines, on the nine cross-environment benchmarks. Existing methods are of two kinds. Two-stage methods (upper block) fine-rank a shortlist with their own module; each cell gives the method's Recall@1 with its own fine-ranker and, as a subscript, the change when our rule of \eqref{eq:stage2} fine-ranks the same shortlist instead. Single-stage methods (lower block) retrieve with a global descriptor alone; each cell gives that Recall@1 and the change when our rule is added on top. Resolution and shortlist are the method's own; $^{\ddag}$without the cross-image encoder.}
@@ -133,7 +133,6 @@ Method & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl &
 \multicolumn{11}{l}{\emph{Replacing each method's own fine-ranking stage}} \\
 SelaVPR & 25.4\dlt{+38.2} & 53.6\dlt{+13.4} & 63.3\dlt{+2.5} & 94.5\dlt{+1.5} & 68.5\dlt{+7.5} & 59.1\dlt{+1.5} & 83.1\dlt{+1.4} & 32.6\dlt{+23.5} & 21.8\dlt{-2.0} & 55.8\dltg{+9.7} \\
 R2Former & 17.8\dlt{+22.9} & 30.4\dlt{+16.1} & 63.8\dlt{+0.7} & 84.0\dlt{-3.5} & 74.7\dlt{+0.6} & 26.8\dlt{+5.6} & 83.1\dlt{-1.4} & 15.0\dlt{+2.8} & 22.8\dlt{+6.9} & 46.5\dltg{+5.6} \\
-Pair-VPR & 16.1\dlt{+23.7} & 37.5\dlt{-5.4} & 65.8\dlt{-3.0} & 99.0\dlt{-5.0} & 83.3\dlt{-15.7} & 14.1\dlt{+36.6} & 100.0\dlt{-2.8} & 12.5\dlt{+2.4} & 32.7\dlt{-13.9} & 51.2\dltg{+1.9} \\
 \midrule
 \multicolumn{11}{l}{\emph{Added to methods that provide no fine-ranking stage}} \\
 SALAD & 38.1\dlt{+24.6} & 46.4\dlt{+25.9} & 64.3\dlt{+1.0} & 96.5\dlt{+3.0} & 69.9\dlt{+12.1} & 53.5\dlt{+29.6} & 94.4\dlt{+1.4} & 24.0\dlt{+22.1} & 15.8\dlt{+14.9} & 55.9\dltg{+14.9} \\
