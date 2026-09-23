@@ -238,5 +238,15 @@
   "title": "Parametric correspondence and chamfer matching: Two new techniques for image matching",
   "scholar_title": "[PDF] Parametric correspondence and chamfer matching: Two new techniques for image matching",
   "bibtex": "@inproceedings{tenenbaum1977parametric,\n  title={Parametric correspondence and chamfer matching: Two new techniques for image matching},\n  author={Tenenbaum, RC Bolles HG Barrow JM and Bolles, RC and Wolf, HC and others},\n  booktitle={Proceedings of the 5th international joint conference on Artificial intelligence},\n  pages={659--663},\n  year={1977}\n}"
+ },
+ "bcnn": {
+  "title": "Bilinear CNN models for fine-grained visual recognition",
+  "scholar_title": "Bilinear CNN models for fine-grained visual recognition",
+  "bibtex": "@inproceedings{lin2015bilinear,\n  title={Bilinear CNN models for fine-grained visual recognition},\n  author={Lin, Tsung-Yu and RoyChowdhury, Aruni and Maji, Subhransu},\n  booktitle={Proceedings of the IEEE international conference on computer vision},\n  pages={1449--1457},\n  year={2015}\n}"
+ },
+ "mpncov": {
+  "title": "Is second-order information helpful for large-scale visual recognition?",
+  "scholar_title": "Is second-order information helpful for large-scale visual recognition?",
+  "bibtex": "@inproceedings{li2017second,\n  title={Is second-order information helpful for large-scale visual recognition?},\n  author={Li, Peihua and Xie, Jiangtao and Wang, Qilong and Zuo, Wangmeng},\n  booktitle={2017 IEEE International Conference on Computer Vision (ICCV)},\n  pages={2089--2097},\n  year={2017},\n  organization={IEEE}\n}"
  }
 }
