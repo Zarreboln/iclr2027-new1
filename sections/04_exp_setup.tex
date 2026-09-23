@@ -69,10 +69,10 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{93.7} & \textbf{98.4} & \textbf{96.
 }
 \end{table}
 
-\paragraph{Against trained methods.} Table~\ref{tab:trained} sets the same two rows against the trained methods. On the standard benchmarks, the domain their supervision targets, our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. On the cross-environment benchmarks the thirteen trained methods above $80$ on the standard ones each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the nine benchmarks, $76.6$ against $65.1$ for MegaLoc. The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air. The price is latency: a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2 forward pass, against $35$ to $67$\,ms for the two-stage baselines (Supplementary~\S\ref{app:cost}).
+\paragraph{Against trained methods.} On the standard benchmarks, the domain their supervision targets (Table~\ref{tab:trained}), our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. On the cross-environment benchmarks the thirteen trained methods above $80$ on the standard ones each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the nine benchmarks, $76.6$ against $65.1$ for MegaLoc. The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air. The price is latency: a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2 forward pass, against $35$ to $67$\,ms for the two-stage baselines (Supplementary~\S\ref{app:cost}).
 
 \begin{table}[!htb]
-\caption{Comparison with trained methods. Recall@1 (\%) on four standard and four cross-environment benchmarks, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the two block means are the mean columns of the full tables in Supplementary~\S\ref{app:trained-full}, which list every benchmark. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with trained methods, in the layout of Table~\ref{tab:breadth}. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
 \label{tab:trained}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
@@ -157,6 +157,8 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 \begin{minipage}[t]{0.44\textwidth}
 \vspace{0pt}
 \centering
+\captionof{table}{What each component adds. Recall@1 with DINOv2; each row adds one component to the row above.}
+\label{tab:components}
 {\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.05}
 \begin{tabular}{lcc}
 \toprule
@@ -168,8 +170,6 @@ weighted second moment & 58.6 & 48.2 \\
 \quad $+$ weighted \textsc{MaxSim} & \textbf{73.2} & \textbf{67.9} \\
 \bottomrule
 \end{tabular}}
-\captionof{table}{What each component adds. Recall@1 with DINOv2; each row adds one component to the row above.}
-\label{tab:components}
 \end{minipage}
 
 
@@ -180,6 +180,8 @@ weighted second moment & 58.6 & 48.2 \\
 \begin{minipage}[t]{0.47\textwidth}
 \vspace{0pt}
 \centering
+\captionof{table}{Choice of the patch-distinctiveness signal on Pitts30k. Every row changes only $w$; (a) and (b) are two versions of the token-norm signal.}
+\label{tab:w-signal}
 {\scriptsize\setlength{\tabcolsep}{3pt}
 \begin{tabular}{llc}
 \toprule
@@ -187,7 +189,7 @@ Patch importance signal & Source & R@1 \\
 \midrule
 none (bare \textsc{MaxSim}) & --- & 87.62 \\
 \midrule
-\textbf{self-similarity} & this work & \textbf{93.03} \\
+\textbf{self-similarity} & ours & \textbf{93.03} \\
 class-token attention & EffoVPR & 92.62 \\
 patch-graph centrality & SAP & 90.44 \\
 \midrule
@@ -199,8 +201,6 @@ cross-referencing & DeepEMD & 81.78 \\
 rapid spatial verification & Patch-NetVLAD & 84.24 \\
 \bottomrule
 \end{tabular}}
-\captionof{table}{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2 layer $31$, weighted \textsc{MaxSim} over a VLAD top-$100$ shortlist). Every row changes only $w$; (a) and (b) are the two signs of the token-norm signal.}
-\label{tab:w-signal}
 \end{minipage}
 
 
