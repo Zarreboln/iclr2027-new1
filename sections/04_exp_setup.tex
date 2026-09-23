@@ -1,28 +1,28 @@
 \section{Evaluation}
 \label{sec:exp}
-We evaluate the pipeline from two perspectives. First, we compare it with training-free and with trained methods on seventeen benchmarks, eight of them ground-level outdoor imagery and nine from other viewpoints and environments (\S\ref{sec:sota}). Second, we ask which part of the pipeline the result comes from (\S\ref{sec:swap}). Every number for our method comes from one configuration; nothing is tuned per benchmark.
+We evaluate the pipeline from two perspectives. First, we compare it with training-free and with trained methods on seventeen benchmarks, eight standard VPR benchmarks and nine cross-environment benchmarks (\S\ref{sec:sota}). Second, we ask which part of the pipeline the result comes from (\S\ref{sec:swap}). Every number for our method comes from one configuration; nothing is tuned per benchmark.
 
 \subsection{Experimental setup}
 \label{sec:setup}
 \noindent\begin{minipage}[t]{0.585\textwidth}
 \vspace{0pt}
-\paragraph{Datasets.} We evaluate on seventeen benchmarks, grouped by viewpoint and environment in Table~\ref{tab:datasets}: eight are ground-level outdoor imagery, the seven street-level benchmarks that form the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS) plus the Nordland railway, and nine come from other viewpoints and environments, the suite of \citet{anyloc}. Supplementary~\S\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.
+\paragraph{Datasets.} We evaluate on seventeen benchmarks, in two groups in Table~\ref{tab:datasets}: eight standard VPR benchmarks, the seven street-level benchmarks that form the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS) plus the Nordland railway, and nine cross-environment benchmarks, the suite of \citet{anyloc}. Supplementary~\S\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.
 
 \paragraph{Implementation details.} The feature extractor is a frozen DINOv2 (\emph{v2}) or DINOv3 (\emph{v3}) backbone; we set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks. Baselines use their own default settings; Supplementary~\S\ref{app:impl} lists the remaining details.
 
-\paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the tolerance of its benchmark, following the order of Table~\ref{tab:datasets}. For the ground-level benchmarks this is $25$\,m, except Nordland ($\pm10$ frames), Oxford RobotCar ($16$\,m) and AmsterTime (the paired present-day image); for the other viewpoints and environments it is the provided correspondences or pose thresholds (Supplementary~\S\ref{app:protocol}).
+\paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the tolerance of its benchmark, following the order of Table~\ref{tab:datasets}. For the standard benchmarks this is $25$\,m, except Nordland ($\pm10$ frames), Oxford RobotCar ($16$\,m) and AmsterTime (the paired present-day image); for the cross-environment benchmarks it is the provided correspondences or pose thresholds (Supplementary~\S\ref{app:protocol}).
 \end{minipage}\hspace{0.015\textwidth}%
 \begin{minipage}[t]{0.40\textwidth}
 \vspace{0pt}
 \centering
-\captionof{table}{The seventeen benchmarks by viewpoint and environment, and the condition each one tests.}
+\captionof{table}{The seventeen benchmarks in two groups, and the condition each one tests.}
 \label{tab:datasets}
 {\scriptsize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.15}%
 \begin{tabular}{@{}ll@{}}
 \toprule
 Condition & Benchmarks \\
 \midrule
-\multicolumn{2}{@{}l}{\emph{Ground-level outdoor imagery}} \\
+\multicolumn{2}{@{}l}{\emph{Standard VPR benchmarks}} \\
 Viewpoint & Pitts30k, Pitts250k \\
 Illumination & Tokyo 24/7 \\
 Season, weather & MSLS-val \\
@@ -30,7 +30,7 @@ Railway, seasons & Nordland \\
 Route repetition & St Lucia, Oxford RobotCar \\
 Long-term change & AmsterTime \\
 \midrule
-\multicolumn{2}{@{}l}{\emph{Other viewpoints and environments}} \\
+\multicolumn{2}{@{}l}{\emph{Cross-environment VPR benchmarks}} \\
 Indoor & 17 Places, Baidu Mall \\
  & Gardens Point \\
 Aerial & VP-Air, Nardo-Air \\
@@ -43,16 +43,16 @@ Underwater & Mid-Atlantic Ridge \\
 
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
-\paragraph{Against training-free methods.} Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of on all seventeen benchmarks. On ground-level outdoor imagery we lead the best prior training-free number on seven of the eight benchmarks and are within $0.5$ of AnyLoc on Oxford, for a mean of $93.3$ against $80.3$ for EffoVPR-ZS; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. On the other viewpoints and environments we are best or tied on all nine, $76.6$ against $69.5$ for AnyLoc, whose descriptor is $24\times$ larger than ours. The frozen class token and GeM, which only pool, reach $51.5$ and $56.7$ on ground-level imagery: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
+\paragraph{Against training-free methods.} Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of on all seventeen benchmarks. On the standard benchmarks we lead the best prior training-free number on seven of the eight benchmarks and are within $0.5$ of AnyLoc on Oxford, for a mean of $93.3$ against $80.3$ for EffoVPR-ZS; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. On the cross-environment benchmarks we are best or tied on all nine, $76.6$ against $69.5$ for AnyLoc, whose descriptor is $24\times$ larger than ours. The frozen class token and GeM, which only pool, reach $51.5$ and $56.7$ on the standard benchmarks: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
 
 \begin{table}[!htb]
-\caption{Comparison with training-free methods. Recall@1 (\%) on the same four ground-level and four other benchmarks as Table~\ref{tab:trained}, with the mean over all eight ground-level benchmarks, over all nine from other viewpoints and environments, and over all seventeen; the full tables in Supplementary~\S\ref{app:trained-full} list every benchmark. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated; \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with training-free methods. Recall@1 (\%) on the same four standard and four cross-environment benchmarks as Table~\ref{tab:trained}, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the full tables in Supplementary~\S\ref{app:trained-full} list every benchmark. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated; \textsc{CLS token} retrieves the frozen DINOv2-L class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
 \label{tab:breadth}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll cccc|M cccc|M M}
 \toprule
-& & \multicolumn{5}{c}{Ground-level outdoor imagery} & \multicolumn{5}{c}{Other viewpoints and environments} & \\
+& & \multicolumn{5}{c}{Standard VPR benchmarks} & \multicolumn{5}{c}{Cross-environment VPR benchmarks} & \\
 \cmidrule(lr){3-7}\cmidrule(lr){8-12}
 Method & Dim & Pitts30k & Tokyo24/7 & Nordland & AmsterTime & mean (8) & Hawk & Laurel & Baidu & VP-Air & mean (9) & mean (17) \\
 \midrule
@@ -69,16 +69,16 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{93.7} & \textbf{98.4} & \textbf{96.
 }
 \end{table}
 
-\paragraph{Against trained methods.} Table~\ref{tab:trained} sets the same two rows against the trained methods. On ground-level outdoor imagery, the domain their supervision targets, our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. Outside that domain the thirteen trained methods above $80$ each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the nine benchmarks, $76.6$ against $65.1$ for MegaLoc. The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air. The price is latency: a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2-G forward pass, against $35$ to $67$\,ms for the two-stage baselines (Supplementary~\S\ref{app:cost}).
+\paragraph{Against trained methods.} Table~\ref{tab:trained} sets the same two rows against the trained methods. On the standard benchmarks, the domain their supervision targets, our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. On the cross-environment benchmarks the thirteen trained methods above $80$ on the standard ones each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the nine benchmarks, $76.6$ against $65.1$ for MegaLoc. The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air. The price is latency: a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2-G forward pass, against $35$ to $67$\,ms for the two-stage baselines (Supplementary~\S\ref{app:cost}).
 
 \begin{table}[!htb]
-\caption{Comparison with trained methods. Recall@1 (\%) on four ground-level and four other benchmarks, with the mean over all eight ground-level benchmarks, over all nine from other viewpoints and environments, and over all seventeen; the two block means are the mean columns of the full tables in Supplementary~\S\ref{app:trained-full}, which list every benchmark. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with trained methods. Recall@1 (\%) on four standard and four cross-environment benchmarks, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the two block means are the mean columns of the full tables in Supplementary~\S\ref{app:trained-full}, which list every benchmark. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
 \label{tab:trained}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll cccc|M cccc|M M}
 \toprule
-& & \multicolumn{5}{c}{Ground-level outdoor imagery} & \multicolumn{5}{c}{Other viewpoints and environments} & \\
+& & \multicolumn{5}{c}{Standard VPR benchmarks} & \multicolumn{5}{c}{Cross-environment VPR benchmarks} & \\
 \cmidrule(lr){3-7}\cmidrule(lr){8-12}
 Method & Dim & Pitts30k & Tokyo24/7 & Nordland & AmsterTime & mean (8) & Hawk & Laurel & Baidu & VP-Air & mean (9) & mean (17) \\
 \midrule
@@ -163,9 +163,9 @@ Configuration & VP-Air & AmsterTime \\
 CLS token & 45.9 & 45.6 \\
 mean pooling & 32.9 & 12.8 \\
 second moment & 50.3 & 31.4 \\
-weighted second moment ($w$) & 58.6 & 48.2 \\
+weighted second moment & 58.6 & 48.2 \\
 \quad $+$ \textsc{MaxSim} re-ranking & 61.9 & 60.6 \\
-\quad $+$ weighted \textsc{MaxSim} ($w$), ours & \textbf{73.2} & \textbf{67.9} \\
+\quad $+$ weighted \textsc{MaxSim} & \textbf{73.2} & \textbf{67.9} \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -226,5 +226,3 @@ Ours\,\emph{v3} & 2048 & 93.74 & \underline{98.41} & 89.32 & \textbf{96.56} & \u
 }%
 }
 \end{table}
-
-\FloatBarrier

@@ -58,7 +58,7 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll cccccccc c|M}
 \toprule
-\multicolumn{12}{l}{\emph{Ground-level outdoor imagery}} \\
+\multicolumn{12}{l}{\emph{Standard VPR benchmarks}} \\
 Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & Nordland & St Lucia & Oxford & AmsterTime & & mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Training-free}} \\
@@ -71,14 +71,14 @@ SegVLAD-PreT & 49152 & 86.0 & 86.7 & 94.3 & 76.6 & 26.3 & 97.1 & 73.8 & 62.4 & &
 Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{95.7} & \underline{92.5} & \underline{97.5} & \underline{89.0} & \underline{83.0} & \underline{99.1} & \underline{99.0} & \underline{68.1} & & \underline{90.5} \\
 Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{89.3} & \textbf{96.6} & \textbf{99.7} & \underline{99.0} & \textbf{73.6} & & \textbf{93.3} \\
 \midrule\midrule
-\multicolumn{12}{l}{\emph{Other viewpoints and environments}} \\
+\multicolumn{12}{l}{\emph{Cross-environment VPR benchmarks}} \\
 \end{tabular}%
 }
 \par\smallskip
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll ccccccccc|M}
 \toprule
-\multicolumn{12}{l}{\emph{Other viewpoints and environments}} \\
+\multicolumn{12}{l}{\emph{Cross-environment VPR benchmarks}} \\
 Method & Dim & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Training-free}} \\
@@ -101,7 +101,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 61.0 & \underline{75.9} & \underline{65.3} 
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll cccccccc c|M}
 \toprule
-\multicolumn{12}{l}{\emph{Ground-level outdoor imagery}} \\
+\multicolumn{12}{l}{\emph{Standard VPR benchmarks}} \\
 Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & Nordland & St Lucia & Oxford & AmsterTime & & mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Trained or fine-tuned}} \\
@@ -124,14 +124,14 @@ SAGE$^\ddag$ & 8448 & \textbf{96.8} & \textbf{94.7} & 97.8 & \textbf{94.5} & 95.
 Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.7 & 92.5 & 97.5 & 89.0 & 83.0 & 99.1 & 99.0 & \underline{68.1} & & 90.5 \\
 Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & 89.3 & \textbf{96.6} & 99.7 & 99.0 & \textbf{73.6} & & \textbf{93.3} \\
 \midrule\midrule
-\multicolumn{12}{l}{\emph{Other viewpoints and environments}} \\
+\multicolumn{12}{l}{\emph{Cross-environment VPR benchmarks}} \\
 \end{tabular}%
 }
 \par\smallskip
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{ll ccccccccc|M}
 \toprule
-\multicolumn{12}{l}{\emph{Other viewpoints and environments}} \\
+\multicolumn{12}{l}{\emph{Cross-environment VPR benchmarks}} \\
 Method & Dim & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Trained or fine-tuned}} \\
@@ -160,7 +160,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \underline{61.0} & \underline{75.9} & \unde
 
 \subsection{Our pipeline on ImageNet-supervised backbones}
 \label{app:oldbackbones}
-The pipeline of \S\ref{sec:method} runs unchanged on the backbones of the classic trained methods: VGG16 (conv5\_3, before the ReLU), ResNet-50 (layer3) and DeiT-S (value facet of block 11), all ImageNet-1k supervised, at $480\times640$ with the $1{,}200$ feature-map cells of an image as its tokens. Tokens are centred and PCA-projected as in \S\ref{sec:prelim}; $\tau$ is calibrated once per backbone on SF-XL val ($0.47$, $0.27$, $0.48$), $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ as everywhere else. Table~\ref{tab:oldbackbones} sets each run against the trained methods built on the same backbone. Without any training, the pipeline is ahead of both VGG16 methods in both groups and, on ResNet-50, ahead of CosPlace and within $0.3$ of EigenPlaces on the other viewpoints and environments; the remaining same-backbone methods, all trained on street-level data, keep a clear margin, largest on ground-level imagery.
+The pipeline of \S\ref{sec:method} runs unchanged on the backbones of the classic trained methods: VGG16 (conv5\_3, before the ReLU), ResNet-50 (layer3) and DeiT-S (value facet of block 11), all ImageNet-1k supervised, at $480\times640$ with the $1{,}200$ feature-map cells of an image as its tokens. Tokens are centred and PCA-projected as in \S\ref{sec:prelim}; $\tau$ is calibrated once per backbone on SF-XL val ($0.47$, $0.27$, $0.48$), $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ as everywhere else. Table~\ref{tab:oldbackbones} sets each run against the trained methods built on the same backbone. Without any training, the pipeline is ahead of both VGG16 methods in both groups and, on ResNet-50, ahead of CosPlace and within $0.3$ of EigenPlaces on the cross-environment benchmarks; the remaining same-backbone methods, all trained on street-level data, keep a clear margin, largest on the standard benchmarks.
 \begin{table}[!htb]
 \caption{Recall@1 of our pipeline on ImageNet-supervised backbones against the trained methods built on the same backbone (numbers from Table~\ref{tab:trained-full}). Bold marks the best value per column.}
 \label{tab:oldbackbones}
@@ -168,7 +168,7 @@ The pipeline of \S\ref{sec:method} runs unchanged on the backbones of the classi
 {\scriptsize\setlength{\tabcolsep}{2.6pt}\renewcommand{\arraystretch}{0.95}%
 \resizebox{\linewidth}{!}{\begin{tabular}{ll cccccccc|M}
 \toprule
-\multicolumn{11}{l}{\emph{Ground-level outdoor imagery}} \\
+\multicolumn{11}{l}{\emph{Standard VPR benchmarks}} \\
 Method & Backbone & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & Nordland & St Lucia & Oxford & AmsterTime & mean \\
 \midrule
 \multicolumn{11}{l}{\emph{Trained on street-level data}} \\
@@ -188,7 +188,7 @@ Ours & DeiT-S & 54.7 & 58.1 & 58.1 & 36.2 & 3.1 & 76.8 & 17.3 & 12.5 & 39.6 \\
 \par\smallskip
 \resizebox{\linewidth}{!}{\begin{tabular}{ll ccccccccc|M}
 \toprule
-\multicolumn{12}{l}{\emph{Other viewpoints and environments}} \\
+\multicolumn{12}{l}{\emph{Cross-environment VPR benchmarks}} \\
 Method & Backbone & Hawkins & Laurel & 17Places & Gardens & Baidu & N-Air & N-Air-R & VP-Air & Mid-Atl & mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Trained on street-level data}} \\
