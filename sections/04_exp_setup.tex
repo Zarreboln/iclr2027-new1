@@ -189,7 +189,7 @@ rapid spatial verification & Patch-NetVLAD & 84.24 \\
 \end{minipage}
 
 
-\paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Figure~\ref{fig:backbone}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
+\paragraph{Keeping up with the backbone.} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Figure~\ref{fig:backbone}, Table~\ref{tab:perdataset}). Three is what retraining allows: SAGE and MegaLoc release checkpoints and inference code but no training code, and the remaining recipes take days of fine-tuning on a backbone of this size, a bill that grows with every generation of foundation model. Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A method that learns its aggregation pays that bill again for every new backbone; a training-free pipeline adopts it by loading it, at no cost in accuracy.
 
 \begin{figure}[!htb]
 \centering
