@@ -44,7 +44,7 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 \end{tabular}%
 }
 
-\par\smallskip{\scriptsize\emph{Notes.} Each baseline runs at its own default input resolution. Three conventions on which published numbers split: Nordland uses the lenient $\pm10$-frame ground truth, Tokyo the $315$-query and MSLS the $740$-query subsets, and VP-Air's database carries AnyLoc's $10{,}000$ distractors. Re-ranking uses a pool of $K=\min(1000,|\mathcal{D}|)$ throughout. $^{\ast}$SF-XL val is the design split and appears in no results table.}
+\par\smallskip{\scriptsize\emph{Notes.} Each baseline runs at its own default input resolution. Three conventions on which published numbers split: Nordland uses the lenient $\pm10$-frame ground truth, Tokyo the $315$-query and MSLS the $740$-query subsets, and VP-Air's database carries AnyLoc's $10{,}000$ distractors. Fine-ranking uses a pool of $K=\min(1000,|\mathcal{D}|)$ throughout. $^{\ast}$SF-XL val is the design split and appears in no results table.}
 \end{table}
 
 \FloatBarrier
@@ -95,7 +95,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 61.0 & \underline{75.9} & \underline{65.3} 
 }
 \end{table}
 \begin{table}[!htb]
-\caption{Comparison with trained methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:trained}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best within each block.}
+\caption{Comparison with trained methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:trained}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there. $^{\dagger}$reported after the method's own fine-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best within each block.}
 \label{tab:trained-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
@@ -210,7 +210,7 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 
 \subsection{Per-query cost}
 \label{app:cost}
-Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and re-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2 at $672$\,px. The scan is under a millisecond for every method. Re-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.
+Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and fine-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2 at $672$\,px. The scan is under a millisecond for every method. Fine-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.
 \begin{table}[!htb]
 \caption{Per-query cost of the two-stage methods on Pitts30k, in ms on one H100. Extraction: the query's global and local features at each method's own resolution (batch 1, fp16), median over $25$ calls, best of $40$ repeats. Stage 1: cosine search of one descriptor against the $10{,}000$ database descriptors to the top-$100$. Stage 2: each method's released code on its Pitts30k top-$100$, with the candidates' local features fetched from host memory per query as the released code does, fp32; per query the best of $20$ passes, median over $200$ queries.}
 \label{tab:s2cost}
@@ -218,7 +218,7 @@ Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables
 {\footnotesize\setlength{\tabcolsep}{5pt}%
 \begin{tabular}{llrrrr}
 \toprule
-Method & Backbone & Extraction & Stage 1: scan & Stage 2: re-rank & Total \\
+Method & Backbone & Extraction & Stage 1: scan & Stage 2: fine-rank & Total \\
 \midrule
 Patch-NetVLAD & VGG16 @\,$640{\times}480$ & 15.5 & 0.3 & 5302 & 5318 \\
 R2Former & DeiT-S @\,$640{\times}480$ & \textbf{4.3} & 0.1 & 62.4 & 66.8 \\
@@ -234,7 +234,7 @@ Ours\,\emph{v2} & DINOv2 @\,$672$, $1024$ tokens & 31.5 & 0.2 & \textbf{15.5} & 
 
 \subsection{Implementation details}
 \label{app:impl}
-One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 at block $31$ for \emph{v2} and DINOv3 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Supplementary~\S\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Supplementary~\S\ref{app:hyper}.
+One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 at block $31$ for \emph{v2} and DINOv3 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 fine-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Supplementary~\S\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Supplementary~\S\ref{app:hyper}.
 
 \subsection{Hyperparameters and calibration}
 \label{app:hyper}
@@ -258,7 +258,7 @@ R@1  & 93.7 & 95.6 & \textbf{95.9} & \textbf{95.9} & 94.9 & 92.1\\
 }
 \end{table}
 \begin{table}[H]
-\caption{\textbf{Redundancy threshold $\tau$}, SF-XL val, first-order instance ($k{=}32$, no intra-normalization, power law). At $\tau{=}0$ every degree equals $N$, so $w$ cancels and the column is the unweighted baseline: the weight is worth $14.6$ R@1 coarse and $8.7$ after re-ranking.}
+\caption{\textbf{Redundancy threshold $\tau$}, SF-XL val, first-order instance ($k{=}32$, no intra-normalization, power law). At $\tau{=}0$ every degree equals $N$, so $w$ cancels and the column is the unweighted baseline: the weight is worth $14.6$ R@1 coarse and $8.7$ after fine-ranking.}
 \label{tab:cal-tau}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3.4pt}
@@ -279,10 +279,10 @@ $\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.7
 \ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
 \bottomrule
 \end{tabular}}
-\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: stage 1 alone prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-moment instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by re-ranking. Our runs (ND21).}
+\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: stage 1 alone prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-moment instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by fine-ranking. Our runs (ND21).}
 \end{table}
 \begin{table}[H]
-\caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the re-ranking score, so every column re-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
+\caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the fine-ranking score, so every column fine-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
 \label{tab:cal-t2}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3.4pt}
@@ -387,13 +387,13 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 
 \subsection{Devices and compression}
 \label{app:coarsegrid}
-\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. In Table~\ref{tab:coarse} GeM reaches $60.1$ mean R@1 on the nine cross-environment benchmarks while our stage 1 reaches $68.6$ (v2) and $70.0$ (v3), and it takes the best number on Laurel Caverns, 17 Places and VP-Air with no re-ranking at all. The tables below cover the devices that act on it and its whitened compression.
+\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. In Table~\ref{tab:coarse} GeM reaches $60.1$ mean R@1 on the nine cross-environment benchmarks while our stage 1 reaches $68.6$ (v2) and $70.0$ (v3), and it takes the best number on Laurel Caverns, 17 Places and VP-Air with no fine-ranking at all. The tables below cover the devices that act on it and its whitened compression.
 
 \label{sec:exp-stage1}
 \label{sec:stage1abl}
 \label{sec:compact}
 \begin{table}[H]
-\caption{\textbf{Stage 1 alone on the nine cross-environment benchmarks.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2 row.}
+\caption{\textbf{Stage 1 alone on the nine cross-environment benchmarks.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own fine-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2 row.}
 \label{tab:coarse}
 \centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
@@ -462,7 +462,7 @@ WPCA-1024 & 90.45 & 84.86 & 70.78 & 92.70 & 66.04 & 80.97 \\
 \label{fig:patchcov}
 \end{figure}
 
-\section{Second stage: \textsc{MaxSim} re-ranking}
+\section{Second stage: \textsc{MaxSim} fine-ranking}
 
 \subsection{Why \textsc{MaxSim} admits no fixed-size descriptor}
 \label{app:nofactor}
@@ -470,10 +470,10 @@ The first stage factorizes because its contraction is bilinear in the two token 
 
 \FloatBarrier
 
-\subsection{Re-ranking operators}
+\subsection{Fine-ranking operators}
 \label{app:s2grid}
 \begin{table}[h]
-\caption{\textbf{Seven re-ranking operators}, mean R@1 over the nine cross-environment benchmarks of Table~\ref{tab:breadth}. Stage 1 is the deployed one throughout; only stage 2 changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
+\caption{\textbf{Seven fine-ranking operators}, mean R@1 over the nine cross-environment benchmarks of Table~\ref{tab:breadth}. Stage 1 is the deployed one throughout; only stage 2 changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
 \label{tab:s2grid}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3pt}%

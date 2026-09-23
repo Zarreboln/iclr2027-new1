@@ -116,10 +116,10 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 93.7 & \textbf{98.4} & \textbf{96.6} & \tex
 
 \subsection{Ablation study}
 \label{sec:swap}
-\paragraph{Plug-in re-ranking.} Our second stage attaches to any pipeline that exposes patch tokens: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes (Table~\ref{tab:stage2swap}). Replacing the re-ranker of SelaVPR, R2Former and Pair-VPR raises their mean over the nine cross-environment benchmarks by $+9.7$, $+5.6$ and $+1.9$ R@1, better on $18$ of $27$ cells; adding it to eight single-stage methods improves all of them, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of $72$ cells. The rule needs no training, no fitted parameter and no access to a method's internals, so it moves between pipelines as a drop-in module; the gain is largest where the first stage is weakest.
+\paragraph{Plug-in fine-ranking.} Our second stage attaches to any pipeline that exposes patch tokens: each method keeps its backbone, resolution and shortlist, and only the scoring rule changes (Table~\ref{tab:stage2swap}). Replacing the fine-ranker of SelaVPR, R2Former and Pair-VPR raises their mean over the nine cross-environment benchmarks by $+9.7$, $+5.6$ and $+1.9$ R@1, better on $18$ of $27$ cells; adding it to eight single-stage methods improves all of them, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of $72$ cells. The rule needs no training, no fitted parameter and no access to a method's internals, so it moves between pipelines as a drop-in module; the gain is largest where the first stage is weakest.
 
 \begin{table}[!htb]
-\caption{Our re-ranking rule dropped into other pipelines, on the nine cross-environment benchmarks. Each cell gives the method's own Recall@1, with its own re-ranker in the upper block and from its global descriptor alone in the lower block; the subscript is the change when our rule of Equation~\eqref{eq:stage2} re-ranks the method's shortlist instead of its own re-ranker (upper) or on top of its global descriptor (lower). Resolution and shortlist are the method's own.}
+\caption{Our fine-ranking rule dropped into other pipelines, on the nine cross-environment benchmarks. Each cell gives the method's own Recall@1, with its own fine-ranker in the upper block and from its global descriptor alone in the lower block; the subscript is the change when our rule of Equation~\eqref{eq:stage2} fine-ranks the method's shortlist instead of its own fine-ranker (upper) or on top of its global descriptor (lower). Resolution and shortlist are the method's own.}
 \label{tab:stage2swap}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2pt}%
@@ -130,12 +130,12 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 93.7 & \textbf{98.4} & \textbf{96.6} & \tex
 \cmidrule(lr){2-10}
 Method & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl & mean \\
 \midrule
-\multicolumn{11}{l}{\emph{Replacing each method's own re-ranking stage}} \\
+\multicolumn{11}{l}{\emph{Replacing each method's own fine-ranking stage}} \\
 SelaVPR & 25.4\dlt{+38.2} & 53.6\dlt{+13.4} & 63.3\dlt{+2.5} & 94.5\dlt{+1.5} & 68.5\dlt{+7.5} & 59.1\dlt{+1.5} & 83.1\dlt{+1.4} & 32.6\dlt{+23.5} & 21.8\dlt{-2.0} & 55.8\dltg{+9.7} \\
 R2Former & 17.8\dlt{+22.9} & 30.4\dlt{+16.1} & 63.8\dlt{+0.7} & 84.0\dlt{-3.5} & 74.7\dlt{+0.6} & 26.8\dlt{+5.6} & 83.1\dlt{-1.4} & 15.0\dlt{+2.8} & 22.8\dlt{+6.9} & 46.5\dltg{+5.6} \\
 Pair-VPR & 16.1\dlt{+23.7} & 37.5\dlt{-5.4} & 65.8\dlt{-3.0} & 99.0\dlt{-5.0} & 83.3\dlt{-15.7} & 14.1\dlt{+36.6} & 100.0\dlt{-2.8} & 12.5\dlt{+2.4} & 32.7\dlt{-13.9} & 51.2\dltg{+1.9} \\
 \midrule
-\multicolumn{11}{l}{\emph{Added to methods that provide no re-ranking stage}} \\
+\multicolumn{11}{l}{\emph{Added to methods that provide no fine-ranking stage}} \\
 SALAD & 38.1\dlt{+24.6} & 46.4\dlt{+25.9} & 64.3\dlt{+1.0} & 96.5\dlt{+3.0} & 69.9\dlt{+12.1} & 53.5\dlt{+29.6} & 94.4\dlt{+1.4} & 24.0\dlt{+22.1} & 15.8\dlt{+14.9} & 55.9\dltg{+14.9} \\
 CricaVPR$^\ddag$ & 28.0\dlt{+31.4} & 34.8\dlt{+32.1} & 64.0\dlt{+1.5} & 94.0\dlt{+4.5} & 65.8\dlt{+18.9} & 45.1\dlt{+18.3} & 100.0\dlt{-8.5} & 19.9\dlt{+22.8} & 27.7\dlt{+8.9} & 53.3\dltg{+14.4} \\
 BoQ & 33.9\dlt{+33.1} & 60.7\dlt{+16.1} & 64.3\dlt{+0.7} & 98.0\dlt{+1.0} & 77.4\dlt{+6.5} & 62.0\dlt{+31.0} & 91.5\dlt{-8.5} & 29.5\dlt{+24.9} & 35.6\dlt{-5.0} & 61.4\dltg{+11.1} \\
@@ -152,7 +152,7 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 
 \noindent\begin{minipage}[t]{0.53\textwidth}
 \vspace{0pt}
-\paragraph{Components.} Table~\ref{tab:components} adds one component at a time, in the configuration of the main tables. Weighting the second moment by patch distinctiveness adds $2$ points on VP-Air and $16$ on AmsterTime; \textsc{MaxSim} re-ranking adds $13$ and $20$; weighting the re-ranking by the same $w$ adds another $11$ on VP-Air and $1$ on AmsterTime.
+\paragraph{Components.} Table~\ref{tab:components} adds one component at a time, in the configuration of the main tables. Weighting the second moment by patch distinctiveness adds $2$ points on VP-Air and $16$ on AmsterTime; \textsc{MaxSim} fine-ranking adds $13$ and $20$; weighting the fine-ranking by the same $w$ adds another $11$ on VP-Air and $1$ on AmsterTime.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.44\textwidth}
 \vspace{0pt}
