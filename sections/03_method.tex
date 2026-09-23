@@ -51,10 +51,10 @@ As discussed in \S\ref{sec:related}, VPR is essentially a retrieval task \citep{
 \label{sec:global}
 During coarse ranking, the query is compared with the whole database $\mathcal D$ to obtain the closest top-$K$ candidates, which requires a compact descriptor for every image. We obtain this descriptor by weighted second-order pooling of the patch features, which is the P2PS template applied to one image's weighted features channel by channel rather than patch by patch. Given the patch feature matrix $F$ of an image and its patch weights $\mathbf w=[w_1,\dots,w_N]$ from P2PS-1 \eqref{eq:weight}, let $W=\mathrm{diag}(\mathbf w)$ and $\tilde F=W^{1/2}F$ be the weighted patch features. Setting $A=B=\tilde F^{\top}$ in \eqref{eq:p2ps} aggregates them into a $C\times C$ second-moment matrix,
 \begin{equation}\label{eq:gc}
-  S_C(F)=\frac{S(\tilde F^{\top},\tilde F^{\top})}{\sum_i w_i}=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top},
+  S_C(F)=S(\tilde F^{\top},\tilde F^{\top})=F^{\top}WF=\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top},
 \end{equation}
 in which patches with larger weight, that is, the more distinctive patches of \S\ref{sec:feat}, contribute more strongly. $S_C$ records how the image's features co-occur across channels, irrespective of where in the frame they appear, and it retains much more of the image than the weighted mean of the same features (Supplementary~\S\ref{app:coarsegrid} and~\S\ref{app:factorize}).
-As $S_C$ is high-dimensional, we follow \citep{bcnn,mpncov} and apply PCA to obtain a compact descriptor $\mathbf g=\rho(S_C)$ for efficient large-scale search.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
+As $S_C$ is high-dimensional, we follow \citep{bcnn,mpncov} and flatten it, $\ell_2$-normalize it and apply PCA to obtain a compact descriptor $\mathbf g=\rho(S_C)$ for efficient large-scale search; the normalization makes the scale of $\mathbf w$ immaterial.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
 Denoting the query and the $m$-th database descriptors by $\mathbf g_Q$ and $\mathbf g_{D_m}$, coarse ranking sorts all database images by $\mathbf g_Q^{\top}\mathbf g_{D_m}$, and the top-$K$ images are passed to fine ranking.
 
 \paragraph{Fine Ranking (P2PS-3).}
