@@ -19,27 +19,27 @@ The proposed \textcolor{red}{XXX} eliminates this training requirement by perfor
 \begin{equation}\label{eq:p2ps}
   S(A,B)=AB^{\top},
 \end{equation}
-where $A$ and $B$ are set to different feature matrices depending on the form of P2PS being applied: the patch features of one image (P2PS-1), the transposed weighted patch features of one image (P2PS-2), or the patch features of the query and of a database image (P2PS-3). We first apply this template for patch weighting, and subsequently for coarse-to-fine ranking, as detailed below.
+where $A$ and $B$ are set to different feature matrices depending on the form of P2PS being applied: the patch features of one image (P2PS-1), the same features compared channel by channel rather than patch by patch (P2PS-2), or the patch features of the query and of a database image (P2PS-3). We first apply this template for patch weighting, and subsequently for coarse-to-fine ranking, as detailed below.
 
 \subsection{Patch Weighting via Self-Similarity (P2PS-1)}
 \label{sec:feat}
 When comparing two similar images, humans naturally compare them patch by patch, and in doing so implicitly judge the importance of each patch by how often visually similar patches recur within the image. For example, patches of sky, pavement or grass appear nearly identical across many regions of the same image and are therefore perceived as less informative.  % CHEN-CHECK: an intuition, not an established finding; see the note.
 
-In this paper, we capture this behaviour through a simple yet effective patch-to-patch self-similarity formulation (P2PS-1). Given the patch feature matrix $F\in\mathbb R^{N\times C}$ of an image, the P2PS template with $A=B=F$ gives $S(F,F)=FF^{\top}$, which is the Gram matrix $G\in\mathbb R^{N\times N}$ of $F$; its element $G_{ij}$, $i,j\in\{1,\dots,N\}$, is the similarity between patches $p_i$ and $p_j$. To count, for each patch, how many patches of the same image are highly similar to it, we introduce a similarity threshold $\tau$ and binarize the Gram matrix,
+In this paper, we capture this behaviour through a simple yet effective patch-to-patch self-similarity formulation (P2PS-1). Given the patch feature matrix $F\in\mathbb R^{N\times C}$ of an image, the P2PS template with $A=B=F$ gives the self-similarity $S(F,F)=FF^{\top}\in\mathbb R^{N\times N}$, whose element $S(F,F)_{ij}$, $i,j\in\{1,\dots,N\}$, is the similarity between patches $p_i$ and $p_j$. To count, for each patch, how many patches of the same image are highly similar to it, we introduce a similarity threshold $\tau$ and binarize this table,
 \begin{equation}\label{eq:demo}
-  \hat G_{ij}=\mathbb 1\left[\,G_{ij}>\tau\,\right],
+  \hat S_{ij}=\mathbb 1\left[\,S(F,F)_{ij}>\tau\,\right],
 \end{equation}
 where $\mathbb 1[\cdot]$ is the indicator function. The weight of patch $p_i$ is then defined as
 \begin{equation}\label{eq:weight}
   w_i=\frac{1}{n_i},
-  \qquad\text{where}\quad n_i=\sum_{j=1}^{N}\hat G_{ij},
+  \qquad\text{where}\quad n_i=\sum_{j=1}^{N}\hat S_{ij},
 \end{equation}
-and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to $p_i$, that is, the nonzero entries remaining in row $i$ of $\hat G$ after thresholding, as illustrated in Figure~\ref{fig:method}. Since $w_i$ is the reciprocal of $n_i$, a patch that recurs frequently across the image (large $n_i$) receives a small weight, while a distinctive patch with few or no similar patches (small $n_i$) receives a large weight, up to $w_i{=}1$, reflecting its higher importance (Figure~\ref{fig:blocks}). This weight is applied in the coarse-to-fine ranking described below.
+and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to $p_i$, that is, the nonzero entries remaining in row $i$ of $\hat S$ after thresholding, as illustrated in Figure~\ref{fig:method}. Since $w_i$ is the reciprocal of $n_i$, a patch that recurs frequently across the image (large $n_i$) receives a small weight, while a distinctive patch with few or no similar patches (small $n_i$) receives a large weight, up to $w_i{=}1$, reflecting its higher importance (Figure~\ref{fig:blocks}). This weight is applied in the coarse-to-fine ranking described below.
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.78\textwidth]{figures/blocks_nordland.pdf}
-\caption{Duplicated patches and their weights on one Nordland pair. Left, the query; right, the database image retrieved at rank one. Colours mark blocks of mutually near-duplicate patches under $\hat G$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little weight, the sparse distinctive content receives most. Every benchmark is shown in Supplementary~\S\ref{app:patchvis}.}
+\caption{Duplicated patches and their weights on one Nordland pair. Left, the query; right, the database image retrieved at rank one. Colours mark blocks of mutually near-duplicate patches under $\hat S$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little weight, the sparse distinctive content receives most. Every benchmark is shown in Supplementary~\S\ref{app:patchvis}.}
 \label{fig:blocks}
 \end{figure}
 
@@ -49,7 +49,7 @@ As discussed in \S\ref{sec:related}, VPR is essentially a retrieval task \citep{
 
 \paragraph{Coarse Ranking (P2PS-2).}
 \label{sec:global}
-During coarse ranking, the query is compared with the whole database $\mathcal D$ to obtain the closest top-$K$ candidates, which requires a compact descriptor for every image. We obtain this descriptor by weighted second-order pooling of the patch features, which is the P2PS template applied to one image's weighted features along the channel dimension. Given the patch feature matrix $F$ of an image and its patch weights $\mathbf w=[w_1,\dots,w_N]$ from P2PS-1 \eqref{eq:weight}, let $W=\mathrm{diag}(\mathbf w)$ and $\tilde F=W^{1/2}F$ be the weighted patch features. Setting $A=B=\tilde F^{\top}$ in \eqref{eq:p2ps} aggregates them into a $C\times C$ second-moment matrix,
+During coarse ranking, the query is compared with the whole database $\mathcal D$ to obtain the closest top-$K$ candidates, which requires a compact descriptor for every image. We obtain this descriptor by weighted second-order pooling of the patch features, which is the P2PS template applied to one image's weighted features channel by channel rather than patch by patch. Given the patch feature matrix $F$ of an image and its patch weights $\mathbf w=[w_1,\dots,w_N]$ from P2PS-1 \eqref{eq:weight}, let $W=\mathrm{diag}(\mathbf w)$ and $\tilde F=W^{1/2}F$ be the weighted patch features. Setting $A=B=\tilde F^{\top}$ in \eqref{eq:p2ps} aggregates them into a $C\times C$ second-moment matrix,
 \begin{equation}\label{eq:gc}
   G_C(F)=\frac{S(\tilde F^{\top},\tilde F^{\top})}{\sum_i w_i}=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top},
 \end{equation}

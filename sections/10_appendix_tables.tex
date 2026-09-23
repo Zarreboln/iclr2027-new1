@@ -342,9 +342,9 @@ $\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0
 \subsection{Derivation of the closed form}
 \label{app:ridge}
 
-Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $G=FF^{\top}$, the within-image table $S(F,F)$ of \S\ref{sec:prelim}. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $Gw=\mathbf 1$. With $N\gg C$ the Gram matrix has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat G=\mathbb 1[\,G>\tau\,]$ instead.
+Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $S(F,F)=FF^{\top}$, the within-image table of \S\ref{sec:prelim}. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $Gw=\mathbf 1$. With $N\gg C$ the Gram matrix has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat S=\mathbb 1[\,S(F,F)>\tau\,]$ instead.
 
-Under the burst model an element seen $n$ times yields $n$ patches near-duplicate of one another and of nothing else, so $\hat G$ is block diagonal with one all-ones block per element: $\hat G=\bigoplus_{k=1}^{m}J_{n_k}$ with $J_n$ the $n\times n$ all-ones matrix. The system decouples, and block $k$ reads
+Under the burst model an element seen $n$ times yields $n$ patches near-duplicate of one another and of nothing else, so $\hat S$ is block diagonal with one all-ones block per element: $\hat S=\bigoplus_{k=1}^{m}J_{n_k}$ with $J_n$ the $n\times n$ all-ones matrix. The system decouples, and block $k$ reads
 \begin{equation}\label{eq:block}
   J_{n_k}w^{(k)}=\mathbf 1_{n_k}
   \iff
@@ -352,22 +352,22 @@ Under the burst model an element seen $n$ times yields $n$ patches near-duplicat
 \end{equation}
 one scalar equation in $n_k$ unknowns. Two independent arguments pick the same point out of that affine set. The patches of a block are exchangeable, so a solution respecting the symmetry is constant on the block, and \eqref{eq:block} forces the constant to be $1/n_k$. And the minimum-norm solution gives the same,
 \begin{equation}\label{eq:pinv}
-  w=\hat G^{\dagger}\mathbf 1,
+  w=\hat S^{\dagger}\mathbf 1,
   \qquad
   J_n^{\dagger}\mathbf 1_n=\tfrac{1}{n^{2}}J_n\mathbf 1_n=\tfrac1n\mathbf 1_n .
 \end{equation}
-It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-1}\mathbf 1_n=\tfrac{1}{n+\lambda}\mathbf 1_n\to\tfrac1n\mathbf 1_n$ as $\lambda\to0^{+}$. The block sizes need no separate recovery, since $n_k$ is the row sum of $\hat G$ at any $i$ in block $k$, leaving
+It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-1}\mathbf 1_n=\tfrac{1}{n+\lambda}\mathbf 1_n\to\tfrac1n\mathbf 1_n$ as $\lambda\to0^{+}$. The block sizes need no separate recovery, since $n_k$ is the row sum of $\hat S$ at any $i$ in block $k$, leaving
 \begin{equation}\label{eq:w}
-  \hat G=\mathbb 1\big[\,G>\tau\,\big]
+  \hat S=\mathbb 1\big[\,S(F,F)>\tau\,\big]
   \qquad\text{and}\qquad
-  w_i=\frac{1}{n_i}\quad\text{with}\quad n_i=\sum_{j=1}^{N}\hat G_{ij} .
+  w_i=\frac{1}{n_i}\quad\text{with}\quad n_i=\sum_{j=1}^{N}\hat S_{ij} .
 \end{equation}
 Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a distinctiveness built on them needs a larger exponent to match.
 
-\paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat G$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in \eqref{eq:demo}. Table~\ref{tab:residual} measures the residual $r_i=|(\hat G\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across eight benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
+\paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat S$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in \eqref{eq:demo}. Table~\ref{tab:residual} measures the residual $r_i=|(\hat S\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across eight benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
 
 \begin{table}[H]
-\caption{Residual of the democratic condition on real images, $r_i=|(\hat G\mathbf w)_i-1|$ with $w_i=1/n_i$ and $\tau{=}0.5$, over all $2{,}304$ tokens of up to $200$ database images per benchmark (DINOv2, block $31$, $672$px). Under the block model every $r_i$ is $0$; the last two columns give the share of tokens whose row sum in \eqref{eq:demo} lies within $0.2$ and within $0.5$ of one.}
+\caption{Residual of the democratic condition on real images, $r_i=|(\hat S\mathbf w)_i-1|$ with $w_i=1/n_i$ and $\tau{=}0.5$, over all $2{,}304$ tokens of up to $200$ database images per benchmark (DINOv2, block $31$, $672$px). Under the block model every $r_i$ is $0$; the last two columns give the share of tokens whose row sum in \eqref{eq:demo} lies within $0.2$ and within $0.5$ of one.}
 \label{tab:residual}
 \centering
 {\footnotesize\setlength{\tabcolsep}{5pt}%
