@@ -8,7 +8,7 @@ We evaluate the pipeline from two perspectives. First, we compare it with traini
 \vspace{0pt}
 \paragraph{Datasets.} We evaluate on seventeen benchmarks, in two groups in Table~\ref{tab:datasets}: eight standard VPR benchmarks, the seven street-level benchmarks that form the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS) plus the Nordland railway, and nine cross-environment benchmarks, the suite of \citet{anyloc}. Supplementary~\S\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.
 
-\paragraph{Implementation details.} The feature extractor is a frozen DINOv2 (\emph{v2}) or DINOv3 (\emph{v3}) backbone; we set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks. Baselines use their own default settings; Supplementary~\S\ref{app:impl} lists the remaining details.
+\paragraph{Implementation details.} The feature extractor is a frozen DINOv2 or DINOv3 backbone; we set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks. Baselines use their own default settings; Supplementary~\S\ref{app:impl} lists the remaining details.
 
 \paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localized if the top-ranked database image lies within the tolerance of its benchmark, following the order of Table~\ref{tab:datasets}. For the standard benchmarks this is $25$\,m, except Nordland ($\pm10$ frames), Oxford RobotCar ($16$\,m) and AmsterTime (the paired present-day image); for the cross-environment benchmarks it is the provided correspondences or pose thresholds (Supplementary~\S\ref{app:protocol}).
 \end{minipage}\hspace{0.015\textwidth}%
@@ -46,7 +46,7 @@ Underwater & Mid-Atlantic Ridge \\
 \paragraph{Against training-free methods.} Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of on all seventeen benchmarks. On the standard benchmarks we lead the best prior training-free number on seven of the eight benchmarks and are within $0.5$ of AnyLoc on Oxford, for a mean of $93.3$ against $80.3$ for EffoVPR-ZS; the largest margin is Nordland, $+38.7$, whose seasonal change no training-free method handled before. On the cross-environment benchmarks we are best or tied on all nine, $76.6$ against $69.5$ for AnyLoc, whose descriptor is $24\times$ larger than ours. The frozen class token and GeM, which only pool, reach $51.5$ and $56.7$ on the standard benchmarks: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
 
 \begin{table}[!htb]
-\caption{Comparison with training-free methods. Recall@1 (\%) on the same four standard and four cross-environment benchmarks as Table~\ref{tab:trained}, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the full tables in Supplementary~\S\ref{app:trained-full} list every benchmark. \emph{Dim.} is the first-stage descriptor dimensionality as evaluated; \textsc{CLS token} retrieves the frozen DINOv2 class token by cosine. Baseline numbers are as published, or our run of the released code where the paper does not report the benchmark; $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with training-free methods. Recall@1 (\%) on the same four standard and four cross-environment benchmarks as Table~\ref{tab:trained}, with the mean over all eight standard benchmarks, over all nine cross-environment benchmarks, and over all seventeen; the full tables in Supplementary~\S\ref{app:trained-full} list every benchmark. $^{\dagger}$two-stage method. Bold indicates the best value and underline the second best in each column.}
 \label{tab:breadth}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
@@ -116,7 +116,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 93.7 & \textbf{98.4} & \textbf{96.6} & \tex
 
 \subsection{Ablation study}
 \label{sec:swap}
-\paragraph{Our second stage in other pipelines.} Table~\ref{tab:stage2swap} drops our re-ranking rule into other pipelines: each method keeps its resolution and shortlist, and only the scoring rule changes. Replacing the re-ranker of R2Former and SelaVPR raises their mean over the nine AnyLoc-suite benchmarks by $+5.6$ and $+9.7$ R@1, better on $15$ of $18$ cells; adding it to eight single-stage methods improves all of them, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of $72$ cells. The gain is largest where a single descriptor is weakest, and the rule needs no training and no access to a method's internals.
+\paragraph{Our second stage in other pipelines.} Table~\ref{tab:stage2swap} drops our re-ranking rule into other pipelines: each method keeps its resolution and shortlist, and only the scoring rule changes. Replacing the re-ranker of SelaVPR, R2Former and Pair-VPR raises their mean over the nine cross-environment benchmarks by $+9.7$, $+5.6$ and $+1.9$ R@1, better on $18$ of $27$ cells; adding it to eight single-stage methods improves all of them, by $+9.1$ (MegaLoc) to $+17.8$ (SuperVLAD), better on $63$ of $72$ cells. The gain is largest where a single descriptor is weakest, and the rule needs no training and no access to a method's internals.
 
 \begin{table}[!htb]
 \caption{Our second stage plugged into other pipelines on the nine benchmarks of the AnyLoc suite. Each figure is the method's published result, after its own re-ranker in the upper block and from its global descriptor in the lower; the subscript is the change from replacing or adding our re-ranking rule \eqref{eq:stage2}, with the method's resolution and shortlist left unchanged.}
@@ -133,6 +133,7 @@ Method & Hawk & Laurel & 17Pl & Gard & Baidu & N-Air & N-AirR & VP-Air & M-Atl &
 \multicolumn{11}{l}{\emph{Replacing each method's own re-ranking stage}} \\
 SelaVPR & 25.4\dlt{+38.2} & 53.6\dlt{+13.4} & 63.3\dlt{+2.5} & 94.5\dlt{+1.5} & 68.5\dlt{+7.5} & 59.1\dlt{+1.5} & 83.1\dlt{+1.4} & 32.6\dlt{+23.5} & 21.8\dlt{-2.0} & 55.8\dltg{+9.7} \\
 R2Former & 17.8\dlt{+22.9} & 30.4\dlt{+16.1} & 63.8\dlt{+0.7} & 84.0\dlt{-3.5} & 74.7\dlt{+0.6} & 26.8\dlt{+5.6} & 83.1\dlt{-1.4} & 15.0\dlt{+2.8} & 22.8\dlt{+6.9} & 46.5\dltg{+5.6} \\
+Pair-VPR & 16.1\dlt{+23.7} & 37.5\dlt{-5.4} & 65.8\dlt{-3.0} & 99.0\dlt{-5.0} & 83.3\dlt{-15.7} & 14.1\dlt{+36.6} & 100.0\dlt{-2.8} & 12.5\dlt{+2.4} & 32.7\dlt{-13.9} & 51.2\dltg{+1.9} \\
 \midrule
 \multicolumn{11}{l}{\emph{Added to methods that provide no re-ranking stage}} \\
 SALAD & 38.1\dlt{+24.6} & 46.4\dlt{+25.9} & 64.3\dlt{+1.0} & 96.5\dlt{+3.0} & 69.9\dlt{+12.1} & 53.5\dlt{+29.6} & 94.4\dlt{+1.4} & 24.0\dlt{+22.1} & 15.8\dlt{+14.9} & 55.9\dltg{+14.9} \\
@@ -149,13 +150,14 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 }
 \end{table}
 
-\paragraph{Components.} Table~\ref{tab:components} adds one component at a time on two benchmarks whose shortlist is a true top-$1000$. Starting from the second moment alone, weighting it by patch distinctiveness adds $8$ to $17$ points; \textsc{MaxSim} re-ranking adds $3$ to $12$; weighting the re-ranking by the same $w$ adds another $7$ to $11$. Both stages profit from $w$, the second most.
-
-\begin{table}[!htb]
-\caption{What each component adds. Recall@1 with DINOv2 on two benchmarks whose shortlist is a true top-$1000$; each row adds one component to the row above. $w$ is the patch distinctiveness of \S\ref{sec:feat}.}
-\label{tab:components}
+\noindent\begin{minipage}[t]{0.53\textwidth}
+\vspace{0pt}
+\paragraph{Components.} Table~\ref{tab:components} adds one component at a time on two benchmarks. Starting from the second moment alone, weighting it by patch distinctiveness adds $8$ to $17$ points; \textsc{MaxSim} re-ranking adds $3$ to $12$; weighting the re-ranking by the same $w$ adds another $7$ to $11$. Both stages profit from $w$, the second most.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.44\textwidth}
+\vspace{0pt}
 \centering
-{\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
+{\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.05}
 \begin{tabular}{lcc}
 \toprule
 Configuration & VP-Air & AmsterTime \\
@@ -166,34 +168,41 @@ weighted second moment & 58.6 & 48.2 \\
 \quad $+$ weighted \textsc{MaxSim} & \textbf{73.2} & \textbf{67.9} \\
 \bottomrule
 \end{tabular}}
-\end{table}
+\captionof{table}{What each component adds. Recall@1 with DINOv2; each row adds one component to the row above.}
+\label{tab:components}
+\end{minipage}
 
-\paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Down-weighted self-similarity leads at $93.03$ R@1; class-token attention, the signal of \citet{effovpr}, is the closest alternative at $92.62$; reversing a patch-graph signal costs $9.1$; token norm, inverse document frequency and spatial verification sit at or below the unweighted $87.62$. Repetition within the image is the signal to read, and it should count against a patch.
 
-\begin{table}[!htb]
-\caption{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2 layer $31$, weighted \textsc{MaxSim} over a VLAD top-$100$ shortlist). Every row changes only $w$; \emph{Source} names the work the signal is taken from.}
-\label{tab:w-signal}
+\noindent\begin{minipage}[t]{0.50\textwidth}
+\vspace{0pt}
+\paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity leads at $93.03$ R@1. The class-token attention of EffoVPR \citep{effovpr} is the closest alternative at $92.62$, and the patch-graph centrality of SAP \citep{sap} follows at $90.44$; inverting the centrality costs $9.1$. Token norm \citep{registers} is neutral in either sign, and the inverse document frequency of Video Google \citep{videogoogle}, the cross-referencing of DeepEMD \citep{deepemd} and the rapid spatial verification of Patch-NetVLAD \citep{patchnetvlad} all fall below the unweighted $87.62$. Repetition within the image is the signal to read, and it should count against a patch.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}
+\vspace{0pt}
 \centering
-{\footnotesize
-\begin{tabular}{ll c l}
+{\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llc}
 \toprule
-Signal for $w$   &   Source   &  R@1 &   \\
+Patch importance signal & Source & R@1 \\
 \midrule
-none (bare \textsc{MaxSim})   &   ---   &  87.62 &   baseline \\
+none (bare \textsc{MaxSim}) & --- & 87.62 \\
 \midrule
-\textbf{self-similarity, down-weighted}   &   this work   &  \textbf{93.03} &   best \\
-class-token attention, up-weighted    &    \citep{effovpr}    &  92.62 &    close second \\
-patch-graph centrality, up-weighted    &    SAP    &  90.44 &    works, weaker \\
+\textbf{self-similarity} & this work & \textbf{93.03} \\
+class-token attention & EffoVPR & 92.62 \\
+patch-graph centrality & SAP & 90.44 \\
 \midrule
-patch-graph centrality, \emph{down}-weighted   &   ---   &  83.94 &   direction reversed \\
-token norm, up-weighted    &    \citep{registers}    &  87.72 &    neutral \\
-token norm, down-weighted    &    \citep{registers}    &  87.53 &    neutral \\
-inverse document frequency    &    Video Google    &  86.53 &    below baseline \\
-cross-referencing    &    DeepEMD    &  81.78 &    below baseline \\
-rapid spatial verification    &    \citep{patchnetvlad}    &  84.24 &    below baseline \\
+patch-graph centrality (inverted) & --- & 83.94 \\
+token norm (a) & Registers & 87.72 \\
+token norm (b) & Registers & 87.53 \\
+inverse document frequency & Video Google & 86.53 \\
+cross-referencing & DeepEMD & 81.78 \\
+rapid spatial verification & Patch-NetVLAD & 84.24 \\
 \bottomrule
-\end{tabular}%
-}\end{table}
+\end{tabular}}
+\captionof{table}{Choice of the patch-distinctiveness signal on Pitts30k ($6{,}816$ queries, DINOv2 layer $31$, weighted \textsc{MaxSim} over a VLAD top-$100$ shortlist). Every row changes only $w$; (a) and (b) are the two signs of the token-norm signal.}
+\label{tab:w-signal}
+\end{minipage}
+
 
 \paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Table~\ref{tab:perdataset}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A larger backbone helps every method, by $1.4$ to $4.5$ mean R@1, and does not close the gap. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
 
