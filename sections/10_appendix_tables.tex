@@ -51,7 +51,7 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 
 \subsection{Full comparison with training-free and trained methods}
 \label{app:trained-full}
-\begin{table}[H]
+\begin{table}[!htb]
 \caption{Comparison with training-free methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:breadth}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there; markers as in Table~\ref{tab:breadth}.}
 \label{tab:breadth-full}
 \centering
@@ -94,8 +94,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 61.0 & \underline{75.9} & \underline{65.3} 
 \end{tabular}%
 }
 \end{table}
-\FloatBarrier
-\begin{table}[H]
+\begin{table}[!htb]
 \caption{Comparison with trained methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:trained}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best within each block.}
 \label{tab:trained-full}
 \centering
@@ -158,12 +157,11 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \underline{61.0} & \underline{75.9} & \unde
 \end{tabular}%
 }
 \end{table}
-\FloatBarrier
 
 \subsection{Our pipeline on ImageNet-supervised backbones}
 \label{app:oldbackbones}
 The pipeline of \S\ref{sec:method} runs unchanged on the backbones of the classic trained methods: VGG16 (conv5\_3, before the ReLU), ResNet-50 (layer3) and DeiT-S (value facet of block 11), all ImageNet-1k supervised, at $480\times640$ with the $1{,}200$ feature-map cells of an image as its tokens. Tokens are centred and PCA-projected as in \S\ref{sec:prelim}; $\tau$ is calibrated once per backbone on SF-XL val ($0.47$, $0.27$, $0.48$), $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ as everywhere else. Table~\ref{tab:oldbackbones} sets each run against the trained methods built on the same backbone. Without any training, the pipeline is ahead of both VGG16 methods in both groups and, on ResNet-50, ahead of CosPlace and within $0.3$ of EigenPlaces on the other viewpoints and environments; the remaining same-backbone methods, all trained on street-level data, keep a clear margin, largest on ground-level imagery.
-\begin{table}[H]
+\begin{table}[!htb]
 \caption{Recall@1 of our pipeline on ImageNet-supervised backbones against the trained methods built on the same backbone (numbers from Table~\ref{tab:trained-full}). Bold marks the best value per column.}
 \label{tab:oldbackbones}
 \centering
@@ -209,12 +207,11 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 \end{tabular}}%
 }
 \end{table}
-\FloatBarrier
 
 \subsection{Per-query cost}
 \label{app:cost}
 Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and re-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2-G at $672$\,px. The scan is under a millisecond for every method. Re-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.
-\begin{table}[H]
+\begin{table}[!htb]
 \caption{Per-query cost of the two-stage methods on Pitts30k, in ms on one H100. Extraction: the query's global and local features at each method's own resolution (batch 1, fp16), median over $25$ calls, best of $40$ repeats. Stage 1: cosine search of one descriptor against the $10{,}000$ database descriptors to the top-$100$. Stage 2: each method's released code on its Pitts30k top-$100$, with the candidates' local features fetched from host memory per query as the released code does, fp32; per query the best of $20$ passes, median over $200$ queries.}
 \label{tab:s2cost}
 \centering
@@ -237,7 +234,7 @@ Ours\,\emph{v2} & DINOv2-G @\,$672$, $1024$ tokens & 31.5 & 0.2 & \textbf{15.5} 
 
 \subsection{Implementation details}
 \label{app:impl}
-One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Appendix~\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Appendix~\ref{app:hyper}.
+One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 ViT-G/14 at block $31$ for \emph{v2} and DINOv3 ViT-7B/16 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 re-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Supplementary~\S\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Supplementary~\S\ref{app:hyper}.
 
 \subsection{Hyperparameters and calibration}
 \label{app:hyper}
@@ -470,7 +467,7 @@ WPCA-1024 & 90.45 & 84.86 & 70.78 & 92.70 & 66.04 & 80.97 \\
 
 \subsection{Why \textsc{MaxSim} admits no fixed-size descriptor}
 \label{app:nofactor}
-The first stage factorizes because its contraction is bilinear in the two token sets. The row-wise maximum of \eqref{eq:stage2} is not: it is not linear in the candidate's tokens, so no regrouping of the kind used in Appendix~\ref{app:factorize} applies. The score is not even symmetric, which rules out any form $\langle\psi(Q),\psi(D)\rangle$ with $\psi$ mapping a token set to a vector. Take $Q=\{\mathbf q\}$ and $D=\{\mathbf d_1,\mathbf d_2\}$ with unit weights and $S=(0.9,\ 0.1)$: scoring $Q$ against $D$ gives $0.9$, while scoring $D$ against $Q$ gives $0.9+0.1=1.0$. A pipeline that stores one vector per image therefore cannot express this stage, and we run it pair by pair on the shortlist.
+The first stage factorizes because its contraction is bilinear in the two token sets. The row-wise maximum of \eqref{eq:stage2} is not: it is not linear in the candidate's tokens, so no regrouping of the kind used in Supplementary~\S\ref{app:factorize} applies. The score is not even symmetric, which rules out any form $\langle\psi(Q),\psi(D)\rangle$ with $\psi$ mapping a token set to a vector. Take $Q=\{\mathbf q\}$ and $D=\{\mathbf d_1,\mathbf d_2\}$ with unit weights and $S=(0.9,\ 0.1)$: scoring $Q$ against $D$ gives $0.9$, while scoring $D$ against $Q$ gives $0.9+0.1=1.0$. A pipeline that stores one vector per image therefore cannot express this stage, and we run it pair by pair on the shortlist.
 
 \FloatBarrier
 

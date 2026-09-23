@@ -1,7 +1,7 @@
 \begin{figure}[!htb]
 \centering
 % \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
-\includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
+\includegraphics[width=0.92\textwidth]{figures/method_fig_ppt.png}
 \caption{\textbf{One similarity table, three readings.} Thresholding and row-summing the within-image table $S(F,F)$ gives the patch distinctiveness $w_i{=}1/n_i$. The cross-image table $S(Q,D)$ is read twice: its weighted sum of squares factorizes into one second moment $G_C{=}F^{\top}WF$ per image, so stage 1 scans the database with it; its weighted row maxima do not factorize, so stage 2 re-ranks the shortlist with them.}
 \label{fig:method}
 \end{figure}
@@ -26,7 +26,7 @@ $S(Q,D)$, weighted row maxima & $s(Q,D)=\sum_i w_{Q,i}\,\mathbb 1[m_i>\theta]\,m
 
 \subsection{Preliminaries}
 \label{sec:prelim}
-A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_d)\}$ of images with known coordinates, and the coordinates of the retrieved image are returned as the query's. Every image is a grid of $N$ patches and passes once through a frozen DINOv2/DINOv3 backbone, from which we keep the value facet of one block, the output of its value projection \citep{vitfacets,effovpr}. A PCA fitted on database tokens reduces every token to $C{=}512$ channels; tokens are $\ell_2$-normalized. An image is therefore a matrix of $N$ unit vectors, $F=[\,\mathbf f_1,\dots,\mathbf f_N\,]^{\top}\in\mathbb R^{N\times C}$. For two such matrices we write $S(A,B)=AB^{\top}$, whose entry $S_{ij}=\mathbf a_i^{\top}\mathbf b_j$ is the cosine between patch $i$ of $A$ and patch $j$ of $B$. Two instances appear below: $S(F,F)$, an image against itself, and $S(Q,D)$, a query against a candidate. Appendix~\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
+A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_d)\}$ of images with known coordinates, and the coordinates of the retrieved image are returned as the query's. Every image is a grid of $N$ patches and passes once through a frozen DINOv2/DINOv3 backbone, from which we keep the value facet of one block, the output of its value projection \citep{vitfacets,effovpr}. A PCA fitted on database tokens reduces every token to $C{=}512$ channels; tokens are $\ell_2$-normalized. An image is therefore a matrix of $N$ unit vectors, $F=[\,\mathbf f_1,\dots,\mathbf f_N\,]^{\top}\in\mathbb R^{N\times C}$. For two such matrices we write $S(A,B)=AB^{\top}$, whose entry $S_{ij}=\mathbf a_i^{\top}\mathbf b_j$ is the cosine between patch $i$ of $A$ and patch $j$ of $B$. Two instances appear below: $S(F,F)$, an image against itself, and $S(Q,D)$, a query against a candidate. Supplementary~\S\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
 
 \subsection{Patch distinctiveness from self-similarity}
 \label{sec:feat}
@@ -36,21 +36,20 @@ Sky, pavement and a facade of identical windows fill an image with near-copies o
   \qquad\text{i.e.}\qquad
   \sum_j S(F,F)_{ij}\,w_j = 1\ \ \text{for all } i,
 \end{equation}
-the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat S_{ij}=\mathbb 1[\,S(F,F)_{ij}>\tau\,]$, which counts near-copies rather than grading them. We model repeated content as blocks of mutual near-duplicates (Appendix~\ref{app:ridge}); under this model the condition is solved exactly by the inverse multiplicity of each patch,
+the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat S_{ij}=\mathbb 1[\,S(F,F)_{ij}>\tau\,]$, which counts near-copies rather than grading them. We model repeated content as blocks of mutual near-duplicates (Supplementary~\S\ref{app:ridge}); under this model the condition is solved exactly by the inverse multiplicity of each patch,
 \begin{equation}\label{eq:weight}
   w_i=\frac{1}{n_i},
   \qquad
   n_i=\sum_j \hat S_{ij}=\sum_j \mathbb 1[\,S(F,F)_{ij}>\tau\,],
 \end{equation}
-and we use it as the distinctiveness throughout. On real images the blocks are approximate: at $\tau{=}0.5$ the row sums in \eqref{eq:demo} lie within $0.2$ of one for half of all tokens and within $0.5$ for nine in ten (Table~\ref{tab:residual}); what both stages rely on, that $w_i$ falls with the amount of similar content around patch $i$, holds regardless. A patch recurring twenty times in its image therefore receives one twentieth of the distinctiveness of a patch that occurs once (Figure~\ref{fig:blocks}). Appendix~\ref{app:ridge} gives the derivation.
+and we use it as the distinctiveness throughout. On real images the blocks are approximate: at $\tau{=}0.5$ the row sums in \eqref{eq:demo} lie within $0.2$ of one for half of all tokens and within $0.5$ for nine in ten (Table~\ref{tab:residual}); what both stages rely on, that $w_i$ falls with the amount of similar content around patch $i$, holds regardless. A patch recurring twenty times in its image therefore receives one twentieth of the distinctiveness of a patch that occurs once (Figure~\ref{fig:blocks}). Supplementary~\S\ref{app:ridge} gives the derivation.
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/blocks_nordland.pdf}
-\caption{Near-duplicate blocks and patch distinctiveness on one Nordland pair. Left, the query; right, the database image our pipeline retrieves at rank one. Colours mark blocks of mutually near-duplicate patches under $\hat S$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little weight, the sparse distinctive content receives most. Every benchmark is shown in Appendix~\ref{app:patchvis}.}
+\includegraphics[width=0.78\textwidth]{figures/blocks_nordland.pdf}
+\caption{Near-duplicate blocks and patch distinctiveness on one Nordland pair. Left, the query; right, the database image our pipeline retrieves at rank one. Colours mark blocks of mutually near-duplicate patches under $\hat S$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little weight, the sparse distinctive content receives most. Every benchmark is shown in Supplementary~\S\ref{app:patchvis}.}
 \label{fig:blocks}
 \end{figure}
-
 \subsection{First stage \textcolor{red}{Chen: Coarse Ranking?}}
 \label{sec:global}
 Stage 1 scores a pair by adding up the similarity of every query patch to every candidate patch, that is, by summing over all entries of $S(Q,D)$. Computing that table for every database image would be far too slow, and it is not needed: the sum can be rearranged into an inner product of two vectors, one computed from the query alone and one from the candidate alone, so each database image is stored as a single fixed-size descriptor and searched as such. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
@@ -60,7 +59,7 @@ Stage 1 scores a pair by adding up the similarity of every query patch to every 
   \qquad
   G_C(F)=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top}.
 \end{equation}
-$G_C$ is the weighted second moment of the patch features: it records how an image's features co-occur across channels, ignoring where in the frame they appeared. The square is what makes it worth keeping. The same sum over the entries themselves, $\sum_{i,j}w_{Q,i}w_{D,j}S(Q,D)_{ij}$, is only the inner product of two weighted mean vectors, and an average of the same tokens retains far less of the image (Appendix~\ref{app:coarsegrid}). In kernel terms the stage is a degree-two polynomial match kernel over patches \citep{smk}, and it is exactly the case that factorizes; Appendix~\ref{app:factorize} treats other powers. The descriptor is flattened, $\ell_2$-normalized and whitened, and the database is scanned with it to a shortlist of $K$ candidates.
+$G_C$ is the weighted second moment of the patch features: it records how an image's features co-occur across channels, ignoring where in the frame they appeared. The square is what makes it worth keeping. The same sum over the entries themselves, $\sum_{i,j}w_{Q,i}w_{D,j}S(Q,D)_{ij}$, is only the inner product of two weighted mean vectors, and an average of the same tokens retains far less of the image (Supplementary~\S\ref{app:coarsegrid}). In kernel terms the stage is a degree-two polynomial match kernel over patches \citep{smk}, and it is exactly the case that factorizes; Supplementary~\S\ref{app:factorize} treats other powers. The descriptor is flattened, $\ell_2$-normalized and whitened, and the database is scanned with it to a shortlist of $K$ candidates.
 
 \subsection{Second stage \textcolor{red}{Chen: Fine Ranking?}}
 \label{sec:core}
@@ -70,4 +69,5 @@ This stage reads $S(Q,D)$ row by row. For each query patch we find its most simi
   \qquad
   m_i=\max_{j} S(Q,D)_{ij},
 \end{equation}
-the \textsc{MaxSim} interaction of \citet{colbert}, in which each query patch enters with the same distinctiveness $w_{Q,i}$ as in stage 1. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). The row maximum keeps which patch matched which, and for that reason it cannot be written as an inner product of two per-image vectors (Appendix~\ref{app:nofactor}); we therefore apply it only to the $K$ shortlisted candidates. A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
+the \textsc{MaxSim} interaction of \citet{colbert}, in which each query patch enters with the same distinctiveness $w_{Q,i}$ as in stage 1. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Supplementary~\S\ref{app:calib}). The row maximum keeps which patch matched which, and for that reason it cannot be written as an inner product of two per-image vectors (Supplementary~\S\ref{app:nofactor}); we therefore apply it only to the $K$ shortlisted candidates. A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
+
