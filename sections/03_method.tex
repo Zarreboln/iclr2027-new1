@@ -1,73 +1,72 @@
+% Chen's method draft (version 2, red text plus the black text inside his sections), polished sentence by sentence on 23 Sep 2026.
+% Order, content and terminology are his; only wording was tightened. Places where his logic needs a decision are marked "% CHEN-CHECK".
+% Labels are identical to the current section so every cross-reference in the paper still resolves.
 \begin{figure}[!htb]
 \centering
-% \resizebox{\textwidth}{!}{\input{method_fig}}  % TikZ version, swapped out for a trial
 \includegraphics[width=0.92\textwidth]{figures/method_fig_ppt.png}
-\caption{\textbf{One similarity table, three readings.} Thresholding and row-summing the within-image table $S(F,F)$ gives the patch distinctiveness $w_i{=}1/n_i$. The cross-image table $S(Q,D)$ is read twice: its weighted sum of squares factorizes into one second moment $G_C{=}F^{\top}WF$ per image, so stage 1 scans the database with it; its weighted row maxima do not factorize, so stage 2 fine-ranks the shortlist with them.}
+\caption{\textbf{Overview of the proposed method.} Each image is partitioned into patches and encoded by a frozen pretrained vision model. A single patch-to-patch similarity (P2PS) template $S(A,B)=AB^{\top}$ is used throughout: within an image it gives the patch weights $w_i{=}1/n_i$ (P2PS-1); applied to the weighted patch features of one image it gives its second-order descriptor for coarse ranking (P2PS-2); applied between the query and a candidate it gives the patch-to-patch \textsc{MaxSim} matching for fine ranking of the top-$K$ candidates (P2PS-3).}
 \label{fig:method}
 \end{figure}
+
 \section{Method}
 \label{sec:method}
-Every quantity in the pipeline is read off one table, the patch-to-patch similarity $S(A,B)=AB^{\top}$ between two sets of tokens from a single frozen forward pass. Read on an image against itself, $S(F,F)$, its thresholded row sums give each patch a distinctiveness $w$, which discounts repeated content such as sky or a facade of identical windows (\S\ref{sec:feat}); this is the patch distinctiveness, decided by the image alone. Read on a query against a candidate, $S(Q,D)$, it is reduced in two ways, both using the same $w$, and these are the place evidence, decided by the pair alone: a weighted sum of its squared entries, which factorizes into one descriptor per image and therefore scans the whole database (\S\ref{sec:global}), and a weighted sum of its row maxima, which keeps the patch correspondences, does not factorize, and therefore fine-ranks a shortlist (\S\ref{sec:core}). Table~\ref{tab:readings} lists the three readings.
-\begin{center}
-\footnotesize\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.05}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{llcl}
-\toprule
-Reading of $S$ & Formula & Needs the pair & Used for \\
-\midrule
-$S(F,F)$, count per row above $\tau$ & $w_i=1\big/\sum_j \mathbb 1[S(F,F)_{ij}>\tau]$ & no & patch distinctiveness (\S\ref{sec:feat}) \\
-$S(Q,D)$, weighted sum of squares & $\sum_{i,j} w_{Q,i}w_{D,j}S(Q,D)_{ij}^2=\langle G_C(Q),G_C(D)\rangle$ & no & coarse place evidence: scan $\mathcal D$ to top-$K$ (\S\ref{sec:global}) \\
-$S(Q,D)$, weighted row maxima & $s(Q,D)=\sum_i w_{Q,i}\,\mathbb 1[m_i>\theta]\,m_i$ & yes & fine place evidence: fine-rank the top-$K$ (\S\ref{sec:core}) \\
-\bottomrule
-\end{tabular}}
-\captionof{table}{The three readings of the similarity table. ``Needs the pair'' marks the reading that cannot be precomputed per image.}
-\label{tab:readings}
-\end{center}
-
-\subsection{Preliminaries}
+As illustrated in Figure~\ref{fig:method}, the proposed method \textcolor{red}{XXX} follows a training-free paradigm and requires neither model training nor annotated data. All steps of the pipeline rely on a single patch-to-patch similarity (P2PS) strategy, expressed in three different forms. The query and the database images are first partitioned into patches, and their patch features are extracted by a frozen pretrained vision model. Based on these features, each image computes the similarity between its own patches (P2PS-1), from which the weight of every patch is derived (\S\ref{sec:feat}). Second-order pooling of each image's weighted patch features (P2PS-2) then yields one descriptor per image, with which the database is coarsely ranked, and patch-to-patch \textsc{MaxSim} matching between the query and the top-ranked database images (P2PS-3) refines this ranking (\S\ref{sec:coarse_to_fine_ranking}). The details are introduced below.
+\subsection{Problem Formulation and Notation}  % CHEN-CHECK: his note asks for a new title; this is one option.
 \label{sec:prelim}
-A query image $I_q$ is matched against a database $\mathcal{D}=\{(I_d,\mathbf c_d)\}$ of images with known coordinates, and the coordinates of the retrieved image are returned as the query's. Every image is a grid of $N$ patches and passes once through a frozen DINOv2/DINOv3 backbone, from which we keep the value facet of one block, the output of its value projection \citep{vitfacets,effovpr}. A PCA fitted on database tokens reduces every token to $C{=}512$ channels; tokens are $\ell_2$-normalized. An image is therefore a matrix of $N$ unit vectors, $F=[\,\mathbf f_1,\dots,\mathbf f_N\,]^{\top}\in\mathbb R^{N\times C}$. For two such matrices we write $S(A,B)=AB^{\top}$, whose entry $S_{ij}=\mathbf a_i^{\top}\mathbf b_j$ is the cosine between patch $i$ of $A$ and patch $j$ of $B$. Two instances appear below: $S(F,F)$, an image against itself, and $S(Q,D)$, a query against a candidate. Supplementary~\S\ref{app:hyper} sweeps the block, the facet and the shortlist depth.
+The VPR task aims to find the location of a query image \citep{netvlad}. More specifically, given a query image $I_q$ and a database $\mathcal{D}=\{(I_d,\mathbf c_d)\}$ consisting of images $I_d$ and their spatial coordinates $\mathbf c_d$, VPR retrieves the database image that best matches the query, from which the query's coordinate $\hat{\mathbf c}_q$ is inferred. As discussed in \S\ref{sec:related}, most VPR solutions require a massive annotated training set $\mathcal{D}^{T}=\{(I_t,\mathbf c_t)\}$ to train a dedicated model for the classification and/or retrieval step. \textcolor{red}{Training such a model takes from XX hours to XX days, depending on the complexity of the method and the scale of $\mathcal{D}^{T}$.}  % numbers and citations to be filled
 
-\subsection{Patch distinctiveness from self-similarity}
-\label{sec:feat}
-Sky, pavement and a facade of identical windows fill an image with near-copies of the same content. We want ten nearly identical sky patches to contribute about as much as one unique patch, rather than ten times as much, so each patch receives a distinctiveness $w_i$ before either stage uses it. We ask that, for every token $i$, the total distinctiveness of the tokens similar to it be constant:
-\begin{equation}\label{eq:demo}
-  S(F,F)\,\mathbf w=\mathbf 1,
-  \qquad\text{i.e.}\qquad
-  \sum_j S(F,F)_{ij}\,w_j = 1\ \ \text{for all } i,
+The proposed \textcolor{red}{XXX} eliminates this training requirement by performing patch-similarity-based retrieval in a training-free manner. As shown in Figure~\ref{fig:method}, prior to retrieval, each input image $I$ (the query $I_q$ or any database image $I_d$) is partitioned into $N$ patches, $I=[\,p_1,\dots,p_N\,]$. A frozen vision encoder extracts a feature vector $\mathbf f_i\in\mathbb R^{C}$ for each patch $p_i$, so that every image is represented by a patch feature matrix $F=[\,\mathbf f_1,\dots,\mathbf f_N\,]^{\top}\in\mathbb R^{N\times C}$, where $C$ is the feature dimension. Following this notation, we denote the query's patch feature matrix by $Q$ and that of the $m$-th database image by $D_m$, $m=1,\dots,M$. Given these patch features, we adopt a general P2PS template,
+\begin{equation}\label{eq:p2ps}
+  S(A,B)=AB^{\top},
 \end{equation}
-the democratic-weighting condition of \citet{democratic} and \citet{gmp}. We impose it on the thresholded table $\hat S_{ij}=\mathbb 1[\,S(F,F)_{ij}>\tau\,]$, which counts near-copies rather than grading them. We model repeated content as blocks of mutual near-duplicates (Supplementary~\S\ref{app:ridge}); under this model the condition is solved exactly by the inverse multiplicity of each patch,
+where $A$ and $B$ are set to different feature matrices depending on the form of P2PS being applied: the patch features of one image (P2PS-1), the transposed weighted patch features of one image (P2PS-2), or the patch features of the query and of a database image (P2PS-3). We first apply this template for patch weighting, and subsequently for coarse-to-fine ranking, as detailed below.
+
+\subsection{Patch Weighting via Self-Similarity (P2PS-1)}
+\label{sec:feat}
+When comparing two similar images, humans naturally compare them patch by patch, and in doing so implicitly judge the importance of each patch by how often visually similar patches recur within the image. For example, patches of sky, pavement or grass appear nearly identical across many regions of the same image and are therefore perceived as less informative.  % CHEN-CHECK: an intuition, not an established finding; see the note.
+
+In this paper, we capture this behaviour through a simple yet effective patch-to-patch self-similarity formulation (P2PS-1). Given the patch feature matrix $F\in\mathbb R^{N\times C}$ of an image, the P2PS template with $A=B=F$ gives $S(F,F)=FF^{\top}$, which is the Gram matrix $G\in\mathbb R^{N\times N}$ of $F$; its element $G_{ij}$, $i,j\in\{1,\dots,N\}$, is the similarity between patches $p_i$ and $p_j$. To count, for each patch, how many patches of the same image are highly similar to it, we introduce a similarity threshold $\tau$ and binarize the Gram matrix,
+\begin{equation}\label{eq:demo}
+  \hat G_{ij}=\mathbb 1\left[\,G_{ij}>\tau\,\right],
+\end{equation}
+where $\mathbb 1[\cdot]$ is the indicator function. The weight of patch $p_i$ is then defined as
 \begin{equation}\label{eq:weight}
   w_i=\frac{1}{n_i},
-  \qquad
-  n_i=\sum_j \hat S_{ij}=\sum_j \mathbb 1[\,S(F,F)_{ij}>\tau\,],
+  \qquad\text{where}\quad n_i=\sum_{j=1}^{N}\hat G_{ij},
 \end{equation}
-and we use it as the distinctiveness throughout. On real images the blocks are approximate: at $\tau{=}0.5$ the row sums in \eqref{eq:demo} lie within $0.2$ of one for half of all tokens and within $0.5$ for nine in ten (Table~\ref{tab:residual}); what both stages rely on, that $w_i$ falls with the amount of similar content around patch $i$, holds regardless. A patch recurring twenty times in its image therefore receives one twentieth of the distinctiveness of a patch that occurs once (Figure~\ref{fig:blocks}). Supplementary~\S\ref{app:ridge} gives the derivation.
+and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to $p_i$, that is, the nonzero entries remaining in row $i$ of $\hat G$ after thresholding, as illustrated in Figure~\ref{fig:method}. Since $w_i$ is the reciprocal of $n_i$, a patch that recurs frequently across the image (large $n_i$) receives a small weight, while a distinctive patch with few or no similar patches (small $n_i$) receives a large weight, up to $w_i{=}1$, reflecting its higher importance (Figure~\ref{fig:blocks}). This weight is applied in the coarse-to-fine ranking described below.
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.78\textwidth]{figures/blocks_nordland.pdf}
-\caption{Near-duplicate blocks and patch distinctiveness on one Nordland pair. Left, the query; right, the database image our pipeline retrieves at rank one. Colours mark the duplicated patches, blocks of mutually near-duplicate patches under $\hat S$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little weight, the sparse distinctive content receives most. Every benchmark is shown in Supplementary~\S\ref{app:patchvis}.}
+\caption{Duplicated patches and their weights on one Nordland pair. Left, the query; right, the database image retrieved at rank one. Colours mark blocks of mutually near-duplicate patches under $\hat G$, grey patches join no block, and the heat maps show $w_i{=}1/n_i$ on a log scale over all $2{,}304$ tokens: snow, sky and the track bed receive little weight, the sparse distinctive content receives most. Every benchmark is shown in Supplementary~\S\ref{app:patchvis}.}
 \label{fig:blocks}
 \end{figure}
-\subsection{First stage \textcolor{red}{Chen: Coarse Ranking?}}
+
+\subsection{Coarse-to-Fine Ranking}
+\label{sec:coarse_to_fine_ranking}
+As discussed in \S\ref{sec:related}, VPR is essentially a retrieval task \citep{netvlad,anyloc}. We adopt the classical coarse-to-fine ranking pipeline \citep{patchnetvlad,r2former,selavpr}, and achieve highly competitive results even against methods trained on millions of annotated samples. More specifically, second-order pooling of the weighted patch features gives a coarse ranking, and patch-to-patch \textsc{MaxSim} matching gives the fine ranking.  % CHEN-CHECK: his green note says this repeats the overview; see the note.
+
+\paragraph{Coarse Ranking (P2PS-2).}
 \label{sec:global}
-Stage 1 scores a pair by adding up the similarity of every query patch to every candidate patch, that is, by summing over all entries of $S(Q,D)$. Computing that table for every database image would be far too slow, and it is not needed: the sum can be rearranged into an inner product of two vectors, one computed from the query alone and one from the candidate alone, so each database image is stored as a single fixed-size descriptor and searched as such. Take a patch $\mathbf q$ from the query and a patch $\mathbf d$ from a candidate. Squaring their similarity gives $(\mathbf q^{\top}\mathbf d)^2=\langle\,\mathbf q\mathbf q^{\top},\ \mathbf d\mathbf d^{\top}\,\rangle$: a comparison of two matrices, each built from one image alone. Summing over all patch pairs therefore collapses into a single comparison between two per-image matrices,
+During coarse ranking, the query is compared with the whole database $\mathcal D$ to obtain the closest top-$K$ candidates, which requires a compact descriptor for every image. We obtain this descriptor by weighted second-order pooling of the patch features, which is the P2PS template applied to one image's weighted features along the channel dimension. Given the patch feature matrix $F$ of an image and its patch weights $\mathbf w=[w_1,\dots,w_N]$ from P2PS-1 \eqref{eq:weight}, let $W=\mathrm{diag}(\mathbf w)$ and $\tilde F=W^{1/2}F$ be the weighted patch features. Setting $A=B=\tilde F^{\top}$ in \eqref{eq:p2ps} aggregates them into a $C\times C$ second-moment matrix,
+\begin{equation}\label{eq:gc}
+  G_C(F)=\frac{S(\tilde F^{\top},\tilde F^{\top})}{\sum_i w_i}=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top},
+\end{equation}
+in which patches with larger weight, that is, the more distinctive patches of \S\ref{sec:feat}, contribute more strongly. $G_C$ records how the image's features co-occur across channels, irrespective of where in the frame they appear, and it retains much more of the image than the weighted mean of the same features (Supplementary~\S\ref{app:coarsegrid}); its inner product between two images equals the weighted sum of squared patch-to-patch similarities between them (Supplementary~\S\ref{app:factorize}),
 \begin{equation}\label{eq:so-deriv}
-  \sum_{i,j} w_{Q,i}\,w_{D,j}\,S(Q,D)_{ij}^{2}
-  =\big\langle\, G_C(Q),\ G_C(D)\,\big\rangle,
-  \qquad
-  G_C(F)=\frac{1}{\sum_i w_i}\sum_i w_i\,\mathbf f_i\mathbf f_i^{\top}.
+  \big\langle\, G_C(Q),\ G_C(D_m)\,\big\rangle
+  =\sum_{i,j} w_{Q,i}\,w_{D_m,j}\,S(Q,D_m)_{ij}^{2}.
 \end{equation}
-$G_C$ is the weighted second moment of the patch features: it records how an image's features co-occur across channels, ignoring where in the frame they appeared. The square is what makes it worth keeping. The same sum over the entries themselves, $\sum_{i,j}w_{Q,i}w_{D,j}S(Q,D)_{ij}$, is only the inner product of two weighted mean vectors, and an average of the same tokens retains far less of the image (Supplementary~\S\ref{app:coarsegrid}). In kernel terms the stage is a degree-two polynomial match kernel over patches \citep{smk}, and it is exactly the case that factorizes; Supplementary~\S\ref{app:factorize} treats other powers. The descriptor is flattened, $\ell_2$-normalized and whitened, and the database is scanned with it to a shortlist of $K$ candidates.
+As $G_C$ is high-dimensional, we follow \citep{bcnn,mpncov} and apply PCA to obtain a compact descriptor $\mathbf g=\rho(G_C)$ for efficient large-scale search.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
+Denoting the query and the $m$-th database descriptors by $\mathbf g_Q$ and $\mathbf g_{D_m}$, coarse ranking sorts all database images by $\mathbf g_Q^{\top}\mathbf g_{D_m}$, and the top-$K$ images are passed to fine ranking.
 
-\subsection{Second stage \textcolor{red}{Chen: Fine Ranking?}}
+\paragraph{Fine Ranking (P2PS-3).}
 \label{sec:core}
-This stage reads $S(Q,D)$ row by row. For each query patch we find its most similar patch in the candidate image and add up those similarities,
+For each query patch we find its most similar patch in the candidate image and add up those similarities,
 \begin{equation}\label{eq:stage2}
-  s(Q,D)=\sum_{i=1}^{N_Q} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i,
+  s(Q,D_m)=\sum_{i=1}^{N} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i,
   \qquad
-  m_i=\max_{j} S(Q,D)_{ij},
+  m_i=\max_{j} S(Q,D_m)_{ij},
 \end{equation}
-the sum of best matches that chamfer matching introduced for comparing two images \citep{chamfer}, known as \textsc{MaxSim} in late-interaction retrieval \citep{colbert}, in which each query patch enters with the same distinctiveness $w_{Q,i}$ as in stage 1. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Supplementary~\S\ref{app:calib}). The row maximum keeps which patch matched which, and for that reason it cannot be written as an inner product of two per-image vectors (Supplementary~\S\ref{app:nofactor}); we therefore apply it only to the $K$ shortlisted candidates. A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
-
+the sum of best matches introduced by chamfer matching for comparing two images \citep{chamfer} and known as \textsc{MaxSim} in late-interaction retrieval \citep{colbert}, weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Supplementary~\S\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the top-$K$ candidates (Supplementary~\S\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this step, and must train its pooling until that vector separates places on its own \citep{netvlad}. The candidates are re-sorted by $s(Q,D_m)$, and the top one gives the query's location.
