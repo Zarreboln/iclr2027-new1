@@ -212,7 +212,7 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 \label{app:components}
 Table~\ref{tab:components} lists the numbers behind Figure~\ref{fig:components}.
 \begin{table}[H]
-\caption{What each component adds, on every benchmark. Recall@1 with DINOv2 in the configuration of the main tables; each column adds one component to the column on its left, and the last column is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}. The two second-moment columns are the raw descriptor $F^{\top}F$ and $F^{\top}WF$ before the whitening PCA of the deployed pipeline; the \textsc{MaxSim} column fine-ranks the deployed shortlist with the confidence gate of \eqref{eq:stage2} but without $w$. On a few small benchmarks a component costs a little; the last column is what the main tables report.}
+\caption{What each component adds, on all seventeen benchmarks. Recall@1 with DINOv2 in the configuration of the main tables; each column adds one component to the column on its left, and the last column is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}. The two second-moment columns are the raw descriptor $F^{\top}F$ and $F^{\top}WF$ before the whitening PCA of the deployed pipeline; the \textsc{MaxSim} column fine-ranks the deployed shortlist with the confidence gate of \eqref{eq:stage2} but without $w$. On a few small benchmarks a component costs a little; the last column is what the main tables report.}
 \label{tab:components}
 \centering
 {\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
@@ -221,7 +221,9 @@ Table~\ref{tab:components} lists the numbers behind Figure~\ref{fig:components}.
 Benchmark & second moment & weighted second moment & $+$ \textsc{MaxSim} & $+$ weighted \textsc{MaxSim} \\
 \midrule
 \multicolumn{5}{l}{\emph{Standard VPR benchmarks}} \\
+Pitts250k & 82.3 & 92.3 & 93.8 & \textbf{95.7} \\
 Pitts30k & 79.4 & 89.4 & 91.0 & \textbf{92.5} \\
+Tokyo 24/7 & 87.3 & 87.0 & 96.8 & \textbf{97.5} \\
 MSLS-val & 34.9 & 76.1 & 85.4 & \textbf{89.0} \\
 Nordland & 23.5 & 58.4 & 76.1 & \textbf{83.0} \\
 St Lucia & 79.6 & 95.2 & 99.0 & \textbf{99.0} \\
