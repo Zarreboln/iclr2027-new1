@@ -18,12 +18,12 @@ def clean(ax):
     for s in ("left","bottom"): ax.spines[s].set_color(MUTE)
     ax.tick_params(colors=INK,labelsize=9)
 # ---------------- (a) ----------------
-DS=["VP-Air","AmsterTime"]; V={"VP-Air":[46.0,48.2,61.4,72.1],"AmsterTime":[31.4,47.6,67.3,68.1]}
+DS=["Nordland","VP-Air"]; V={"Nordland":[23.5,58.4,76.1,83.0],"VP-Air":[46.0,49.3,61.4,72.1]}
 LAB=["second moment","+ weighted second moment","+ MaxSim","+ weighted MaxSim"]
 fig,ax=plt.subplots(figsize=(3.0,3.0)); x=np.arange(2); bw=0.56
 for k,ds in enumerate(DS):
     v=V[ds]; ax.bar(k,v[0],bw,color=C[0],edgecolor="white",lw=0.8,zorder=3)
-    ax.text(k,(20+v[0])/2,"%.1f"%v[0],ha="center",va="center",fontsize=9,color=INK)
+    ax.text(k,v[0]/2,"%.1f"%v[0],ha="center",va="center",fontsize=9,color=INK)
     for j in range(1,4):
         inc=v[j]-v[j-1]
         ax.bar(k,inc,bw,bottom=v[j-1],color=C[j],edgecolor="white",lw=0.8,zorder=3)
@@ -31,7 +31,7 @@ for k,ds in enumerate(DS):
         else: ax.text(k+bw/2+0.03,v[j-1]+inc/2,"+%.1f"%inc,ha="left",va="center",fontsize=8,color=C[j])
     ax.text(k,v[3]+1.2,"%.1f"%v[3],ha="center",va="bottom",fontsize=10,color=C[3])
 ax.set_xticks(x); ax.set_xticklabels(DS,fontsize=10); ax.set_xlim(-0.55,1.75)
-ax.set_ylim(20,82); ax.set_yticks([20,40,60,80]); ax.set_ylabel("R@1 (%)",fontsize=10)
+ax.set_ylim(0,92); ax.set_yticks([0,20,40,60,80]); ax.set_ylabel("R@1 (%)",fontsize=10)
 ax.grid(axis="y",color=GRID,lw=1.0,zorder=0); ax.set_axisbelow(True); clean(ax)
 ax.legend(handles=[Patch(facecolor=C[j],label=LAB[j]) for j in range(4)],frameon=False,fontsize=7.6,
           loc="upper center",bbox_to_anchor=(0.45,-0.26),ncol=2,handlelength=1.1,columnspacing=0.9,labelspacing=0.4)

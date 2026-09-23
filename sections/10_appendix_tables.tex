@@ -212,18 +212,32 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 \label{app:components}
 Table~\ref{tab:components} lists the numbers behind Figure~\ref{fig:components}.
 \begin{table}[H]
-\caption{What each component adds. Recall@1 with DINOv2 in the configuration of the main tables; each row adds one component to the row above, and the last row is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}.}
+\caption{What each component adds, on every benchmark. Recall@1 with DINOv2 in the configuration of the main tables; each column adds one component to the column on its left, and the last column is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}. The two second-moment columns are the raw descriptor $F^{\top}F$ and $F^{\top}WF$ before the whitening PCA of the deployed pipeline; the \textsc{MaxSim} column fine-ranks the deployed shortlist with the confidence gate of \eqref{eq:stage2} but without $w$. On a few small benchmarks a component costs a little; the last column is what the main tables report.}
 \label{tab:components}
 \centering
 {\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
-\begin{tabular}{lcc}
+\begin{tabular}{lcccc}
 \toprule
-Configuration & VP-Air & AmsterTime \\
+Benchmark & second moment & weighted second moment & $+$ \textsc{MaxSim} & $+$ weighted \textsc{MaxSim} \\
 \midrule
-second moment & 46.0 & 31.4 \\
-weighted second moment & 48.2 & 47.6 \\
-\quad $+$ \textsc{MaxSim} & 61.4 & 67.3 \\
-\quad $+$ weighted \textsc{MaxSim} & \textbf{72.1} & \textbf{68.1} \\
+\multicolumn{5}{l}{\emph{Standard VPR benchmarks}} \\
+Pitts30k & 79.4 & 89.4 & 91.0 & \textbf{92.5} \\
+MSLS-val & 34.9 & 76.1 & 85.4 & \textbf{89.0} \\
+Nordland & 23.5 & 58.4 & 76.1 & \textbf{83.0} \\
+St Lucia & 79.6 & 95.2 & 99.0 & \textbf{99.0} \\
+Oxford & 97.4 & 90.0 & 99.5 & \textbf{99.0} \\
+AmsterTime & 31.4 & 47.5 & 67.3 & \textbf{68.1} \\
+\midrule
+\multicolumn{5}{l}{\emph{Cross-environment VPR benchmarks}} \\
+Hawkins & 67.8 & 42.4 & 67.8 & \textbf{67.0} \\
+Laurel & 52.7 & 49.1 & 78.6 & \textbf{83.0} \\
+17 Places & 64.5 & 63.8 & 65.8 & \textbf{65.5} \\
+Gardens & 96.0 & 95.5 & 99.0 & \textbf{99.5} \\
+Baidu & 63.3 & 72.7 & 84.7 & \textbf{84.5} \\
+Nardo-Air & 71.8 & 77.5 & 84.5 & \textbf{83.1} \\
+Nardo-Air R & 78.9 & 95.8 & 85.9 & \textbf{94.4} \\
+VP-Air & 46.0 & 49.3 & 61.4 & \textbf{72.1} \\
+Eiffel & 35.6 & 37.6 & 38.6 & \textbf{37.6} \\
 \bottomrule
 \end{tabular}}
 \end{table}
