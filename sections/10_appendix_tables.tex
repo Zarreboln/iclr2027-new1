@@ -208,6 +208,27 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 }
 \end{table}
 
+\subsection{Component ablation}
+\label{app:components}
+Table~\ref{tab:components} lists the numbers behind Figure~\ref{fig:components}.
+\begin{table}[H]
+\caption{What each component adds. Recall@1 with DINOv2 in the configuration of the main tables; each row adds one component to the row above, and the last row is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}.}
+\label{tab:components}
+\centering
+{\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{lcc}
+\toprule
+Configuration & VP-Air & AmsterTime \\
+\midrule
+second moment & 46.0 & 31.4 \\
+weighted second moment & 48.2 & 47.6 \\
+\quad $+$ \textsc{MaxSim} & 61.4 & 67.3 \\
+\quad $+$ weighted \textsc{MaxSim} & \textbf{72.1} & \textbf{68.1} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+\FloatBarrier
+
 \subsection{Per-query cost}
 \label{app:cost}
 Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and fine-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2 at $672$\,px. The scan is under a millisecond for every method. Fine-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.

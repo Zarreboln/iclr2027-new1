@@ -151,24 +151,14 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 
 \noindent\begin{minipage}[t]{0.53\textwidth}
 \vspace{0pt}
-\paragraph{Components.} Table~\ref{tab:components} adds one component at a time, in the configuration of the main tables. Weighting the second moment by patch distinctiveness adds $2$ points on VP-Air and $16$ on AmsterTime; \textsc{MaxSim} fine-ranking adds $13$ and $20$; weighting the fine-ranking by the same $w$ adds another $11$ on VP-Air and $1$ on AmsterTime.
+\paragraph{Components.} Figure~\ref{fig:components} adds one component at a time, in the configuration of the main tables. Weighting the second moment by patch distinctiveness adds $2$ points on VP-Air and $16$ on AmsterTime; \textsc{MaxSim} fine-ranking adds $13$ and $20$; weighting the fine-ranking by the same $w$ adds another $11$ on VP-Air and $1$ on AmsterTime.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.44\textwidth}
 \vspace{0pt}
 \centering
-\captionof{table}{What each component adds. Recall@1 with DINOv2 in the configuration of the main tables; each row adds one component to the row above, and the last row is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}.}
-\label{tab:components}
-{\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.05}
-\begin{tabular}{lcc}
-\toprule
-Configuration & VP-Air & AmsterTime \\
-\midrule
-second moment & 46.0 & 31.4 \\
-weighted second moment & 48.2 & 47.6 \\
-\quad $+$ \textsc{MaxSim} & 61.4 & 67.3 \\
-\quad $+$ weighted \textsc{MaxSim} & \textbf{72.1} & \textbf{68.1} \\
-\bottomrule
-\end{tabular}}
+\includegraphics[width=\linewidth]{figures/fig_components.pdf}
+\captionof{figure}{What each component adds. Recall@1 with DINOv2 in the configuration of the main tables; each segment adds one component to the one below, and the top of each bar is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}. Supplementary~\S\ref{app:components} lists the numbers.}
+\label{fig:components}
 \end{minipage}
 
 
