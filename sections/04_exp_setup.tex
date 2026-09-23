@@ -149,17 +149,16 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 }
 \end{table}
 
-\noindent\begin{minipage}[t]{0.53\textwidth}
-\vspace{0pt}
 \paragraph{Contribution of each component.} Figure~\ref{fig:components} adds one component at a time, in the configuration of the main tables. Weighting the second moment by patch distinctiveness adds $2$ points on VP-Air and $16$ on AmsterTime; \textsc{MaxSim} fine-ranking adds $13$ and $20$; weighting the fine-ranking by the same $w$ adds another $11$ on VP-Air and $1$ on AmsterTime.
-\end{minipage}\hfill
-\begin{minipage}[t]{0.44\textwidth}
-\vspace{0pt}
+
+\begin{figure}[!htb]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_components.pdf}
-\captionof{figure}{What each component adds. Recall@1 with DINOv2 in the configuration of the main tables; each segment adds one component to the one below, and the top of each bar is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}. Supplementary~\S\ref{app:components} lists the numbers.}
+\begin{minipage}[t]{0.30\textwidth}\centering\includegraphics[width=\linewidth]{figures/fig_components.pdf}\\[-1pt]{\footnotesize (a)}\end{minipage}\hfill
+\begin{minipage}[t]{0.27\textwidth}\centering\includegraphics[width=\linewidth]{figures/patch_cov.pdf}\\[-1pt]{\footnotesize (b)}\end{minipage}\hfill
+\begin{minipage}[t]{0.41\textwidth}\centering\includegraphics[width=\linewidth]{figures/fig_maxsim_w.pdf}\\[-1pt]{\footnotesize (c)}\end{minipage}
+\caption{\textbf{Contribution of each component.} (a) Recall@1 as one component is added at a time, in the configuration of the main tables; the top of each bar is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}, numbers in Supplementary~\S\ref{app:components}. (b) What $w$ does to the first-stage descriptor: for a query and the image our first stage retrieves, the share of the image's energy captured by the $k$ strongest directions of $F^{\top}F$ (unweighted) and $G_C{=}F^{\top}WF$ (weighted); an element covering much of the frame concentrates the unweighted moment, and $w$ spreads it back. (c) What $w$ does to the second stage, on the Nordland pair of Figure~\ref{fig:blocks}: the sixty largest \textsc{MaxSim} contributions without $w$ ($c_i{=}m_i$, left) and with it ($c_i{=}w_i m_i$, right); line colour is $m_i$ from weaker (cyan) to stronger (magenta), width the contribution.}
 \label{fig:components}
-\end{minipage}
+\end{figure}
 
 
 \noindent\begin{minipage}[t]{0.50\textwidth}
