@@ -164,7 +164,7 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 
 \noindent\begin{minipage}[t]{0.50\textwidth}
 \vspace{0pt}
-\paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity leads at $93.03$ R@1. The class-token attention of EffoVPR \citep{effovpr} is the closest alternative at $92.62$, and the patch-graph centrality of SAP \citep{sap} follows at $90.44$; inverting the centrality costs $9.1$. Token norm \citep{registers} is neutral in either sign, and the inverse document frequency of Video Google \citep{videogoogle}, the cross-referencing of DeepEMD \citep{deepemd} and the rapid spatial verification of Patch-NetVLAD \citep{patchnetvlad} all fall below the unweighted $87.62$. Repetition within the image is the signal to read, and it should count against a patch.
+\paragraph{Which signal patch distinctiveness should read.} Table~\ref{tab:w-signal} keeps the backbone, the shortlist and the scoring rule fixed and changes only $w$. Self-similarity leads at $93.03$ R@1. The class-token attention of EffoVPR \citep{effovpr} is the closest alternative at $92.62$, and the patch-graph centrality of SAP \citep{sap} follows at $90.44$. Token norm \citep{registers} is neutral in either sign, and the inverse document frequency of Video Google \citep{videogoogle}, the cross-referencing of DeepEMD \citep{deepemd} and the rapid spatial verification of Patch-NetVLAD \citep{patchnetvlad} all fall below the unweighted $87.62$. Repetition within the image is the signal to read, and it should count against a patch.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.47\textwidth}
 \vspace{0pt}
@@ -180,7 +180,6 @@ none (bare \textsc{MaxSim}) & --- & 87.62 \\
 \textbf{self-similarity} & ours & \textbf{93.03} \\
 class-token attention & EffoVPR & 92.62 \\
 patch-graph centrality & SAP & 90.44 \\
-patch-graph centrality (inverted) & SAP & 83.94 \\
 token norm (a) & Registers & 87.72 \\
 token norm (b) & Registers & 87.53 \\
 inverse document frequency & Video Google & 86.53 \\
