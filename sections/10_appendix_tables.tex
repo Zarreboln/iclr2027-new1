@@ -208,6 +208,33 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 }
 \end{table}
 
+\subsection{Matched-backbone comparison}
+\label{app:perdataset}
+Table~\ref{tab:perdataset} gives the numbers behind Figure~\ref{fig:backbone}.
+\begin{table}[H]
+\caption{Matched-backbone comparison on thirteen benchmarks: three baselines retrained on DINOv3 under their published recipes against our pipeline on the same backbone; all rows are our runs. Bold indicates the best value and underline the second best over all rows.}
+\label{tab:perdataset}
+\centering
+{\scriptsize\setlength{\tabcolsep}{2.6pt}%
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccccccc|M}
+\toprule
+Method & Dim & Pitts30k & Tokyo & MSLS & Nord & Baidu & 17Pl & Gard & Hawk & Laurel & N-Air & N-AirR & VP-Air & M-Atl & \emph{mean} \\
+
+\midrule
+SALAD & 8448 & 93.31 & 97.78 & 89.05 & 90.99 & 64.41 & 62.32 & 95.50 & \underline{44.07} & \underline{61.61} & 78.87 & 87.32 & 42.65 & 19.80 & 71.36 \\
+BoQ & 12288 & \textbf{94.40} & \textbf{98.73} & \underline{91.89} & 94.34 & \underline{71.66} & \underline{63.79} & \underline{98.50} & 33.05 & 48.21 & \underline{84.51} & \textbf{100.00} & \underline{49.82} & \underline{21.78} & \underline{73.13} \\
+CliqueMining & 8448 & 93.63 & 98.10 & \textbf{93.51} & \underline{94.76} & 68.59 & 61.58 & 95.00 & 22.03 & 37.50 & 76.06 & 90.14 & 47.19 & 13.86 & 68.61 \\
+\midrule
+\multicolumn{16}{l}{\emph{Training-free, deployed configuration}} \\
+Ours & 2048 & \underline{93.74} & \underline{98.41} & 89.32 & \textbf{96.56} & \textbf{83.45} & \textbf{65.27} & \textbf{99.50} & \textbf{61.02} & \textbf{75.89} & \textbf{91.55} & \underline{97.18} & \textbf{77.64} & \textbf{37.62} & \textbf{82.09} \\
+\bottomrule
+\end{tabular}%
+}%
+}
+\end{table}
+\FloatBarrier
+
 \subsection{Per-query cost}
 \label{app:cost}
 Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and re-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2 at $672$\,px. The scan is under a millisecond for every method. Re-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.

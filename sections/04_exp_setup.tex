@@ -204,27 +204,11 @@ rapid spatial verification & Patch-NetVLAD & 84.24 \\
 \end{minipage}
 
 
-\paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Table~\ref{tab:perdataset}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
+\paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Figure~\ref{fig:backbone}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
 
-\begin{table}[!htb]
-\caption{Matched-backbone comparison on thirteen benchmarks: three baselines retrained on DINOv3 under their published recipes against our pipeline on the same backbone; all rows are our runs. Bold indicates the best value and underline the second best over all rows.}
-\label{tab:perdataset}
+\begin{figure}[!htb]
 \centering
-{\scriptsize\setlength{\tabcolsep}{2.6pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{llccccccccccccc|M}
-\toprule
-Method & Dim & Pitts30k & Tokyo & MSLS & Nord & Baidu & 17Pl & Gard & Hawk & Laurel & N-Air & N-AirR & VP-Air & M-Atl & \emph{mean} \\
-
-\midrule
-SALAD & 8448 & 93.31 & 97.78 & 89.05 & 90.99 & 64.41 & 62.32 & 95.50 & \underline{44.07} & \underline{61.61} & 78.87 & 87.32 & 42.65 & 19.80 & 71.36 \\
-BoQ & 12288 & \textbf{94.40} & \textbf{98.73} & \underline{91.89} & 94.34 & \underline{71.66} & \underline{63.79} & \underline{98.50} & 33.05 & 48.21 & \underline{84.51} & \textbf{100.00} & \underline{49.82} & \underline{21.78} & \underline{73.13} \\
-CliqueMining & 8448 & 93.63 & 98.10 & \textbf{93.51} & \underline{94.76} & 68.59 & 61.58 & 95.00 & 22.03 & 37.50 & 76.06 & 90.14 & 47.19 & 13.86 & 68.61 \\
-\midrule
-\multicolumn{16}{l}{\emph{Training-free, deployed configuration}} \\
-Ours & 2048 & \underline{93.74} & \underline{98.41} & 89.32 & \textbf{96.56} & \textbf{83.45} & \textbf{65.27} & \textbf{99.50} & \textbf{61.02} & \textbf{75.89} & \textbf{91.55} & \underline{97.18} & \textbf{77.64} & \textbf{37.62} & \textbf{82.09} \\
-\bottomrule
-\end{tabular}%
-}%
-}
-\end{table}
+\includegraphics[width=0.62\textwidth]{figures/fig_backbone_radar.pdf}
+\caption{Matched-backbone comparison on thirteen benchmarks: three baselines retrained on DINOv3 under their published recipes against our pipeline on the same backbone; all runs are ours. Supplementary~\S\ref{app:perdataset} lists the numbers.}
+\label{fig:backbone}
+\end{figure}
