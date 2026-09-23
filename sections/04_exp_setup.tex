@@ -152,22 +152,22 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 
 \noindent\begin{minipage}[t]{0.53\textwidth}
 \vspace{0pt}
-\paragraph{Components.} Table~\ref{tab:components} adds one component at a time on two benchmarks. Starting from the second moment alone, weighting it by patch distinctiveness adds $8$ to $17$ points; \textsc{MaxSim} re-ranking adds $3$ to $12$; weighting the re-ranking by the same $w$ adds another $7$ to $11$. Both stages profit from $w$, the second most.
+\paragraph{Components.} Table~\ref{tab:components} adds one component at a time, in the configuration of the main tables. Weighting the second moment by patch distinctiveness adds $2$ points on VP-Air and $16$ on AmsterTime; \textsc{MaxSim} re-ranking adds $13$ and $20$; weighting the re-ranking by the same $w$ adds another $11$ on VP-Air and $1$ on AmsterTime. Each stage profits from $w$ where the other has least to work with.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.44\textwidth}
 \vspace{0pt}
 \centering
-\captionof{table}{What each component adds. Recall@1 with DINOv2; each row adds one component to the row above.}
+\captionof{table}{What each component adds. Recall@1 with DINOv2 in the configuration of the main tables; each row adds one component to the row above, and the last row is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}.}
 \label{tab:components}
 {\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.05}
 \begin{tabular}{lcc}
 \toprule
 Configuration & VP-Air & AmsterTime \\
 \midrule
-second moment & 50.3 & 31.4 \\
-weighted second moment & 58.6 & 48.2 \\
-\quad $+$ \textsc{MaxSim} & 61.9 & 60.6 \\
-\quad $+$ weighted \textsc{MaxSim} & \textbf{73.2} & \textbf{67.9} \\
+second moment & 46.0 & 31.4 \\
+weighted second moment & 48.2 & 47.6 \\
+\quad $+$ \textsc{MaxSim} & 61.4 & 67.3 \\
+\quad $+$ weighted \textsc{MaxSim} & \textbf{72.1} & \textbf{68.1} \\
 \bottomrule
 \end{tabular}}
 \end{minipage}
@@ -188,11 +188,9 @@ weighted second moment & 58.6 & 48.2 \\
 Patch importance signal & Source & R@1 \\
 \midrule
 none (bare \textsc{MaxSim}) & --- & 87.62 \\
-\midrule
 \textbf{self-similarity} & ours & \textbf{93.03} \\
 class-token attention & EffoVPR & 92.62 \\
 patch-graph centrality & SAP & 90.44 \\
-\midrule
 patch-graph centrality (inverted) & SAP & 83.94 \\
 token norm (a) & Registers & 87.72 \\
 token norm (b) & Registers & 87.53 \\
@@ -204,10 +202,10 @@ rapid spatial verification & Patch-NetVLAD & 84.24 \\
 \end{minipage}
 
 
-\paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Table~\ref{tab:perdataset}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A larger backbone helps every method, by $1.4$ to $4.5$ mean R@1, and does not close the gap. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
+\paragraph{Is it the backbone?} To compare aggregation at equal capacity we retrain three baselines on DINOv3 under their published recipes (Table~\ref{tab:perdataset}). Our mean is $82.1$ against $73.1$ for the strongest retrained baseline; we are within one point of the best on eleven of the thirteen benchmarks and ahead by more than $14$ on three. A method that learns its aggregation pays for every new backbone in labelled data and fine-tuning; a training-free pipeline adopts it by loading it, at no cost in accuracy.
 
 \begin{table}[!htb]
-\caption{Matched-backbone comparison on thirteen benchmarks. For the baselines, \emph{v2} is the published DINOv2 model and \emph{v3} a retraining on DINOv3 under the published recipe; all rows are our runs. Bold indicates the best value and underline the second best over all rows.}
+\caption{Matched-backbone comparison on thirteen benchmarks: three baselines retrained on DINOv3 under their published recipes against our pipeline on the same backbone; all rows are our runs. Bold indicates the best value and underline the second best over all rows.}
 \label{tab:perdataset}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.6pt}%
@@ -217,17 +215,12 @@ rapid spatial verification & Patch-NetVLAD & 84.24 \\
 Method & Dim & Pitts30k & Tokyo & MSLS & Nord & Baidu & 17Pl & Gard & Hawk & Laurel & N-Air & N-AirR & VP-Air & M-Atl & \emph{mean} \\
 
 \midrule
-\multicolumn{16}{l}{\emph{Trained, at its published backbone (\emph{v2}) and retrained on DINOv3 (\emph{v3})}} \\
-SALAD\,\emph{v2} & 8448 & 92.37 & 94.60 & 92.03 & 86.42 & 70.02 & 64.29 & 96.50 & 38.14 & 47.32 & 53.52 & 94.37 & 23.98 & 15.84 & 66.88 \\
-SALAD\,\emph{v3} & 8448 & 93.31 & 97.78 & 89.05 & 90.99 & 64.41 & 62.32 & 95.50 & 44.07 & 61.61 & 78.87 & 87.32 & 42.65 & 19.80 & 71.36 \\
-BoQ\,\emph{v2} & 12288 & \underline{93.76} & 96.51 & \underline{93.78} & 90.60 & 77.36 & 64.29 & 98.00 & 32.20 & 60.71 & 61.97 & 91.55 & 29.45 & \underline{35.64} & 71.22 \\
-BoQ\,\emph{v3} & 12288 & \textbf{94.40} & \textbf{98.73} & 91.89 & 94.34 & 71.66 & 63.79 & \underline{98.50} & 33.05 & 48.21 & \underline{84.51} & \textbf{100.00} & 49.82 & 21.78 & 73.13 \\
-CliqueMining\,\emph{v2} & 8448 & 92.65 & 96.83 & \textbf{94.19} & \underline{95.93} & 69.22 & \underline{65.27} & 93.00 & 22.88 & 38.39 & 61.97 & 84.51 & 22.84 & \underline{35.64} & 67.18 \\
-CliqueMining\,\emph{v3} & 8448 & 93.63 & 98.10 & 93.51 & 94.76 & 68.59 & 61.58 & 95.00 & 22.03 & 37.50 & 76.06 & 90.14 & 47.19 & 13.86 & 68.61 \\
+SALAD & 8448 & 93.31 & 97.78 & 89.05 & 90.99 & 64.41 & 62.32 & 95.50 & \underline{44.07} & \underline{61.61} & 78.87 & 87.32 & 42.65 & 19.80 & 71.36 \\
+BoQ & 12288 & \textbf{94.40} & \textbf{98.73} & \underline{91.89} & 94.34 & \underline{71.66} & \underline{63.79} & \underline{98.50} & 33.05 & 48.21 & \underline{84.51} & \textbf{100.00} & \underline{49.82} & \underline{21.78} & \underline{73.13} \\
+CliqueMining & 8448 & 93.63 & 98.10 & \textbf{93.51} & \underline{94.76} & 68.59 & 61.58 & 95.00 & 22.03 & 37.50 & 76.06 & 90.14 & 47.19 & 13.86 & 68.61 \\
 \midrule
 \multicolumn{16}{l}{\emph{Training-free, deployed configuration}} \\
-Ours\,\emph{v2} & 2048 & 92.49 & 97.46 & 89.05 & 83.03 & \textbf{84.48} & \textbf{65.52} & \textbf{99.50} & \textbf{66.95} & \textbf{83.04} & 83.10 & 94.37 & \underline{72.06} & \textbf{37.62} & \underline{80.67} \\
-Ours\,\emph{v3} & 2048 & 93.74 & \underline{98.41} & 89.32 & \textbf{96.56} & \underline{83.45} & \underline{65.27} & \textbf{99.50} & \underline{61.02} & \underline{75.89} & \textbf{91.55} & \underline{97.18} & \textbf{77.64} & \textbf{37.62} & \textbf{82.09} \\
+Ours & 2048 & \underline{93.74} & \underline{98.41} & 89.32 & \textbf{96.56} & \textbf{83.45} & \textbf{65.27} & \textbf{99.50} & \textbf{61.02} & \textbf{75.89} & \textbf{91.55} & \underline{97.18} & \textbf{77.64} & \textbf{37.62} & \textbf{82.09} \\
 \bottomrule
 \end{tabular}%
 }%
