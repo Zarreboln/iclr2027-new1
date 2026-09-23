@@ -71,21 +71,3 @@ This stage reads $S(Q,D)$ row by row. For each query patch we find its most simi
   m_i=\max_{j} S(Q,D)_{ij},
 \end{equation}
 the \textsc{MaxSim} interaction of \citet{colbert}, in which each query patch enters with the same distinctiveness $w_{Q,i}$ as in stage 1. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Appendix~\ref{app:calib}). The row maximum keeps which patch matched which, and for that reason it cannot be written as an inner product of two per-image vectors (Appendix~\ref{app:nofactor}); we therefore apply it only to the $K$ shortlisted candidates. A method that stores a single vector per image is thereby denied this stage, and must train its pooling until that vector separates places on its own \citep{netvlad}.
-
-\begin{center}
-\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
-\begin{tabular}{lcc}
-\toprule
-Configuration & VP-Air & AmsterTime \\
-\midrule
-CLS token & 45.9 & 45.6 \\
-mean pooling & 32.9 & 12.8 \\
-second moment & 50.3 & 31.4 \\
-\quad $+\,w$ & 58.6 & 48.2 \\
-\quad $+$ \textsc{MaxSim} re-ranking & 61.9 & 60.6 \\
-\quad $+\,w$ \ (ours) & \textbf{73.2} & \textbf{67.9} \\
-\bottomrule
-\end{tabular}
-\captionof{table}{What each component adds. Recall@1 with DINOv2-G on two benchmarks whose shortlist is a true top-$1000$; each row adds one component to the row above. $w$ is the patch distinctiveness of \S\ref{sec:feat}: the first $+w$ weights the second moment, the second weights \textsc{MaxSim}.}
-\label{tab:components}
-\end{center}
