@@ -414,13 +414,13 @@ Section~\ref{sec:global} contracts the cross-similarity table from both sides, $
 
 \subsection{Devices and compression}
 \label{app:coarsegrid}
-\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. In Table~\ref{tab:coarse} GeM reaches $60.1$ mean R@1 on the nine AnyLoc-suite benchmarks while our stage 1 reaches $68.6$ (v2) and $70.0$ (v3), and it takes the best number on Laurel Caverns, 17 Places and VP-Air with no re-ranking at all. The tables below cover the devices that act on it and its whitened compression.
+\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. In Table~\ref{tab:coarse} GeM reaches $60.1$ mean R@1 on the nine cross-environment benchmarks while our stage 1 reaches $68.6$ (v2) and $70.0$ (v3), and it takes the best number on Laurel Caverns, 17 Places and VP-Air with no re-ranking at all. The tables below cover the devices that act on it and its whitened compression.
 
 \label{sec:exp-stage1}
 \label{sec:stage1abl}
 \label{sec:compact}
 \begin{table}[H]
-\caption{\textbf{Stage 1 alone on the nine benchmarks of the AnyLoc suite.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2 row.}
+\caption{\textbf{Stage 1 alone on the nine cross-environment benchmarks.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own re-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2 row.}
 \label{tab:coarse}
 \centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
@@ -500,7 +500,7 @@ The first stage factorizes because its contraction is bilinear in the two token 
 \subsection{Re-ranking operators}
 \label{app:s2grid}
 \begin{table}[h]
-\caption{\textbf{Seven re-ranking operators}, mean R@1 over the nine AnyLoc-suite benchmarks of Table~\ref{tab:breadth}. Stage 1 is the deployed one throughout; only stage 2 changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
+\caption{\textbf{Seven re-ranking operators}, mean R@1 over the nine cross-environment benchmarks of Table~\ref{tab:breadth}. Stage 1 is the deployed one throughout; only stage 2 changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
 \label{tab:s2grid}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3pt}%
