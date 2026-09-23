@@ -59,10 +59,8 @@ Denoting the query and the $m$-th database descriptors by $\mathbf g_Q$ and $\ma
 
 \paragraph{Fine Ranking (P2PS-3).}
 \label{sec:core}
-For each query patch we find its most similar patch in the candidate image and add up those similarities,
+Fine ranking compares the query with each of the $K$ shortlisted database images at the patch level. Given the query $Q$ and a candidate $D_m$, the P2PS template with $A=Q$ and $B=D_m$ gives the cross-image table $S(Q,D_m)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_m)_{ij}$ is the similarity between query patch $p_i$ and candidate patch $p_j$. Let $m_i=\max_j S(Q,D_m)_{ij}$ denote the best match of query patch $p_i$ in the candidate, $w_{Q,i}$ its weight from P2PS-1 \eqref{eq:weight}, and $\theta$ a confidence threshold on the match. The fine-ranking score adds up the best matches of the query patches,
 \begin{equation}\label{eq:stage2}
-  s(Q,D_m)=\sum_{i=1}^{N} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i,
-  \qquad
-  m_i=\max_{j} S(Q,D_m)_{ij},
+  s(Q,D_m)=\sum_{i=1}^{N} w_{Q,i}\;\mathbb 1[\,m_i>\theta\,]\;m_i ,
 \end{equation}
-the sum of best matches that chamfer matching introduced for comparing two images \citep{chamfer}, here called \textsc{MaxSim} and weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears a confidence threshold $\theta$, fixed at $0.65$ everywhere (Supplementary~\S\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the top-$K$ candidates (Supplementary~\S\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this step, and must train its pooling until that vector separates places on its own \citep{netvlad}. The candidates are re-sorted by $s(Q,D_m)$, and the top one gives the query's location.
+the sum of best matches that chamfer matching introduced for comparing two images \citep{chamfer}, here called \textsc{MaxSim} and weighted as in \S\ref{sec:feat}. Sky, pedestrians and occluders have no counterpart in the other image, so a patch counts only if its best match clears $\theta$, fixed at $0.65$ everywhere (Supplementary~\S\ref{app:calib}). \textsc{MaxSim} cannot be represented by a single fixed-size descriptor per image, so we apply it only to the top-$K$ candidates (Supplementary~\S\ref{app:nofactor}). A method that stores a single vector per image is thereby denied this step, and must train its pooling until that vector separates places on its own \citep{netvlad}. The candidates are re-sorted by $s(Q,D_m)$, and the top one gives the query's location.
