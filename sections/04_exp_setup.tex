@@ -105,7 +105,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 93.7 & \textbf{98.4} & \textbf{96.6} & \tex
 }
 \end{table}
 
-\paragraph{Qualitative results.} Figure~\ref{fig:qual} shows one query per condition: seasonal change on Nordland, night on Tokyo 24/7, decades of change on AmsterTime and a degraded corridor on Hawkins. Where the trained methods return a different place, the pipeline returns the correct image at rank one.
+\paragraph{Qualitative results.} Figure~\ref{fig:qual} shows one query per condition. The strongest trained methods hold up on the standard benchmarks and fail beyond them: SAGE also retrieves the right place under seasonal change on Nordland and MegaLoc under decades of change on AmsterTime, and both miss in the degraded Hawkins corridor. The strongest training-free method shows the opposite pattern: AnyLoc is right on Hawkins and wrong on the three standard rows. Our pipeline returns the correct image at rank one in all four.
 
 \begin{figure}[!htb]
 \centering
