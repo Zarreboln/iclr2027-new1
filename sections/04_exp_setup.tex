@@ -72,7 +72,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{93.7} & \textbf{98.4} & \textbf{96.
 \paragraph{Against trained methods.} On the standard benchmarks, the domain their supervision targets (Table~\ref{tab:trained}), our mean of $93.3$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. On the cross-environment benchmarks the thirteen trained methods above $80$ on the standard ones each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the nine benchmarks, $76.6$ against $65.1$ for MegaLoc. The margins are largest where a single descriptor has least to work with: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.6$ against $45.6$ on VP-Air. The price is latency: a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2 forward pass, against $35$ to $67$\,ms for the two-stage baselines (Supplementary~\S\ref{app:cost}).
 
 \begin{table}[!htb]
-\caption{Comparison with trained methods, in the layout of Table~\ref{tab:breadth}. $^{\dagger}$reported after the method's own re-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
+\caption{Comparison with trained methods, in the layout of Table~\ref{tab:breadth}. $^{\dagger}$two-stage method; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best in each column.}
 \label{tab:trained}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
