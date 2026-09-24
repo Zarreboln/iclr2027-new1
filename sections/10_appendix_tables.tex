@@ -1,8 +1,8 @@
-\section{Protocol and constants}
+\section{Experimental details}
 \subsection{Evaluation protocol}
 \label{app:protocol}
 \begin{table}[H]
-\caption{\textbf{Evaluation protocol, per benchmark.} Every baseline we run goes through this protocol: same splits, ground truth and database, each method at its own resolution and shortlist depth. A paper's own number is quoted only where its protocol coincides with this one, since published figures otherwise differ in ground-truth radius and query subset.}
+\caption{Evaluation protocol of the 17 benchmarks of Table~\ref{tab:datasets}: ground truth and the conventions used for every baseline.}
 \label{tab:protocol}
 \centering
 {\footnotesize\setlength{\tabcolsep}{4pt}%
@@ -21,14 +21,6 @@ St Lucia & filename UTM $\le 25$\,m & gmberton format \\
 Oxford RobotCar & the .mat's own posDistThr $=16$\,m & the small vehicular split used by \citet{anyloc} \\
 AmsterTime & old\_X$\leftrightarrow$new\_X, one positive & historical against present-day photographs \\
 \midrule
-\multicolumn{3}{l}{\emph{SF-XL (one imagery set: a design split and four test splits)}} \\
-\midrule
-SF-XL val$^\ast$ & UTM $\le 25$\,m & \textbf{design split}; appears in no main table \\
-SF-XL test v1 & UTM $\le 25$\,m & the four test splits share one $2.8$M database \\
-SF-XL test v2 & UTM $\le 25$\,m & not yet re-run for the baselines (\S\ref{sec:setup}) \\
-SF-XL test night & UTM $\le 25$\,m &  \\
-SF-XL test occl. & UTM $\le 25$\,m & $74$ queries have a positive \\
-\midrule
 \multicolumn{3}{l}{\emph{Cross-environment VPR benchmarks}} \\
 \midrule
 VP-Air \emph{(aerial)} & provided correspondences & AnyLoc convention: database $=$ references $+$ $10{,}000$ distractors \\
@@ -44,15 +36,84 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 \end{tabular}%
 }
 
-\par\smallskip{\scriptsize\emph{Notes.} Each baseline runs at its own default input resolution. Three conventions on which published numbers split: Nordland uses the lenient $\pm10$-frame ground truth, Tokyo the $315$-query and MSLS the $740$-query subsets, and VP-Air's database carries AnyLoc's $10{,}000$ distractors. Fine-ranking uses a pool of $K=\min(1000,|\mathcal{D}|)$ throughout. $^{\ast}$SF-XL val is the design split and appears in no results table.}
 \end{table}
 
 \FloatBarrier
 
+\subsection{Implementation details}
+\label{app:impl}
+All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $2{,}048$ dimensions by whitened PCA; $1{,}024$ dimensions give similar results. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
+
+\subsection{Calibration of $\tau$ and $\theta$}
+\label{app:hyper}
+\label{app:calib}
+Both thresholds are calibrated once on SF-XL val, a split that appears in no result table, and fixed for every benchmark.
+
+The gate of Eq.~(\ref{eq:stage2}) keeps a query patch when its best match $m_i$ exceeds $\theta$: the likelihood that a match is genuine rather than accidental increases with $m_i$, so a fixed threshold is the Bayes-optimal rule.
+
+\begin{table}[H]
+\caption{Calibration of $\tau$ on SF-XL val, two-stage pipeline. $\tau{=}0$ is the unweighted baseline; we fix $\tau{=}0.5$.}
+\label{tab:cal-tau}
+\centering
+{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{lccccccccccc}
+\toprule
+$\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.70\\
+\midrule
+R@1  & 82.09 & 87.36 & 89.09 & 89.40 & 90.05 & 90.34 & 90.50 & \textbf{90.82} & 90.61 & 90.50 & 89.95\\
+R@5  & 88.06 & 92.87 & 94.13 & 94.41 & 94.41 & 94.59 & 94.41 & 94.60 & \textbf{94.66} & 94.53 & 94.35\\
+R@10  & 90.24 & 94.39 & 95.28 & 95.42 & 95.62 & 95.70 & 95.74 & \textbf{95.80} & 95.77 & 95.68 & 95.58\\
+\bottomrule
+\end{tabular}}
+\end{table}
+\begin{table}[H]
+\caption{Calibration of $\theta$ on SF-XL val, $\tau{=}0.5$. Every column fine-ranks the same shortlist; we fix $\theta{=}0.65$.}
+\label{tab:cal-t2}
+\centering
+{\footnotesize\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{lccccccccccc}
+\toprule
+$\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0.80\\
+\midrule
+\ \ R@1  & 86.95 & 86.91 & 85.21 & 81.96 & 84.77 & 87.50 & 89.74 & \textbf{90.76} & 90.28 & 88.56 & 83.90\\
+\ \ R@5  & 91.92 & 91.88 & 90.66 & 88.81 & 91.04 & 92.93 & 94.16 & \textbf{94.45} & 94.35 & 93.61 & 90.72\\
+\ \ R@10  & 93.47 & 93.37 & 92.45 & 91.34 & 93.14 & 94.58 & 95.40 & \textbf{95.70} & \textbf{95.70} & 94.95 & 93.10\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\FloatBarrier
+
+\subsection{Per-query cost}
+\label{app:cost}
+Table~\ref{tab:s2cost} supplements the cost sentence of \S\ref{sec:sota}: every stage of every two-stage method, each with its released code, on the same hardware.
+\begin{table}[!htb]
+\caption{Per-query cost on Pitts30k in ms on one H100: feature extraction at each method's own resolution, coarse ranking over the $10{,}000$ database descriptors, and fine ranking of the top-$100$.}
+\label{tab:s2cost}
+\centering
+{\footnotesize\setlength{\tabcolsep}{5pt}%
+\begin{tabular}{llrrrr}
+\toprule
+Method & Backbone & Extraction & Coarse ranking & Fine ranking & Total \\
+\midrule
+Patch-NetVLAD & VGG16 & 15.5 & 0.3 & 5302 & 5318 \\
+R2Former & DeiT-S & \textbf{4.3} & 0.1 & 62.4 & 66.8 \\
+SelaVPR & DINOv2 & 14.7 & 0.1 & 28.6 & 43.4 \\
+EffoVPR-ZS & DINOv2 & 15.3 & 0.1 & 19.3 & \textbf{34.7} \\
+\midrule
+Ours\,\emph{v2} & DINOv2 & 31.5 & 0.2 & \textbf{15.5} & 47.2 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\FloatBarrier
+
+\section{Additional results}
 \subsection{Full comparison with training-free and trained methods}
 \label{app:trained-full}
 \begin{table}[!htb]
-\caption{Comparison with training-free methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:breadth}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there; markers as in Table~\ref{tab:breadth}.}
+\caption{Comparison with training-free methods on all 17 benchmarks: full version of Table~\ref{tab:breadth}, same markers.}
 \label{tab:breadth-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
@@ -95,7 +156,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 61.0 & \underline{75.9} & \underline{65.3} 
 }
 \end{table}
 \begin{table}[!htb]
-\caption{Comparison with trained methods on all seventeen benchmarks, the full tables behind Table~\ref{tab:trained}. Recall@1 (\%); the two \emph{mean} columns are the block means reported there. $^{\dagger}$reported after the method's own fine-ranker; $^{\ddag}$without the cross-image encoder. Bold indicates the best value and underline the second best within each block.}
+\caption{Comparison with trained methods on all 17 benchmarks: full version of Table~\ref{tab:trained}. $^{\dagger}$reported after the method's own fine-ranker; $^{\ddag}$without the cross-image encoder.}
 \label{tab:trained-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
@@ -158,11 +219,13 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & \underline{61.0} & \underline{75.9} & \unde
 }
 \end{table}
 
+\FloatBarrier
+
 \subsection{Our pipeline on ImageNet-supervised backbones}
 \label{app:oldbackbones}
-The pipeline of \S\ref{sec:method} runs unchanged on the backbones of the classic trained methods: VGG16 (conv5\_3, before the ReLU), ResNet-50 (layer3) and DeiT-S (value facet of block 11), all ImageNet-1k supervised, at $480\times640$ with the $1{,}200$ feature-map cells of an image as its tokens. Tokens are centred and PCA-projected as in \S\ref{sec:prelim}; $\tau$ is calibrated once per backbone on SF-XL val ($0.47$, $0.27$, $0.48$), $\theta{=}0.65$ and $K{=}\min(1000,|\mathcal D|)$ as everywhere else. Table~\ref{tab:oldbackbones} sets each run against the trained methods built on the same backbone. Without any training, the pipeline is ahead of both VGG16 methods in both groups and, on ResNet-50, ahead of CosPlace and within $0.3$ of EigenPlaces on the cross-environment benchmarks; the remaining same-backbone methods, all trained on street-level data, keep a clear margin, largest on the standard benchmarks.
+Our pipeline run unchanged on the ImageNet-supervised backbones of the classic trained methods: VGG16 (conv5\_3), ResNet-50 (layer3) and DeiT-S (block 11), at $480\times640$; $\tau$ is calibrated once per backbone on SF-XL val ($0.47$, $0.27$, $0.48$), everything else as in the main tables.
 \begin{table}[!htb]
-\caption{Recall@1 of our pipeline on ImageNet-supervised backbones against the trained methods built on the same backbone (numbers from Table~\ref{tab:trained-full}). Bold marks the best value per column.}
+\caption{Recall@1 of our pipeline on ImageNet-supervised backbones against the trained methods on the same backbone.}
 \label{tab:oldbackbones}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.6pt}\renewcommand{\arraystretch}{0.95}%
@@ -208,11 +271,28 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 }
 \end{table}
 
-\subsection{Component ablation}
+\FloatBarrier
+
+\subsection{Matched-backbone comparison as a radar chart}
+\label{app:radar}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\textwidth]{figures/fig_backbone_radar.pdf}
+\caption{Matched-backbone comparison on all 17 benchmarks: Table~\ref{tab:perdataset} as a radar chart.}
+\label{fig:backbone}
+\end{figure}
+
+\subsection{Component ablation on all benchmarks}
 \label{app:components}
-Table~\ref{tab:components} lists the numbers behind Figure~\ref{fig:components}.
+Full version of Figure~\ref{fig:components}(a).
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_components_full.pdf}
+\caption{Component ablation on all 17 benchmarks: full version of Figure~\ref{fig:components}(a).}
+\label{fig:components-full}
+\end{figure}
 \begin{table}[H]
-\caption{What each component adds, on all seventeen benchmarks. Recall@1 with DINOv2 in the configuration of the main tables; each column adds one component to the column on its left, and the last column is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}. The two second-moment columns are the raw descriptor $F^{\top}F$ and $F^{\top}WF$ before the whitening PCA of the deployed pipeline; the \textsc{MaxSim} column fine-ranks the deployed shortlist with the confidence gate of \eqref{eq:stage2} but without $w$. On a few small benchmarks a component costs a little; the last column is what the main tables report.}
+\caption{Numbers of Figure~\ref{fig:components-full}. The two second-moment columns are the raw descriptors $F^{\top}F$ and $F^{\top}WF$; the \textsc{MaxSim} column uses uniform weights.}
 \label{tab:components}
 \centering
 {\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
@@ -243,106 +323,112 @@ Eiffel & 35.6 & 37.6 & 38.6 & \textbf{37.6} \\
 \bottomrule
 \end{tabular}}
 \end{table}
+
 \FloatBarrier
 
-\subsection{Per-query cost}
-\label{app:cost}
-Table~\ref{tab:s2cost} times every stage of every two-stage method in our tables on Pitts30k with the same hardware, each with its released code: extracting the query's global and local features at the method's own resolution, scanning the $10{,}000$ database descriptors, and fine-ranking the top-$100$. Extraction is set by the backbone and the resolution, and the $31.5$\,ms of our configuration is the price of DINOv2 at $672$\,px. The scan is under a millisecond for every method. Fine-ranking is dominated by moving the shortlisted local features to the GPU, so it scales with what a method stores per image: $1024$ tokens of $512$ dimensions for ours, $518$ tokens of $1024$ dimensions for EffoVPR-ZS. In total the pipeline runs in $47$\,ms per query, against $35$ to $67$\,ms for the learned or attention-based two-stage methods and $5.3$\,s for Patch-NetVLAD's RANSAC.
-\begin{table}[!htb]
-\caption{Per-query cost of the two-stage methods on Pitts30k, in ms on one H100. Extraction: the query's global and local features at each method's own resolution (batch 1, fp16), median over $25$ calls, best of $40$ repeats. Stage 1: cosine search of one descriptor against the $10{,}000$ database descriptors to the top-$100$. Stage 2: each method's released code on its Pitts30k top-$100$, with the candidates' local features fetched from host memory per query as the released code does, fp32; per query the best of $20$ passes, median over $200$ queries.}
-\label{tab:s2cost}
-\centering
-{\footnotesize\setlength{\tabcolsep}{5pt}%
-\begin{tabular}{llrrrr}
-\toprule
-Method & Backbone & Extraction & Stage 1: scan & Stage 2: fine-rank & Total \\
-\midrule
-Patch-NetVLAD & VGG16 @\,$640{\times}480$ & 15.5 & 0.3 & 5302 & 5318 \\
-R2Former & DeiT-S @\,$640{\times}480$ & \textbf{4.3} & 0.1 & 62.4 & 66.8 \\
-SelaVPR & DINOv2 @\,$224$ & 14.7 & 0.1 & 28.6 & 43.4 \\
-EffoVPR-ZS & DINOv2 @\,$504$ & 15.3 & 0.1 & 19.3 & \textbf{34.7} \\
-\midrule
-Ours\,\emph{v2} & DINOv2 @\,$672$, $1024$ tokens & 31.5 & 0.2 & \textbf{15.5} & 47.2 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-\FloatBarrier
-
-\subsection{Implementation details}
-\label{app:impl}
-One configuration is used for every benchmark. Tokens are the value facet of a frozen backbone, DINOv2 at block $31$ for \emph{v2} and DINOv3 at block $32$ for \emph{v3}, taken at $672$px and $768$px respectively so that both yield $2{,}304$ patches, and reduced to $C{=}512$ channels by a token-PCA. Patch distinctiveness is $w_i{=}1/n_i$ at $\tau{=}0.5$, computed on the full token set. Stage 1 stores the second moment $F^{\top}WF$ built from all $2{,}304$ tokens, $\ell_2$-normalized and reduced to $2048$ dimensions by a whitened descriptor-PCA, and scans to a shortlist of $K{=}\min(1000,|\mathcal{D}|)$ over the deployment database $\mathcal{D}$. Stage 2 fine-ranks the $K$ candidates by \eqref{eq:stage2} at $\theta{=}0.65$ (Supplementary~\S\ref{app:s2grid}). All runs are on one H100; layer, facet, shortlist depth and every constant are swept in Supplementary~\S\ref{app:hyper}.
-
-\subsection{Hyperparameters and calibration}
-\label{app:hyper}
-\label{app:calib}
-\paragraph{Why a threshold is the right form for the gate.} Write the row maximum $m_i$ of \eqref{eq:stage2} as evidence for the hypothesis that patch $i$ has a counterpart in the candidate, against the alternative that its best match is accidental. The likelihood ratio between the two increases with $m_i$, so the Bayes-optimal decision is to accept patch $i$ when $m_i$ exceeds a constant. The gate of \eqref{eq:stage2} is that decision, with the constant fixed at $\theta{=}0.65$ for every backbone and dataset; the sweep below reports what other values cost.
-
-\label{sec:exp-hp}
-\label{app:abl}
+\subsection{Recall at 1, 5 and 10}
+\label{app:recallk}
+Recall@5 and Recall@10 for the runs of Tables~\ref{tab:trained},~\ref{tab:perdataset} and~\ref{tab:w-signal}.
 \begin{table}[H]
-\caption{Backbone layer (Tokyo24/7, DINOv3, base \textsc{MaxSim} R@1). The peak sits at ${\sim}0.75$--$0.9$ depth (L20--21); the last layer degrades. All backbones agree. Our runs (B0).}
-\label{tab:layer}
+\caption{Recall@1, 5 and 10 of our pipeline on all 17 benchmarks, with DINOv2 (\emph{v2}) and DINOv3 (\emph{v3}), in the configuration of the main tables.}
+\label{tab:recallk-ours}
 \centering
-{\footnotesize\setlength{\tabcolsep}{2pt}%
-\begin{tabular}{lcccccc}
+{\footnotesize\setlength{\tabcolsep}{5pt}
+\begin{tabular}{l ccc ccc}
 \toprule
-DINOv3 layer  & L15 & L19 & L20 & L21 & L23 & L24 (last)\\
+& \multicolumn{3}{c}{Ours \emph{v2} (DINOv2)} & \multicolumn{3}{c}{Ours \emph{v3} (DINOv3)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Benchmark & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 \\
 \midrule
-R@1  & 93.7 & 95.6 & \textbf{95.9} & \textbf{95.9} & 94.9 & 92.1\\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-\begin{table}[H]
-\caption{\textbf{Redundancy threshold $\tau$}, SF-XL val, first-order instance ($k{=}32$, no intra-normalization, power law). At $\tau{=}0$ every degree equals $N$, so $w$ cancels and the column is the unweighted baseline: the weight is worth $14.6$ R@1 coarse and $8.7$ after fine-ranking.}
-\label{tab:cal-tau}
-\centering
-{\footnotesize\setlength{\tabcolsep}{3.4pt}
-\begin{tabular}{lccccccccccc}
-\toprule
-$\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.70\\
+\multicolumn{7}{l}{\emph{Standard VPR benchmarks}} \\
+Pitts250k & 95.7 & 98.7 & 99.3 & 96.1 & 99.0 & 99.5 \\
+Pitts30k & 92.5 & 96.9 & 97.9 & 93.7 & 97.2 & 98.1 \\
+Tokyo 24/7 & 97.5 & 99.7 & 100.0 & 98.4 & 99.7 & 100.0 \\
+MSLS-val & 89.0 & 94.2 & 95.4 & 89.3 & 95.1 & 96.1 \\
+Nordland & 83.0 & 89.9 & 92.1 & 96.6 & 98.6 & 99.1 \\
+St Lucia & 99.0 & 99.7 & 99.8 & 99.7 & 99.9 & 99.9 \\
+Oxford & 99.0 & 100.0 & 100.0 & 99.0 & 100.0 & 100.0 \\
+AmsterTime & 68.1 & 87.4 & 91.1 & 73.6 & 92.3 & 94.6 \\
 \midrule
-\multicolumn{12}{l}{\emph{Stage 1 alone}} \\
-\ \ R@1  & 67.59 & 79.37 & \textbf{82.14} & 81.67 & 81.46 & 80.97 & 80.95 & 80.57 & 80.65 & 80.81 & 81.75\\
-\ \ R@5  & 79.93 & 89.55 & \textbf{91.16} & 90.96 & 90.67 & 90.57 & 90.32 & 90.07 & 90.07 & 90.13 & 90.57\\
-\ \ R@10  & 84.89 & 92.37 & 93.56 & \textbf{93.67} & 93.56 & 93.26 & 93.14 & 92.87 & 92.85 & 93.04 & 93.17\\
-\ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
-\midrule
-\multicolumn{12}{l}{\emph{Two stages ($\theta{=}0.65$, $d_2{=}256$, $K{=}100$)}} \\
-\ \ R@1  & 82.09 & 87.36 & 89.09 & 89.40 & 90.05 & 90.34 & 90.50 & \textbf{90.82} & 90.61 & 90.50 & 89.95\\
-\ \ R@5  & 88.06 & 92.87 & 94.13 & 94.41 & 94.41 & 94.59 & 94.41 & 94.60 & \textbf{94.66} & 94.53 & 94.35\\
-\ \ R@10  & 90.24 & 94.39 & 95.28 & 95.42 & 95.62 & 95.70 & 95.74 & \textbf{95.80} & 95.77 & 95.68 & 95.58\\
-\ \ R@100  & 95.65 & 98.16 & \textbf{98.53} & 98.50 & \textbf{98.53} & 98.35 & 98.17 & 98.15 & 98.32 & 98.20 & 98.12\\
+\multicolumn{7}{l}{\emph{Cross-environment VPR benchmarks}} \\
+Hawkins & 67.0 & 94.1 & 98.3 & 61.0 & 92.4 & 99.2 \\
+Laurel & 83.0 & 95.5 & 98.2 & 75.9 & 94.6 & 98.2 \\
+17 Places & 65.5 & 82.0 & 90.6 & 65.3 & 81.3 & 89.9 \\
+Gardens & 99.5 & 100.0 & 100.0 & 99.5 & 100.0 & 100.0 \\
+Baidu & 84.5 & 93.2 & 96.0 & 83.5 & 93.5 & 96.3 \\
+Nardo-Air & 83.1 & 98.6 & 100.0 & 91.5 & 100.0 & 100.0 \\
+Nardo-Air R & 94.4 & 100.0 & 100.0 & 97.2 & 100.0 & 100.0 \\
+VP-Air & 72.1 & 80.1 & 83.6 & 77.6 & 84.4 & 86.7 \\
+Mid-Atlantic & 37.6 & 65.3 & 87.1 & 37.6 & 65.3 & 90.1 \\
 \bottomrule
 \end{tabular}}
-\par\smallskip{\scriptsize\emph{Notes.} \textbf{The two halves disagree about the optimum}: stage 1 alone prefers $\tau{=}0.20$ and the pipeline $\tau{=}0.50$, a gap of $1.7$ R@1 in the wrong direction if one tunes on Stage 1 alone. The same disagreement appears on the second-moment instance (there $0.70$ against $0.50$), so it is a property of the two-stage structure rather than of either aggregator. R@100 in the lower block is the pool, unchanged by fine-ranking. Our runs (ND21).}
 \end{table}
+
 \begin{table}[H]
-\caption{\textbf{Confidence gate $\theta$ of \eqref{eq:stage2}}, SF-XL val, \emph{first-order} instance, $\tau{=}0.50$, $d_2{=}256$, $K{=}100$. The gate acts only on the fine-ranking score, so every column fine-ranks the same pool: coarse R@1 $80.46$, R@5 $90.10$, R@10 $92.90$, \textbf{R@100 $98.17$}.}
-\label{tab:cal-t2}
+\caption{Matched-backbone comparison with Recall@1, 5 and 10: SALAD, BoQ and CliqueMining retrained on DINOv3 under their published recipes, against our pipeline on the same backbone. All runs are ours.}
+\label{tab:recallk-backbone}
 \centering
-{\footnotesize\setlength{\tabcolsep}{3.4pt}
-\begin{tabular}{lccccccccccc}
+{\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{l ccc ccc ccc ccc}
 \toprule
-$\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0.80\\
+& \multicolumn{3}{c}{SALAD} & \multicolumn{3}{c}{BoQ} & \multicolumn{3}{c}{CliqueMining} & \multicolumn{3}{c}{Ours} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+Benchmark & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 \\
 \midrule
-\ \ R@1  & 86.95 & 86.91 & 85.21 & 81.96 & 84.77 & 87.50 & 89.74 & \textbf{90.76} & 90.28 & 88.56 & 83.90\\
-\ \ R@5  & 91.92 & 91.88 & 90.66 & 88.81 & 91.04 & 92.93 & 94.16 & \textbf{94.45} & 94.35 & 93.61 & 90.72\\
-\ \ R@10  & 93.47 & 93.37 & 92.45 & 91.34 & 93.14 & 94.58 & 95.40 & \textbf{95.70} & \textbf{95.70} & 94.95 & 93.10\\
+\multicolumn{13}{l}{\emph{Standard VPR benchmarks}} \\
+Pitts250k & 96.2 & 99.0 & 99.5 & 96.8 & 99.3 & 99.7 & 96.1 & 99.0 & 99.6 & 96.1 & 99.0 & 99.5 \\
+Pitts30k & 93.3 & 97.0 & 97.8 & 94.4 & 97.5 & 98.2 & 93.6 & 97.1 & 98.1 & 93.7 & 97.2 & 98.1 \\
+Tokyo 24/7 & 97.8 & 99.7 & 100.0 & 98.7 & 100.0 & 100.0 & 98.1 & 98.7 & 99.4 & 98.4 & 99.7 & 100.0 \\
+MSLS-val & 89.0 & 96.1 & 97.4 & 91.9 & 96.8 & 97.4 & 93.5 & 97.2 & 98.2 & 89.3 & 95.1 & 96.1 \\
+Nordland & 91.0 & 96.6 & 98.0 & 94.3 & 97.6 & 98.5 & 94.8 & 98.1 & 98.8 & 96.6 & 98.6 & 99.1 \\
+St Lucia & 99.9 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 99.7 & 99.9 & 99.9 \\
+Oxford & 94.2 & 99.5 & 100.0 & 99.0 & 100.0 & 100.0 & 99.0 & 100.0 & 100.0 & 99.0 & 100.0 & 100.0 \\
+AmsterTime & 64.3 & 87.2 & 90.6 & 68.2 & 89.7 & 92.6 & 60.4 & 82.1 & 86.9 & 73.6 & 92.3 & 94.6 \\
+\midrule
+\multicolumn{13}{l}{\emph{Cross-environment VPR benchmarks}} \\
+Hawkins & 44.1 & 81.4 & 84.8 & 33.0 & 69.5 & 83.0 & 22.0 & 48.3 & 59.3 & 61.0 & 92.4 & 99.2 \\
+Laurel & 61.6 & 87.5 & 92.0 & 48.2 & 78.6 & 87.5 & 37.5 & 72.3 & 86.6 & 75.9 & 94.6 & 98.2 \\
+17 Places & 62.3 & 80.0 & 87.9 & 63.8 & 81.8 & 88.2 & 61.6 & 78.3 & 87.4 & 65.3 & 81.3 & 89.9 \\
+Gardens & 95.5 & 99.5 & 100.0 & 98.5 & 99.5 & 100.0 & 95.0 & 99.5 & 100.0 & 99.5 & 100.0 & 100.0 \\
+Baidu & 64.4 & 80.5 & 86.7 & 71.7 & 84.1 & 89.6 & 68.6 & 83.2 & 88.4 & 83.5 & 93.5 & 96.3 \\
+Nardo-Air & 78.9 & 100.0 & 100.0 & 84.5 & 100.0 & 100.0 & 76.1 & 100.0 & 100.0 & 91.5 & 100.0 & 100.0 \\
+Nardo-Air R & 87.3 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 90.1 & 100.0 & 100.0 & 97.2 & 100.0 & 100.0 \\
+VP-Air & 42.6 & 59.6 & 67.5 & 49.8 & 67.3 & 75.0 & 47.2 & 66.1 & 74.0 & 77.6 & 84.4 & 86.7 \\
+Mid-Atlantic & 19.8 & 57.4 & 69.3 & 21.8 & 45.5 & 54.5 & 13.9 & 47.5 & 56.4 & 37.6 & 65.3 & 90.1 \\
 \bottomrule
 \end{tabular}}
-\par\smallskip{\scriptsize\emph{Notes.} That last figure is the ceiling---no gate can retrieve what the shortlist does not contain---so the best column converts $80.46$ into $90.76$ of an available $98.17$. \textbf{The curve is not monotone}: it falls from $86.95$ at the open gate to a minimum of $81.96$ at $0.40$ before rising to $90.76$ at $0.65$. A gate in the middle of the similarity distribution is worse than no gate at all, because it discards moderate matches while keeping neither the confident ones alone nor all of them. The second-order instance has the same dip at the same place ($82.17$ at $0.40$). Our runs (ND21).}
 \end{table}
 
-\section{Patch distinctiveness}
+\begin{table}[H]
+\caption{Patch importance signals with Recall@1, 5 and 10 (the Recall@1 columns are Table~\ref{tab:w-signal}).}
+\label{tab:recallk-signal}
+\centering
+{\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{l ccc ccc ccc}
+\toprule
+& \multicolumn{3}{c}{Pitts30k} & \multicolumn{3}{c}{AmsterTime} & \multicolumn{3}{c}{Nordland} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Patch importance signal & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 \\
+\midrule
+none (bare \textsc{MaxSim}) & 86.4 & 92.3 & 94.2 & 60.5 & 81.0 & 86.1 & 59.0 & 71.5 & 76.6 \\
++ self-similarity (ours) & 92.5 & 96.9 & 97.9 & 68.1 & 87.3 & 91.1 & 83.0 & 89.9 & 92.1 \\
++ class-token attention & 93.0 & 96.7 & 98.0 & 68.1 & 89.4 & 92.0 & 74.2 & 84.2 & 87.5 \\
++ patch-graph centrality & 90.9 & 95.0 & 96.4 & 68.9 & 88.5 & 91.8 & 72.2 & 82.6 & 86.4 \\
++ token norm (a) & 87.7 & 92.9 & 94.2 & 64.3 & 85.4 & 89.5 & 52.8 & 67.2 & 73.5 \\
++ token norm (b) & 79.6 & 87.7 & 91.0 & 35.8 & 53.5 & 60.3 & 37.4 & 51.8 & 58.7 \\
++ inverse document frequency & 79.4 & 87.5 & 90.7 & 39.6 & 59.0 & 65.6 & 41.5 & 53.1 & 58.4 \\
++ cross-referencing & 63.3 & 73.9 & 77.4 & 15.0 & 27.3 & 34.6 & 3.8 & 8.3 & 12.2 \\
++ rapid spatial verification & 87.3 & 93.5 & 95.4 & 54.4 & 72.5 & 76.3 & 72.8 & 84.7 & 88.5 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
 
 \FloatBarrier
-
-\subsection{Derivation of the closed form}
+\section{Analysis}
+\subsection{Derivation of the patch weights}
 \label{app:ridge}
-
-Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $S(F,F)=FF^{\top}$, the within-image table of \S\ref{sec:prelim}. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $Gw=\mathbf 1$. With $N\gg C$ the Gram matrix has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat S=\mathbb 1[\,S(F,F)>\tau\,]$ instead.
+Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $S(F,F)=FF^{\top}$, the within-image table of \S\ref{sec:prelim}. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $S(F,F)\,\mathbf w=\mathbf 1$. With $N\gg C$ the matrix $S(F,F)=FF^{\top}$ has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat S=\ind[\,S(F,F)>\tau\,]$ instead.
 
 Under the burst model an element seen $n$ times yields $n$ patches near-duplicate of one another and of nothing else, so $\hat S$ is block diagonal with one all-ones block per element: $\hat S=\bigoplus_{k=1}^{m}J_{n_k}$ with $J_n$ the $n\times n$ all-ones matrix. The system decouples, and block $k$ reads
 \begin{equation}\label{eq:block}
@@ -350,7 +436,7 @@ Under the burst model an element seen $n$ times yields $n$ patches near-duplicat
   \iff
   \Big(\textstyle\sum_{i\in\mathrm{block}(k)}w_i\Big)\mathbf 1_{n_k}=\mathbf 1_{n_k},
 \end{equation}
-one scalar equation in $n_k$ unknowns. Two independent arguments pick the same point out of that affine set. The patches of a block are exchangeable, so a solution respecting the symmetry is constant on the block, and \eqref{eq:block} forces the constant to be $1/n_k$. And the minimum-norm solution gives the same,
+one scalar equation in $n_k$ unknowns. Two independent arguments pick the same point out of that affine set. The patches of a block are exchangeable, so a solution respecting the symmetry is constant on the block, and Eq.~(\ref{eq:block}) forces the constant to be $1/n_k$. And the minimum-norm solution gives the same,
 \begin{equation}\label{eq:pinv}
   w=\hat S^{\dagger}\mathbf 1,
   \qquad
@@ -358,16 +444,15 @@ one scalar equation in $n_k$ unknowns. Two independent arguments pick the same p
 \end{equation}
 It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-1}\mathbf 1_n=\tfrac{1}{n+\lambda}\mathbf 1_n\to\tfrac1n\mathbf 1_n$ as $\lambda\to0^{+}$. The block sizes need no separate recovery, since $n_k$ is the row sum of $\hat S$ at any $i$ in block $k$, leaving
 \begin{equation}\label{eq:w}
-  \hat S=\mathbb 1\big[\,S(F,F)>\tau\,\big]
+  \hat S=\ind\big[\,S(F,F)>\tau\,\big]
   \qquad\text{and}\qquad
   w_i=\frac{1}{n_i}\quad\text{with}\quad n_i=\sum_{j=1}^{N}\hat S_{ij} .
 \end{equation}
 Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a distinctiveness built on them needs a larger exponent to match.
 
-\paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat S$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in \eqref{eq:demo}. Table~\ref{tab:residual} measures the residual $r_i=|(\hat S\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across eight benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
-
+\paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat S$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in Eq.~(\ref{eq:demo}). Table~\ref{tab:residual} measures the residual $r_i=|(\hat S\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across 8 benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
 \begin{table}[H]
-\caption{Residual of the democratic condition on real images, $r_i=|(\hat S\mathbf w)_i-1|$ with $w_i=1/n_i$ and $\tau{=}0.5$, over all $2{,}304$ tokens of up to $200$ database images per benchmark (DINOv2, block $31$, $672$px). Under the block model every $r_i$ is $0$; the last two columns give the share of tokens whose row sum in \eqref{eq:demo} lies within $0.2$ and within $0.5$ of one.}
+\caption{Residual $r_i=|(\hat S\mathbf w)_i-1|$ of the democratic condition with $w_i=1/n_i$, over all tokens of up to 200 database images per benchmark; the last two columns give the share of tokens within $0.2$ and $0.5$ of one.}
 \label{tab:residual}
 \centering
 {\footnotesize\setlength{\tabcolsep}{5pt}%
@@ -388,49 +473,17 @@ Mid-Atlantic Ridge & 65 & 0.26 & 0.23 & 44\% & 88\% \\
 }
 \end{table}
 
-
 \FloatBarrier
-
-\FloatBarrier
-
-\subsection{Near-duplicate blocks on every benchmark}
-\label{app:patchvis}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.66\textwidth]{figures/all_dup_1.pdf}
-\caption{Near-duplicate blocks, benchmarks 1--6. Grey marks patches joining no block; the third and sixth columns show $w_i{=}1/n_i$ on a log scale over the full $2{,}304$ tokens.}
-\label{fig:vis-c1}
-\end{figure}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.66\textwidth]{figures/all_dup_2.pdf}
-\caption{Near-duplicate blocks, benchmarks 7--12.}
-\label{fig:vis-c2}
-\end{figure}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.66\textwidth]{figures/all_dup_3.pdf}
-\caption{Near-duplicate blocks, benchmarks 13--17.}
-\label{fig:vis-c3}
-\end{figure}
-
-\section{First stage: the second-moment descriptor}
 
 \subsection{Why the second moment factorizes}
 \label{app:factorize}
-Section~\ref{sec:global} contracts the cross-similarity table from both sides, $\sum_{i,j} w_{Q,i}w_{D,j}\,\sigma(S_{ij})$ with $\sigma$ applied entrywise, and states the case $\sigma(u)=u^{2}$. The same regrouping holds for any monomial $\sigma(u)=u^{\gamma}$: the entrywise power $S^{\circ\gamma}$ equals $Q^{[\gamma]}\big(D^{[\gamma]}\big)^{\top}$, where $Q^{[\gamma]}$ is the row-wise Kronecker power whose $i$-th row is $\mathbf q_i^{\otimes\gamma}$. The contraction therefore becomes one inner product of width $C^{\gamma}$ between two vectors, each computed from a single image. At $\gamma{=}1$ that vector is the weighted mean of the tokens, the first-order instance of a VLAD-style descriptor; at $\gamma{=}2$ it is the weighted second moment $S_C$ we deploy. the factorial in \S\ref{sec:compact} measures the devices that act on it.
+The coarse descriptor of \S\ref{sec:global} compares two images through $\langle S_C(Q),S_C(D)\rangle=\sum_{i,j} w_{Q,i}\,w_{D,j}\,S(Q,D)_{ij}^{2}$, where $w_{D,j}$ is the weight of database patch $j$: a contraction of the cross-similarity table from both sides, $\sum_{i,j} w_{Q,i}w_{D,j}\,\sigma(S_{ij})$ with $S=S(Q,D)$ and $\sigma(u)=u^{2}$ applied entrywise. The same regrouping holds for any monomial $\sigma(u)=u^{\gamma}$: the entrywise power $S^{\circ\gamma}$ equals $Q^{[\gamma]}\big(D^{[\gamma]}\big)^{\top}$, where $Q^{[\gamma]}$ is the row-wise Kronecker power whose $i$-th row is $\mathbf q_i^{\otimes\gamma}$. The contraction therefore becomes one inner product of width $C^{\gamma}$ between two vectors, each computed from a single image. At $\gamma{=}1$ that vector is the weighted mean of the tokens, the first-order instance of a VLAD-style descriptor; at $\gamma{=}2$ it is the weighted second moment $S_C$ we deploy. the factorial in \S\ref{sec:compact} measures the devices that act on it.
 
-\FloatBarrier
-
-\subsection{Devices and compression}
+\subsection{The second moment against an average}
 \label{app:coarsegrid}
-\paragraph{The second moment against an average.} On frozen features the second-moment descriptor is far stronger than pooling the same tokens by their mean. In Table~\ref{tab:coarse} GeM reaches $60.1$ mean R@1 on the nine cross-environment benchmarks while our stage 1 reaches $68.6$ (v2) and $70.0$ (v3), and it takes the best number on Laurel Caverns, 17 Places and VP-Air with no fine-ranking at all. The tables below cover the devices that act on it and its whitened compression.
-
-\label{sec:exp-stage1}
-\label{sec:stage1abl}
-\label{sec:compact}
+Table~\ref{tab:coarse} compares the coarse descriptor alone with single-descriptor methods: the second moment reaches $68.6$ (\emph{v2}) and $70.0$ (\emph{v3}) mean R@1 on the 9 cross-environment benchmarks against $60.1$ for GeM on the same tokens.
 \begin{table}[H]
-\caption{\textbf{Stage 1 alone on the nine cross-environment benchmarks.} R@1, single-stage global retrieval, every row our own run under one protocol at each method's native resolution. $^{\dagger}$reported after its own fine-ranker; $^{o}$from our earlier operating point, as is the whole DINOv2 row.}
+\caption{Coarse ranking alone on the 9 cross-environment benchmarks (R@1, single-stage retrieval, our runs). $^{\dagger}$after its own fine-ranker; $^{o}$from an earlier operating point.}
 \label{tab:coarse}
 \centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
@@ -470,96 +523,53 @@ Ours v3 & DINOv3 & 52.5 & 60.7 & \textbf{65.5} & 95.5 & 77.2 & 74.7 & \underline
 }
 \end{table}
 
-\begin{table}[H]
-\caption{\textbf{Whitened compression of the second moment, single-stage coarse retrieval} (R@1; five test benchmarks and their mean). DINOv3, one protocol. $^\dagger$AmsterTime rank-caps the WPCA below $2{,}048$-d; its $1{,}024$-d value shown. R@1000 never falls below $98.4$ in any row.}
-\label{tab:prunecomp}
-\centering
-\scriptsize
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.02}
-\begin{tabular}{l rrrrr r}
-\toprule
-Compression & Pitts & MSLS & Nord & Tokyo & Amst & mean \\
-\midrule
-raw & 89.22 & 74.32 & 69.33 & 92.06 & 48.09 & 74.60 \\
-WPCA-1024 & 90.45 & 84.86 & 70.78 & 92.70 & 66.04 & 80.97 \\
-\textbf{WPCA-2048} & 91.02 & 86.89 & 75.09 & 94.92 & 66.04$^\dagger$ & 82.79 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \FloatBarrier
 
-\subsection{What patch distinctiveness does to the spectrum}
-\label{app:patchvis-main}
-
-
-\section{Second stage: \textsc{MaxSim} fine-ranking}
-
-\subsection{Why \textsc{MaxSim} admits no fixed-size descriptor}
-\label{app:nofactor}
-The first stage factorizes because its contraction is bilinear in the two token sets. The row-wise maximum of \eqref{eq:stage2} is not: it is not linear in the candidate's tokens, so no regrouping of the kind used in Supplementary~\S\ref{app:factorize} applies. The score is not even symmetric, which rules out any form $\langle\psi(Q),\psi(D)\rangle$ with $\psi$ mapping a token set to a vector. Take $Q=\{\mathbf q\}$ and $D=\{\mathbf d_1,\mathbf d_2\}$ with unit weights and $S=(0.9,\ 0.1)$: scoring $Q$ against $D$ gives $0.9$, while scoring $D$ against $Q$ gives $0.9+0.1=1.0$. A pipeline that stores one vector per image therefore cannot express this stage, and we run it pair by pair on the shortlist.
-
-\FloatBarrier
-
-\subsection{Fine-ranking operators}
-\label{app:s2grid}
-\begin{table}[h]
-\caption{\textbf{Seven fine-ranking operators}, mean R@1 over the nine cross-environment benchmarks of Table~\ref{tab:breadth}. Stage 1 is the deployed one throughout; only stage 2 changes. \textsc{selfw\_conf} is \eqref{eq:stage2}, the operator we adopt.}
-\label{tab:s2grid}
-\centering
-{\footnotesize\setlength{\tabcolsep}{3pt}%
-\begin{tabular}{lccccccc}
-\toprule
-Backbone & base & \textsc{selfw} & \textsc{conf} & \textsc{selfw\_conf} & \textsc{mnn} & \textsc{mnn\_selfw} & comb. \\
-\midrule
-DINOv3 & 71.68 & 74.90 & 69.04 & \textbf{76.57} & 70.46 & 72.10 & 71.63 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\FloatBarrier
-
-\subsection{Against \textsc{EffoVPR}'s criterion at a matched stage 1}
-\label{app:effo-matched}
-
-\FloatBarrier
-
-\subsection{Places under each method's own similarity}
-\label{app:blocktsne}
-Figure~\ref{fig:blocktsne} looks at the score itself rather than at its ranking. Every image of a place is embedded from each method's own similarity, and the separation between places, measured as the gap between within-place and between-place similarity in units of the latter's spread, grows from $3.3$ on Pitts30k to $11.2$ indoors and $22.9$ on the aerial set, where a single descriptor has least to work with.
-
+\subsection{Energy curves of the second moment on every benchmark}
+\label{app:energy-full}
+Full version of Figure~\ref{fig:components}(b), one query per benchmark.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.88\textwidth]{figures/block_tsne.pdf}
-\caption{\textbf{Places under each method's own similarity.} All images of a place, embedded by t-SNE on the method's own pairwise scores taken as distances (perplexity $10$, seed $0$); colour is the place. \emph{sep} is the within-place minus between-place mean similarity, in units of the between-place standard deviation, and is the only quantity comparable across panels.}
-\label{fig:blocktsne}
+\includegraphics[width=\textwidth]{figures/fig_energy_full.pdf}
+\caption{Energy captured by the $k$ strongest directions of $F^{\top}F$ and $F^{\top}WF$, one query per benchmark.}
+\label{fig:energy-full}
 \end{figure}
 
-\subsection{\textsc{MaxSim} matches on every benchmark}
-\label{app:patchvis-maxsim}
-The rule of \eqref{eq:stage2}, denoted \textsc{selfw\_conf} in the tables, keeps the matches drawn below.
-
+\subsection{\textsc{MaxSim} with and without $w$ on every benchmark}
+\label{app:maxsim-full}
+Full version of Figure~\ref{fig:components}(c), on the pairs of Supplementary~\S\ref{app:patchvis}.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.66\textwidth]{figures/all_maxsim_1.pdf}
-\\[2pt]
-\includegraphics[width=0.40\textwidth]{figures/maxsim_colorbar.pdf}
-\caption{\textsc{MaxSim} matches, benchmarks 1--6. Each line joins a query patch to its \textsc{MaxSim} partner in the retrieved image, drawn for the sixty largest contributions among the patches clearing the gate $\theta{=}0.65$ of \eqref{eq:stage2}; line colour is the row maximum $m_i$, from weaker (cyan) to stronger (magenta) as the bar below shows, and line width is that patch's contribution $c_i{=}w_i m_i$. The same key applies to the five galleries that follow.}
-\label{fig:vis-m1}
+\includegraphics[width=0.78\textwidth]{figures/fig_maxsim_full_1.pdf}
+\caption{\textsc{MaxSim} matches without (left) and with $w$ (right), benchmarks 1--9.}
+\label{fig:maxsim-full-1}
 \end{figure}
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.66\textwidth]{figures/all_maxsim_2.pdf}
-\caption{\textsc{MaxSim} matches, benchmarks 7--12.}
-\label{fig:vis-m2}
+\includegraphics[width=0.78\textwidth]{figures/fig_maxsim_full_2.pdf}
+\caption{\textsc{MaxSim} matches without (left) and with $w$ (right), benchmarks 10--17; the Mid-Atlantic retrieval is incorrect.}
+\label{fig:maxsim-full-2}
+\end{figure}
+
+\subsection{Duplicated patches on every benchmark}
+\label{app:patchvis}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/all_dup_1.pdf}
+\caption{Full version of Figure~\ref{fig:blocks}, benchmarks 1--6.}
+\label{fig:vis-c1}
 \end{figure}
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.66\textwidth]{figures/all_maxsim_3.pdf}
-\caption{\textsc{MaxSim} matches, benchmarks 13--17.}
-\label{fig:vis-m3}
+\includegraphics[width=0.6\textwidth]{figures/all_dup_2.pdf}
+\caption{Full version of Figure~\ref{fig:blocks}, benchmarks 7--12.}
+\label{fig:vis-c2}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/all_dup_3.pdf}
+\caption{Full version of Figure~\ref{fig:blocks}, benchmarks 13--17.}
+\label{fig:vis-c3}
 \end{figure}
 
 \FloatBarrier
