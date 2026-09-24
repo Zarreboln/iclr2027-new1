@@ -4,7 +4,7 @@
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/method_fig_ppt.png}
-\caption{Overview of the proposed method. Each image is partitioned into patches, whose features are extracted by a frozen vision encoder, and the patch-to-patch similarity (P2PS) template is applied in three forms. P2PS-1 computes the self-similarity of each image, which gives the weight of every patch; features and weights are computed once and stored for both stages. P2PS-2 pools the weighted patch features into a second-moment matrix, reduced by whitened PCA to one descriptor per image, and coarse ranking shortlists the $K$ nearest database images. P2PS-3 performs weighted \textsc{MaxSim} matching between the query and each shortlisted image, and fine ranking sorts the shortlist by the matching score.}
+\caption{Overview of the proposed method. Each image is partitioned into patches, whose features are extracted by a frozen vision encoder, and the patch-to-patch similarity (P2PS) template is applied in three forms. P2PS-1 computes the self-similarity of each image, which gives the weight of every patch; features and weights are computed once and stored for both stages. P2PS-2 pools the weighted patch features into a second-moment matrix, reduced by whitened PCA to one descriptor per image, and coarse ranking shortlists the $K$ nearest database images. P2PS-3 performs weighted \textsc{MaxSim} matching between the query and each shortlisted image, and reranking sorts the shortlist by the matching score.}
 \label{fig:method}
 \end{figure}
 
@@ -19,7 +19,7 @@ The proposed \textcolor{red}{XXX} eliminates this training requirement by perfor
 \begin{equation}\label{eq:p2ps}
   S(A,B)=AB^{\top},
 \end{equation}
-where $A$ and $B$ are set to different feature matrices depending on the form of P2PS being applied. We first apply this template for patch weighting, and subsequently for coarse-to-fine ranking, as detailed below.
+where $A$ and $B$ are set to different feature matrices depending on the form of P2PS being applied. We first apply this template for patch weighting, and subsequently for coarse ranking and reranking, as detailed below.
 
 \subsection{Patch Weighting via Self-Similarity (P2PS-1)}
 \label{sec:feat}
@@ -34,7 +34,7 @@ where $\ind[\cdot]$ is the indicator function. The weight of patch $p_i$ is then
   w_i=\frac{1}{n_i},
   \qquad\text{where}\quad n_i=\sum_{j=1}^{N}\hat S_{ij},
 \end{equation}
-and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to $p_i$, that is, the nonzero entries remaining in row $i$ of $\hat S$ after thresholding. Since $w_i$ is the reciprocal of $n_i$, a patch that recurs frequently across the image (large $n_i$) receives a small weight, while a distinctive patch with few or no similar patches (small $n_i$) receives a large weight, up to $w_i{=}1$, reflecting its higher importance (Figure~\ref{fig:blocks}). The weights of an image are collected in $\mathbf w=[w_1,\dots,w_N]$ and applied in the coarse-to-fine ranking described below.
+and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to $p_i$, that is, the nonzero entries remaining in row $i$ of $\hat S$ after thresholding. Since $w_i$ is the reciprocal of $n_i$, a patch that recurs frequently across the image (large $n_i$) receives a small weight, while a distinctive patch with few or no similar patches (small $n_i$) receives a large weight, up to $w_i{=}1$, reflecting its higher importance (Figure~\ref{fig:blocks}). The weights of an image are collected in $\mathbf w=[w_1,\dots,w_N]$ and applied in the coarse ranking and reranking described below.
 
 \begin{figure}[!htb]
 \centering
@@ -43,11 +43,11 @@ and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to
 \label{fig:blocks}
 \end{figure}
 
-\subsection{Coarse-to-Fine Ranking}
+\subsection{Coarse Ranking and Reranking}
 \label{sec:coarse_to_fine_ranking}
 % Chen's original opening of 3.3 (kept for the record, replaced 2026-09-23 because it repeated the overview):
-% As discussed in \S\ref{sec:related}, VPR is essentially a retrieval task \citep{netvlad,anyloc}. We adopt the classical coarse-to-fine ranking pipeline \citep{patchnetvlad,r2former,selavpr}, and achieve highly competitive results even against methods trained on millions of annotated samples. More specifically, second-order pooling of the weighted patch features gives a coarse ranking, and patch-to-patch \textsc{MaxSim} matching gives the fine ranking.
-Two-stage retrieval is standard in VPR \citep{patchnetvlad,r2former,selavpr}, but existing pipelines treat each stage separately. Here both stages use the same frozen tokens with the same weights $\mathbf w$: coarse ranking pools them into one descriptor per image (P2PS-2), and fine ranking matches them patch by patch on the shortlist (P2PS-3).
+% As discussed in \S\ref{sec:related}, VPR is essentially a retrieval task \citep{netvlad,anyloc}. We adopt the classical coarse-to-fine ranking pipeline \citep{patchnetvlad,r2former,selavpr}, and achieve highly competitive results even against methods trained on millions of annotated samples. More specifically, second-order pooling of the weighted patch features gives a coarse ranking, and patch-to-patch \textsc{MaxSim} matching gives the reranking.
+Two-stage retrieval is standard in VPR \citep{patchnetvlad,r2former,selavpr}, but existing pipelines treat each stage separately. Here both stages use the same frozen tokens with the same weights $\mathbf w$: coarse ranking pools them into one descriptor per image (P2PS-2), and reranking matches them patch by patch on the shortlist (P2PS-3).
 
 \paragraph{Coarse Ranking (P2PS-2).}
 \label{sec:global}
@@ -56,11 +56,11 @@ During coarse ranking, the query is compared with the whole database $\mathcal D
   S_C(F)=S\big((W^{1/2}F)^{\top},(W^{1/2}F)^{\top}\big)=F^{\top}WF=\sum_{i=1}^{N} w_i\,\mathbf f_i\mathbf f_i^{\top}.
 \end{equation}
 As $S_C$ is high-dimensional, we apply $\ell_2$ normalization and whitened PCA (WPCA), denoted $\rho$, to obtain a compact descriptor $\mathbf g=\rho(S_C)$ for efficient large-scale search.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
-Denoting the query and the $\ell$-th database descriptors by $\mathbf g_Q$ and $\mathbf g_{D_\ell}$, coarse ranking sorts all database images by $\mathbf g_Q^{\top}\mathbf g_{D_\ell}$, and the top-$K$ images are passed to fine ranking.
+Denoting the query and the $\ell$-th database descriptors by $\mathbf g_Q$ and $\mathbf g_{D_\ell}$, coarse ranking sorts all database images by $\mathbf g_Q^{\top}\mathbf g_{D_\ell}$, and the top-$K$ images are passed to reranking.
 
-\paragraph{Fine Ranking (P2PS-3).}
+\paragraph{Reranking (P2PS-3).}
 \label{sec:core}
-Fine ranking is performed between the query $Q$ and each of the $K$ shortlisted database images $D_\ell$ (\S\ref{sec:prelim}) via patch-to-patch \textsc{MaxSim} matching \citep{chamfer}. Setting $A=Q$ and $B=D_\ell$ in Eq.~(\ref{eq:p2ps}) gives the cross-image similarity $S(Q,D_\ell)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_\ell)_{ij}$ is the similarity between query patch $p_i$ and database patch $p_j$. Let $m_i=\max_j S(Q,D_\ell)_{ij}$ be the best match of query patch $p_i$, $w_{Q,i}$ its weight from P2PS-1, and $\theta$ a similarity threshold, fixed at $0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}): a query patch whose best match falls below $\theta$ has no counterpart in the candidate and is discarded. The fine-ranking score $s(Q,D_\ell)$ is defined as
+Reranking is performed between the query $Q$ and each of the $K$ shortlisted database images $D_\ell$ (\S\ref{sec:prelim}) via patch-to-patch \textsc{MaxSim} matching \citep{chamfer}. Setting $A=Q$ and $B=D_\ell$ in Eq.~(\ref{eq:p2ps}) gives the cross-image similarity $S(Q,D_\ell)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_\ell)_{ij}$ is the similarity between query patch $p_i$ and database patch $p_j$. Let $m_i=\max_j S(Q,D_\ell)_{ij}$ be the best match of query patch $p_i$, $w_{Q,i}$ its weight from P2PS-1, and $\theta$ a similarity threshold, fixed at $0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}): a query patch whose best match falls below $\theta$ has no counterpart in the candidate and is discarded. The reranking score $s(Q,D_\ell)$ is defined as
 \begin{equation}\label{eq:stage2}
   s(Q,D_\ell)=\sum_{i=1}^{N} w_{Q,i}\;\ind[\,m_i>\theta\,]\;m_i ,
 \end{equation}
