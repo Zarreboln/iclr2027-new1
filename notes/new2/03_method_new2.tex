@@ -74,7 +74,7 @@
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/method_fig_ppt.png}
-\caption{\textbf{Overview of the proposed method.} Each image is partitioned into patches, whose features are extracted by a frozen vision encoder. The patch-to-patch similarity (P2PS) template is applied in three forms: P2PS-1 computes the self-similarity of each image to obtain its patch weights; P2PS-2 pools the weighted patch features into a second-moment descriptor for coarse ranking; P2PS-3 performs \textsc{MaxSim} matching between the query and the top-$K$ candidates for fine ranking.}
+\caption{Overview of the proposed method. Each image is partitioned into patches, whose features are extracted by a frozen vision encoder, and the patch-to-patch similarity (P2PS) template is applied in three forms. P2PS-1 computes the self-similarity of each image, which gives the weight of every patch; features and weights are computed once and stored for both stages. P2PS-2 pools the weighted patch features into a second-moment matrix, reduced by whitened PCA to one descriptor per image, and coarse ranking shortlists the $K$ nearest database images. P2PS-3 performs weighted \textsc{MaxSim} matching between the query and each shortlisted image, and fine ranking sorts the shortlist by the matching score.}
 \label{fig:method}
 \end{figure}
 
@@ -121,7 +121,7 @@ Two-stage retrieval is standard in VPR \citep{patchnetvlad,r2former,selavpr}, bu
 
 \paragraph{Coarse Ranking (P2PS-2).}
 \label{sec:global}
-During coarse ranking, the query is compared with the whole database $\mathcal D$ to obtain the $K$ most similar images, the shortlist, which requires a compact descriptor for every image. We obtain this descriptor by weighted second-moment pooling of the patch features, the bilinear pooling of \citet{bcnn}, which captures pairwise interactions between feature channels. Given the patch feature matrix $F$ of an image and its patch weights $\mathbf w$ from P2PS-1, Eq.~(\ref{eq:weight}), let $W=\mathrm{diag}(\mathbf w)$. Setting $A=B=(W^{1/2}F)^{\top}$ in Eq.~(\ref{eq:p2ps}), that is, applying the P2PS template along the channel dimension of the weighted patch features, gives the $C\times C$ second-moment matrix of the image, denoted $S_C(F)$,
+During coarse ranking, the query is compared with the whole database $\mathcal D$ to obtain the $K$ most similar images, the shortlist, which requires a compact descriptor for every image. We obtain this descriptor by weighted second-moment pooling of the patch features, the bilinear pooling of \citet{bcnn}, which captures pairwise correlations between feature channels. Given the patch feature matrix $F$ of an image and its patch weights $\mathbf w$ from P2PS-1, Eq.~(\ref{eq:weight}), let $W=\mathrm{diag}(\mathbf w)$. Setting $A=B=(W^{1/2}F)^{\top}$ in Eq.~(\ref{eq:p2ps}), that is, applying the P2PS template along the channel dimension of the weighted patch features, gives the $C\times C$ second-moment matrix of the image, denoted $S_C(F)$,
 \begin{equation}\label{eq:gc}
   S_C(F)=S\big((W^{1/2}F)^{\top},(W^{1/2}F)^{\top}\big)=F^{\top}WF=\sum_{i=1}^{N} w_i\,\mathbf f_i\mathbf f_i^{\top}.
 \end{equation}
