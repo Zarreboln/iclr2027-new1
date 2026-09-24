@@ -55,7 +55,7 @@ During coarse ranking, the query is compared with the whole database $\mathcal D
 \begin{equation}\label{eq:gc}
   S_C(F)=S\big((W^{1/2}F)^{\top},(W^{1/2}F)^{\top}\big)=F^{\top}WF=\sum_{i=1}^{N} w_i\,\mathbf f_i\mathbf f_i^{\top}.
 \end{equation}
-As $S_C$ is high-dimensional, we apply $\ell_2$ normalization and whitened PCA, denoted $\rho$, to obtain a compact descriptor $\mathbf g=\rho(S_C)$ for efficient large-scale search.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
+As $S_C$ is high-dimensional, we apply $\ell_2$ normalization and whitened PCA (WPCA), denoted $\rho$, to obtain a compact descriptor $\mathbf g=\rho(S_C)$ for efficient large-scale search.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
 Denoting the query and the $\ell$-th database descriptors by $\mathbf g_Q$ and $\mathbf g_{D_\ell}$, coarse ranking sorts all database images by $\mathbf g_Q^{\top}\mathbf g_{D_\ell}$, and the top-$K$ images are passed to fine ranking.
 
 \paragraph{Fine Ranking (P2PS-3).}
