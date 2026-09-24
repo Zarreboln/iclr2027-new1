@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\IfFileExists{bbm.sty}{\usepackage{bbm}\newcommand{\ind}{\mathbbm{1}}}{\newcommand{\ind}{\mathbf{1}}}  % indicator function
 \usepackage{multirow}
 \usepackage{amsthm}
 \usepackage{booktabs}
@@ -80,7 +81,7 @@
 Visual Place Recognition (VPR) identifies where a photograph was taken by matching it against a geo-tagged database. 
 Two families dominate. Supervised methods learn an aggregation layer from place labels and are strong on the street-level imagery they are trained for, but they call for corpora running to tens of millions of labelled images and lose a large part of their accuracy once the imagery changes. Training-free methods drop that cost and generalise better, yet they decide what to keep from an image by salience, a property that does not separate one place from another, and the features they obtain leave them behind on accuracy. To address both, we propose \method{}, a training-free pipeline built entirely on patch-to-patch similarity. Within an image, self-similarity gives every patch a distinctiveness, the inverse of its multiplicity within the image, so a scene element counts once however much of the frame it covers; between two images, cross-similarity is read twice, once to scan a database and once to fine-rank a shortlist.
 % \textcolor{blue}{no place labels for fitting its representation}
-Under one fixed configuration \method{} reaches the highest mean Recall@1 on seventeen benchmarks, $93.3$ on eight standard VPR benchmarks and $76.6$ on nine cross-environment benchmarks against $65.1$ for the strongest supervised method, while edging that method on the standard benchmarks its supervision targets. As a plug-in scoring rule it improves two existing two-stage pipelines by $+5.6$ and $+9.7$ R@1 and eight single-stage ones by $+9.1$ to $+17.8$.
+Under one fixed configuration \method{} reaches the highest mean Recall@1 on 17 benchmarks, $93.3$ on 8 standard VPR benchmarks and $76.6$ on 9 cross-environment benchmarks against $65.1$ for the strongest supervised method, while edging that method on the standard benchmarks its supervision targets. As a plug-in scoring rule it improves two existing two-stage pipelines by $+5.6$ and $+9.7$ R@1 and eight single-stage ones by $+9.1$ to $+17.8$.
 \end{abstract}
 
 \input{sections/01_intro}
@@ -100,6 +101,7 @@ Under one fixed configuration \method{} reaches the highest mean Recall@1 on sev
 \bibliographystyle{iclr2027_conference}
 
 
+\clearpage
 \appendix
 
 

@@ -8,10 +8,15 @@ import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.patches import Patch; from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.gridspec as gs; from PIL import Image
 D, OUT = sys.argv[1], sys.argv[2]
-import os; sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))); import house_style as H
-H.rc(10); GRID,INK,MUTE=H.GRID,H.INK,H.MUTE
-C=H.COMPONENTS; C_UNW,C_W=H.MUTE,H.W_DARK
-clean=H.clean
+FONT="Comic Sans MS"
+plt.rcParams.update({"font.family":FONT,"font.size":10,"font.weight":"bold","axes.labelweight":"bold",
+                     "pdf.fonttype":42,"ps.fonttype":42,"mathtext.default":"regular"})
+GRID,INK,MUTE="#E6E6E6","#2B2B2B","#9A9A9A"
+C=["#B9C6D6","#C0736C","#2F7E96","#C0233A"]; C_UNW,C_W=C[3],C[2]
+def clean(ax):
+    for s in ("top","right"): ax.spines[s].set_visible(False)
+    for s in ("left","bottom"): ax.spines[s].set_color(MUTE)
+    ax.tick_params(colors=INK,labelsize=9)
 # ---------------- (a) ----------------
 DS=["Nordland","VP-Air"]; V={"Nordland":[23.5,58.4,76.1,83.0],"VP-Air":[46.0,49.3,61.4,72.1]}
 LAB=["second moment","+ weighted second moment","+ MaxSim","+ weighted MaxSim"]
@@ -24,37 +29,36 @@ for k,ds in enumerate(DS):
         ax.bar(k,inc,bw,bottom=v[j-1],color=C[j],edgecolor="white",lw=0.8,zorder=3)
         if inc>=4: ax.text(k,v[j-1]+inc/2,"+%.1f"%inc,ha="center",va="center",fontsize=8.5,color="white")
         else: ax.text(k+bw/2+0.03,v[j-1]+inc/2,"+%.1f"%inc,ha="left",va="center",fontsize=8,color=C[j])
-    ax.text(k,v[3]+1.2,"%.1f"%v[3],ha="center",va="bottom",fontsize=10,color=INK)
+    ax.text(k,v[3]+1.2,"%.1f"%v[3],ha="center",va="bottom",fontsize=10,color=C[3])
 ax.set_xticks(x); ax.set_xticklabels(DS,fontsize=10); ax.set_xlim(-0.55,1.75)
 ax.set_ylim(0,92); ax.set_yticks([0,20,40,60,80]); ax.set_ylabel("R@1 (%)",fontsize=10)
-H.dgrid(ax,"y"); clean(ax)
+ax.grid(axis="y",color=GRID,lw=1.0,zorder=0); ax.set_axisbelow(True); clean(ax)
 ax.legend(handles=[Patch(facecolor=C[j],label=LAB[j]) for j in range(4)],frameon=False,fontsize=7.6,
           loc="upper center",bbox_to_anchor=(0.45,-0.26),ncol=2,handlelength=1.1,columnspacing=0.9,labelspacing=0.4)
-H.frame(fig,pad=0.0,rounding=0.03); plt.savefig(f"{OUT}/fig_components.pdf",bbox_inches="tight",pad_inches=0.06); plt.close(fig)
+plt.savefig(f"{OUT}/fig_components.pdf",bbox_inches="tight"); plt.close(fig)
 # ---------------- (b) ----------------
 z=np.load(f"{D}/energy_curve.npz",allow_pickle=True); c0,c1,g=z["c0"],z["c1"],float(z["gap"]); xx=np.arange(1,len(c0)+1)
 fig,a=plt.subplots(figsize=(2.9,2.7))
 a.plot(xx,100*c0,lw=2.0,color=C_UNW,label="unweighted  $F^TF$"); a.plot(xx,100*c1,lw=2.0,color=C_W,label="weighted  $F^TWF$")
-a.fill_between(xx,100*c1,100*c0,where=(c0>=c1),color=H.W_LIGHT,alpha=.7,lw=0)
+a.fill_between(xx,100*c1,100*c0,where=(c0>=c1),color=C_UNW,alpha=.13,lw=0)
 a.set_xscale("log"); a.set_xlim(1,1536); a.set_ylim(0,100); a.set_xticks([1,10,100,1000]); a.set_xticklabels(["1","10","100","1000"])
-a.set_yticks([0,20,40,60,80,100]); H.dgrid(a); clean(a)
+a.set_yticks([0,20,40,60,80,100]); a.grid(color=GRID,lw=1.0,zorder=0); a.set_axisbelow(True); clean(a)
 a.set_xlabel("directions kept",fontsize=10); a.set_ylabel("energy captured (%)",fontsize=10)
 a.text(.97,.07,"gap %.1f pts"%g,transform=a.transAxes,ha="right",fontsize=9,color=INK)
 a.legend(fontsize=8.2,frameon=False,loc="upper left",handlelength=1.4,borderaxespad=0.2)
-H.frame(fig,pad=0.0,rounding=0.03); plt.savefig(f"{OUT}/fig_energy_one.pdf",bbox_inches="tight",pad_inches=0.06); plt.close(fig)
+plt.savefig(f"{OUT}/fig_energy_one.pdf",bbox_inches="tight"); plt.close(fig)
 # ---------------- (c) ----------------
 L=np.load(f"{D}/maxsim_lines.npz",allow_pickle=True); cu,cw,mi,ji,G,RES=L["cu"],L["cw"],L["mi"],L["ji"],int(L["G"]),int(L["RES"])
 TOP=int(sys.argv[3]) if len(sys.argv)>3 else 24; GAP=10
 imq=Image.open(f"{D}/pair_q.png"); imd=Image.open(f"{D}/pair_d.png")
 canvas=Image.new("RGB",(2*RES+GAP,RES),"white"); canvas.paste(imq,(0,0)); canvas.paste(imd,(RES+GAP,0))
-cmap=H.MATCH_CMAP
+cmap=LinearSegmentedColormap.from_list("cm",["#00C8D7","#D000B4"])
 def xy(idx,off): r,c=divmod(int(idx),G); return off+c*14+7, r*14+7
 su=np.argsort(-cu)[:TOP]; sw=np.argsort(-cw)[:TOP]; al=np.union1d(su,sw); lo,hi=mi[al].min(),mi[al].max()
 fig=plt.figure(figsize=(3.3,3.55)); grid=gs.GridSpec(3,1,height_ratios=[1,1,0.09],hspace=0.12)
 for k,(title,c,sel) in enumerate([("without $w$",cu,su),("with $w$",cw,sw)]):
     ax=fig.add_subplot(grid[k]); ax.imshow(canvas); ax.set_xticks([]); ax.set_yticks([])
-    for s in ax.spines.values(): s.set_visible(False)
-    ax.add_patch(plt.Rectangle((0,0),RES,RES,fill=False,ec=H.Q_INK,lw=1.4)); ax.add_patch(plt.Rectangle((RES+GAP,0),RES,RES,fill=False,ec=H.D_INK,lw=1.4))
+    for s in ax.spines.values(): s.set_color(MUTE); s.set_linewidth(0.8)
     ax.set_ylabel(title,fontsize=11.5); cmax=c[sel].max()
     for i in sel:
         if c[i]<=0: continue
@@ -65,4 +69,4 @@ cax=fig.add_subplot(grid[2]); cax.imshow(np.linspace(0,1,256)[None,:],aspect="au
 cax.set_xticks([0,255]); cax.set_xticklabels(["weaker","stronger"],fontsize=9.5); cax.tick_params(length=0,colors=INK)
 for s in cax.spines.values(): s.set_visible(False)
 cax.set_xlabel("match strength $m_i$",fontsize=9.5,labelpad=2)
-H.frame(fig,pad=0.0,rounding=0.03); plt.savefig(f"{OUT}/fig_maxsim_w_stack.pdf",bbox_inches="tight",dpi=220,pad_inches=0.06); plt.close(fig); print("saved 3 panels")
+plt.savefig(f"{OUT}/fig_maxsim_w_stack.pdf",bbox_inches="tight",dpi=220); plt.close(fig); print("saved 3 panels")
