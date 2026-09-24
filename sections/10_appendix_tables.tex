@@ -400,7 +400,42 @@ Mid-Atlantic & 19.8 & 57.4 & 69.3 & 21.8 & 45.5 & 54.5 & 13.9 & 47.5 & 56.4 & 37
 \end{table}
 
 \begin{table}[H]
-\caption{Patch importance signals with Recall@1, 5 and 10 (the Recall@1 columns are Table~\ref{tab:w-signal}).}
+\caption{Full version of Table~\ref{tab:w-signal}: Recall@1 of every patch importance signal on each benchmark, in the configuration of the main tables. Bold indicates the best value and underline the second best in each row.}
+\label{tab:w-signal-full}
+\centering
+{\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{l ccccccccc}
+\toprule
+Benchmark & none & self-sim. & attention & centrality & norm (a) & norm (b) & IDF & cross-ref. & rapid sp. \\
+\midrule
+Pitts250k & 89.2 & \underline{95.7} & \textbf{95.7} & 94.0 & 90.3 & 82.3 & 83.2 & 72.9 & 90.5 \\
+Pitts30k & 86.4 & \underline{92.5} & \textbf{93.0} & 90.9 & 87.7 & 79.6 & 79.4 & 63.3 & 87.3 \\
+Tokyo 24/7 & \textbf{99.0} & 97.5 & 96.5 & \underline{97.8} & 97.8 & 88.6 & 94.3 & 59.0 & 95.6 \\
+MSLS-val & 60.4 & \textbf{88.6} & 80.7 & \underline{81.8} & 71.2 & 42.3 & 41.1 & 26.5 & 66.4 \\
+Nordland & 59.0 & \textbf{83.0} & \underline{74.2} & 72.2 & 52.8 & 37.4 & 41.5 & 3.8 & 72.8 \\
+St Lucia & 98.3 & 99.1 & 98.1 & \textbf{99.7} & \underline{99.7} & 72.3 & 79.8 & 28.2 & 95.2 \\
+Oxford & \textbf{100.0} & 99.0 & 96.3 & \underline{100.0} & 99.5 & 99.5 & 100.0 & 30.9 & 99.5 \\
+AmsterTime & 60.5 & 67.9 & \underline{68.1} & \textbf{68.9} & 64.3 & 35.8 & 39.6 & 15.0 & 54.3 \\
+\midrule
+Hawkins & \underline{67.8} & 66.9 & 39.0 & 57.6 & 67.8 & 66.9 & \textbf{72.9} & 22.9 & 37.3 \\
+Laurel & 75.0 & \textbf{83.0} & 64.3 & \underline{80.4} & 75.9 & 71.4 & 80.4 & 46.4 & 46.4 \\
+17 Places & \textbf{65.8} & \underline{65.8} & 65.8 & 65.5 & 65.8 & 65.5 & 65.3 & 62.3 & 64.8 \\
+Gardens & \underline{99.0} & \textbf{99.5} & 98.0 & 99.0 & 99.0 & 99.0 & 99.0 & 85.0 & 98.5 \\
+Baidu & 84.3 & \textbf{85.0} & 81.9 & 83.5 & \underline{84.3} & 84.3 & 82.3 & 42.7 & 79.7 \\
+Nardo-Air & 87.3 & 87.3 & 87.3 & \textbf{90.1} & \underline{90.1} & 87.3 & 88.7 & 47.9 & 64.8 \\
+Nardo-Air R & 94.4 & 94.4 & \textbf{95.8} & \underline{95.8} & 95.8 & 93.0 & 83.1 & 67.6 & 95.8 \\
+VP-Air & 61.2 & \textbf{71.8} & \underline{71.8} & 69.3 & 61.2 & 61.0 & 59.3 & 22.7 & 41.2 \\
+Mid-Atlantic & 33.7 & 35.6 & \textbf{41.6} & 37.6 & 34.7 & 33.7 & 33.7 & 4.0 & \underline{39.6} \\
+\midrule
+mean (8) & 81.6 & \textbf{90.4} & 87.8 & \underline{88.2} & 82.9 & 67.2 & 69.9 & 37.5 & 82.7 \\
+mean (9) & 74.3 & \textbf{76.6} & 71.7 & \underline{75.4} & 75.0 & 73.6 & 73.8 & 44.6 & 63.1 \\
+mean (17) & 77.7 & \textbf{83.1} & 79.3 & \underline{81.4} & 78.7 & 70.6 & 72.0 & 41.2 & 72.3 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[H]
+\caption{Patch importance signals with Recall@1, 5 and 10 on three benchmarks (the Recall@1 columns are rows of Table~\ref{tab:w-signal-full}).}
 \label{tab:recallk-signal}
 \centering
 {\scriptsize\setlength{\tabcolsep}{3.5pt}
