@@ -2,7 +2,7 @@
 \subsection{Evaluation protocol}
 \label{app:protocol}
 \begin{table}[H]
-\caption{Evaluation protocol of the 17 benchmarks of Table~\ref{tab:datasets}: ground truth and the conventions used for every baseline.}
+\caption{Ground truth and evaluation conventions for the 17 benchmarks of Table~\ref{tab:datasets}.}
 \label{tab:protocol}
 \centering
 {\footnotesize\setlength{\tabcolsep}{4pt}%
@@ -51,7 +51,7 @@ Both thresholds are calibrated once on SF-XL val, a split that appears in no res
 The gate of Eq.~(\ref{eq:stage2}) keeps a query patch when its best match $m_i$ exceeds $\theta$: the likelihood that a match is genuine rather than accidental increases with $m_i$, so a fixed threshold is the Bayes-optimal rule.
 
 \begin{table}[H]
-\caption{Calibration of $\tau$ on SF-XL val, two-stage pipeline. $\tau{=}0$ is the unweighted baseline; we fix $\tau{=}0.5$.}
+\caption{Calibration of $\tau$ on SF-XL val; $\tau{=}0$ is unweighted. We fix $\tau{=}0.5$.}
 \label{tab:cal-tau}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3.4pt}
@@ -66,7 +66,7 @@ R@10  & 90.24 & 94.39 & 95.28 & 95.42 & 95.62 & 95.70 & 95.74 & \textbf{95.80} &
 \end{tabular}}
 \end{table}
 \begin{table}[H]
-\caption{Calibration of $\theta$ on SF-XL val, $\tau{=}0.5$. Every column reranks the same shortlist; we fix $\theta{=}0.65$.}
+\caption{Calibration of $\theta$ on SF-XL val at $\tau{=}0.5$, one shortlist throughout. We fix $\theta{=}0.65$.}
 \label{tab:cal-t2}
 \centering
 {\footnotesize\setlength{\tabcolsep}{3.4pt}
@@ -85,9 +85,9 @@ $\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0
 
 \subsection{Per-query cost}
 \label{app:cost}
-Table~\ref{tab:s2cost} supplements the cost sentence of \S\ref{sec:sota}: every stage of every two-stage method, each with its released code, on the same hardware.
+Every stage of every two-stage method, each with its released code, on the same hardware.
 \begin{table}[!htb]
-\caption{Per-query cost on Pitts30k in ms on one H100: feature extraction at each method's own resolution, coarse ranking over the $10{,}000$ database descriptors, and reranking of the top-$100$.}
+\caption{Per-query cost on Pitts30k, ms on one H100. Coarse ranking is over $10{,}000$ descriptors, reranking over the top-$100$.}
 \label{tab:s2cost}
 \centering
 {\footnotesize\setlength{\tabcolsep}{5pt}%
@@ -112,7 +112,7 @@ Ours\,\emph{v2} & DINOv2 & 31.5 & 0.2 & \textbf{15.5} & 47.2 \\
 \subsection{Full comparison with training-free and trained methods}
 \label{app:trained-full}
 \begin{table}[!htb]
-\caption{Comparison with training-free methods on all 17 benchmarks: full version of Table~\ref{tab:breadth}, same markers.}
+\caption{Full version of Table~\ref{tab:breadth}, same markers.}
 \label{tab:breadth-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
@@ -155,7 +155,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 1024 & 61.0 & \underline{75.9} & \underline{65.3} 
 }
 \end{table}
 \begin{table}[!htb]
-\caption{Comparison with trained methods on all 17 benchmarks: full version of Table~\ref{tab:trained}. $^{\dagger}$reported after the method's own reranker; $^{\ddag}$without the cross-image encoder.}
+\caption{Full version of Table~\ref{tab:trained}. $^{\dagger}$after the method's own reranker; $^{\ddag}$without the cross-image encoder.}
 \label{tab:trained-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.0pt}\renewcommand{\arraystretch}{0.92}%
@@ -224,7 +224,7 @@ Ours\,\emph{v3}$^{\dagger}$ & 1024 & \underline{61.0} & \underline{75.9} & \unde
 \label{app:oldbackbones}
 Our pipeline run unchanged on the ImageNet-supervised backbones of the classic trained methods: VGG16 (conv5\_3), ResNet-50 (layer3) and DeiT-S (block 11), at $480\times640$; $\tau$ is calibrated once per backbone on SF-XL val ($0.47$, $0.27$, $0.48$), everything else as in the main tables.
 \begin{table}[!htb]
-\caption{Recall@1 of our pipeline on ImageNet-supervised backbones against the trained methods on the same backbone.}
+\caption{Our pipeline against the trained methods, on ImageNet-supervised backbones.}
 \label{tab:oldbackbones}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.6pt}\renewcommand{\arraystretch}{0.95}%
@@ -277,21 +277,20 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.62\textwidth]{figures/fig_backbone_radar.pdf}
-\caption{Matched-backbone comparison on all 17 benchmarks: three baselines retrained on DINOv3 under their published recipes against our pipeline on the same backbone; all runs are ours; Table~\ref{tab:perdataset} lists the numbers.}
+\caption{Table~\ref{tab:perdataset} as a radar chart.}
 \label{fig:backbone}
 \end{figure}
 
 \subsection{Component ablation on all benchmarks}
 \label{app:components}
-Full version of Figure~\ref{fig:components}(a).
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_components_full.pdf}
-\caption{Component ablation on all 17 benchmarks: full version of Figure~\ref{fig:components}(a).}
+\caption{Full version of Figure~\ref{fig:components}(a), all 17 benchmarks.}
 \label{fig:components-full}
 \end{figure}
 \begin{table}[H]
-\caption{Numbers of Figure~\ref{fig:components-full}. The two second-moment columns are the raw descriptors $F^{\top}F$ and $F^{\top}WF$; the \textsc{MaxSim} column applies no weighting.}
+\caption{Numbers of Figure~\ref{fig:components-full}. The second-moment columns are $F^{\top}F$ and $F^{\top}WF$; the \textsc{MaxSim} column applies no weighting.}
 \label{tab:components}
 \centering
 {\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
@@ -329,7 +328,7 @@ Eiffel & 35.6 & 37.6 & 38.6 & \textbf{37.6} \\
 \label{app:recallk}
 Recall@5 and Recall@10 for the runs of Tables~\ref{tab:trained},~\ref{tab:perdataset} and~\ref{tab:w-signal}.
 \begin{table}[H]
-\caption{Recall@1, 5 and 10 of our pipeline on all 17 benchmarks, with DINOv2 (\emph{v2}) and DINOv3 (\emph{v3}), in the configuration of the main tables.}
+\caption{Recall@1, 5 and 10 of our pipeline on all 17 benchmarks.}
 \label{tab:recallk-ours}
 \centering
 {\footnotesize\setlength{\tabcolsep}{5pt}
@@ -364,7 +363,7 @@ Mid-Atlantic & 37.6 & 65.3 & 87.1 & 37.6 & 65.3 & 90.1 \\
 \end{table}
 
 \begin{table}[H]
-\caption{Matched-backbone comparison with Recall@1, 5 and 10: SALAD, BoQ and CliqueMining retrained on DINOv3 under their published recipes, against our pipeline on the same backbone. All runs are ours.}
+\caption{Table~\ref{tab:perdataset} with Recall@1, 5 and 10.}
 \label{tab:recallk-backbone}
 \centering
 {\scriptsize\setlength{\tabcolsep}{3pt}
@@ -399,7 +398,7 @@ Mid-Atlantic & 19.8 & 57.4 & 69.3 & 21.8 & 45.5 & 54.5 & 13.9 & 47.5 & 56.4 & 37
 \end{table}
 
 \begin{table}[H]
-\caption{Full version of Table~\ref{tab:w-signal}: Recall@1 of every patch importance signal on each benchmark. Bold is the best value in a row, underline the second best.}
+\caption{Full version of Table~\ref{tab:w-signal}, per benchmark. Bold is the best in a row, underline the second best.}
 \label{tab:w-signal-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{3.5pt}
@@ -434,7 +433,7 @@ mean (17) & 77.7 & 72.3 & 41.2 & 72.0 & 78.7 & 79.3 & \underline{81.4} & \textbf
 \end{table}
 
 \begin{table}[H]
-\caption{Patch importance signals with Recall@1, 5 and 10 on three benchmarks (the Recall@1 columns are rows of Table~\ref{tab:w-signal-full}).}
+\caption{Three benchmarks of Table~\ref{tab:w-signal-full} with Recall@1, 5 and 10.}
 \label{tab:recallk-signal}
 \centering
 {\scriptsize\setlength{\tabcolsep}{3.5pt}
@@ -486,7 +485,7 @@ Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fix
 
 \paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat S$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in Eq.~(\ref{eq:demo}). Table~\ref{tab:residual} measures the residual $r_i=|(\hat S\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across 8 benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
 \begin{table}[H]
-\caption{Residual $r_i=|(\hat S\mathbf w)_i-1|$ of the democratic condition with $w_i=1/n_i$, over all tokens of up to 200 database images per benchmark; the last two columns give the share of tokens within $0.2$ and $0.5$ of one.}
+\caption{Residual $r_i=|(\hat S\mathbf w)_i-1|$ of the democratic condition, over the tokens of up to 200 database images per benchmark. The last two columns give the share of tokens within $0.2$ and $0.5$ of one.}
 \label{tab:residual}
 \centering
 {\footnotesize\setlength{\tabcolsep}{5pt}%
@@ -517,7 +516,7 @@ The coarse descriptor of \S\ref{sec:global} compares two images through $\langle
 \label{app:coarsegrid}
 Table~\ref{tab:coarse} compares the coarse descriptor alone with single-descriptor methods: the second moment reaches $68.6$ (\emph{v2}) and $70.0$ (\emph{v3}) mean R@1 on the 9 cross-environment benchmarks against $60.1$ for GeM on the same tokens.
 \begin{table}[H]
-\caption{Coarse ranking alone on the 9 cross-environment benchmarks (R@1, single-stage retrieval, our runs). $^{\dagger}$after its own reranker; $^{o}$from an earlier operating point.}
+\caption{Coarse ranking alone, R@1 on the 9 cross-environment benchmarks. $^{\dagger}$after its own reranker; $^{o}$from an earlier operating point.}
 \label{tab:coarse}
 \centering
 {\scriptsize\setlength{\tabcolsep}{1.8pt}\renewcommand{\arraystretch}{0.86}%
@@ -561,21 +560,19 @@ Ours v3 & DINOv3 & 52.5 & 60.7 & \textbf{65.5} & 95.5 & 77.2 & 74.7 & \underline
 
 \subsection{Energy curves of the second moment on every benchmark}
 \label{app:energy-full}
-Full version of Figure~\ref{fig:components}(b), one query per benchmark.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_energy_full.pdf}
-\caption{Energy captured by the $k$ strongest directions of $F^{\top}F$ and $F^{\top}WF$, one query per benchmark.}
+\caption{Full version of Figure~\ref{fig:components}(b): energy in the $k$ strongest directions of $F^{\top}F$ and $F^{\top}WF$, one query per benchmark.}
 \label{fig:energy-full}
 \end{figure}
 
 \subsection{\textsc{MaxSim} with and without $w$ on every benchmark}
 \label{app:maxsim-full}
-Full version of Figure~\ref{fig:components}(c), on the pairs of Supplementary~\S\ref{app:patchvis}.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.78\textwidth]{figures/fig_maxsim_full_1.pdf}
-\caption{\textsc{MaxSim} matches without (left) and with $w$ (right), benchmarks 1--9.}
+\caption{Full version of Figure~\ref{fig:components}(c): \textsc{MaxSim} matches without (left) and with $w$ (right), benchmarks 1--9.}
 \label{fig:maxsim-full-1}
 \end{figure}
 \begin{figure}[H]
