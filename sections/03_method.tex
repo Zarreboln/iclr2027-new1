@@ -5,7 +5,7 @@
 % % Labels are identical to the current section so every cross-reference in the paper still resolves.
 % \begin{figure}[!htb]
 % \centering
-% \includegraphics[width=0.92\textwidth]{figures/method_fig_ppt.png}
+% \includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
 % \caption{\textbf{Overview of the proposed method.} Each image is partitioned into patches and encoded by a frozen pretrained vision model. A single patch-to-patch similarity (PS) template $S(A,B)=AB^{\top}$ is used throughout: within an image it gives the patch weights $w_i{=}1/n_i$ (PS-1); applied to the weighted patch features of one image it gives its second-order descriptor for coarse ranking (PS-2); applied between the query and a candidate it gives the patch-to-patch \textsc{MaxSim} matching for fine ranking of the top-$K$ candidates (PS-3).}
 % \label{fig:method}
 % \end{figure}
@@ -73,7 +73,7 @@
 % Labels are identical to the current section so every cross-reference in the paper still resolves.
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.92\textwidth]{figures/method_fig_ppt.png}
+\includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
 \caption{Overview of the proposed method. Each image is partitioned into patches, whose features are extracted by a frozen vision encoder, and the patch similarity (PS) template is applied in three forms. PS-1 computes the self-similarity of each image, which gives the weight of every patch; features and weights are computed once and stored for both stages. PS-2 pools the weighted patch features into a second-moment matrix, reduced by whitened PCA to one descriptor per image, and coarse ranking shortlists the $K$ nearest database images. PS-3 performs weighted \textsc{MaxSim} matching between the query and each shortlisted image, and reranking sorts the shortlist by the matching score.}
 \label{fig:method}
 \end{figure}
