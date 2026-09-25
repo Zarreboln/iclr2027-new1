@@ -2,36 +2,36 @@
 \subsection{Evaluation protocol}
 \label{app:protocol}
 \begin{table}[H]
-\caption{Ground truth and evaluation conventions for the 17 benchmarks of Table~\ref{tab:datasets}.}
+\caption{Ground truth for the 17 benchmarks of Table~\ref{tab:datasets}. A camera pose is compared in the horizontal plane; no benchmark uses a 3-D radius.}
 \label{tab:protocol}
 \centering
 {\footnotesize\setlength{\tabcolsep}{4pt}%
-\begin{tabular}{@{}l p{0.26\textwidth} p{0.39\textwidth}@{}}
+\begin{tabular}{@{}l p{0.56\textwidth}@{}}
 \toprule
-Dataset & Ground truth & Notes \\
+Dataset & Ground truth \\
 \midrule
-\multicolumn{3}{l}{\emph{Standard VPR benchmarks}} \\
+\multicolumn{2}{l}{\emph{Standard VPR benchmarks}} \\
 \midrule
-Pitts30k & UTM $\le 25$\,m & NetVLAD's official pitts30k\_test.mat split \\
-Pitts250k & UTM $\le 25$\,m & same convention, different .mat \\
-Tokyo 24/7 & filename UTM $\le 25$\,m & the official \textbf{315} subset, not the 1125 one \\
-MSLS-val & filename UTM $\le 25$\,m, distance only (no heading) & the \textbf{740} subset of \citet{patchnetvlad}; \citet{effovpr} report the 11k variant \\
-Nordland & $\pm 10$ frames (\textbf{lenient}) & papers using $\pm 1$ frame report markedly lower numbers \\
-St Lucia & filename UTM $\le 25$\,m & gmberton format \\
-Oxford RobotCar & the .mat's own posDistThr $=16$\,m & the small vehicular split used by \citet{anyloc} \\
-AmsterTime & old\_X$\leftrightarrow$new\_X, one positive & historical against present-day photographs \\
+Pitts30k & UTM $\le 25$\,m, NetVLAD's pitts30k\_test.mat split \\
+Pitts250k & UTM $\le 25$\,m \\
+Tokyo 24/7 & filename UTM $\le 25$\,m, the 315-query subset \\
+MSLS-val & filename UTM $\le 25$\,m, the 740-query subset of \citet{patchnetvlad} \\
+Nordland & $\pm 10$ frames \\
+St Lucia & filename UTM $\le 25$\,m \\
+Oxford RobotCar & the .mat's own posDistThr $=16$\,m, the vehicular split of \citet{anyloc} \\
+AmsterTime & old\_X$\leftrightarrow$new\_X \\
 \midrule
-\multicolumn{3}{l}{\emph{Cross-environment VPR benchmarks}} \\
+\multicolumn{2}{l}{\emph{Cross-environment VPR benchmarks}} \\
 \midrule
-VP-Air \emph{(aerial)} & provided correspondences & AnyLoc convention: database $=$ references $+$ $10{,}000$ distractors \\
-Nardo-Air \emph{(aerial)} & gt\_matches.csv, distance $\le 60$\,m &  \\
-Nardo-Air R \emph{(aerial)} & as above & reference images rotated $90^\circ$ \\
-Hawkins \emph{(subterranean)} & 2-D pose $\le 8$\,m & long corridor \\
-Laurel Caverns \emph{(subterranean)} & 2-D pose $\le 8$\,m &  \\
-17 Places \emph{(indoor)} & official ground\_truth\_new.npy &  \\
-Baidu Mall \emph{(indoor)} & 2-D camera pose $\le 10$\,m & $2{,}248$ queries have a positive \\
-Gardens Point \emph{(day/night)} & official gardens\_gt.npy & database $=$ day-right, queries $=$ night-right \\
-Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower deep-sea site \citep{eiffeltower}, which \citet{anyloc} files under the ridge it sits on \\
+VP-Air \emph{(aerial)} & provided correspondences, database $=$ references $+$ $10{,}000$ distractors \\
+Nardo-Air \emph{(aerial)} & gt\_matches.csv, distance $\le 60$\,m \\
+Nardo-Air R \emph{(aerial)} & as above, references rotated $90^\circ$ \\
+Hawkins \emph{(subterranean)} & horizontal camera pose $\le 8$\,m \\
+Laurel Caverns \emph{(subterranean)} & horizontal camera pose $\le 8$\,m \\
+17 Places \emph{(indoor)} & ground\_truth\_new.npy of the \citet{anyloc} release \\
+Baidu Mall \emph{(indoor)} & horizontal camera pose $\le 10$\,m \\
+Gardens Point \emph{(day/night)} & gardens\_gt.npy, day-right against night-right \\
+Mid-Atlantic Ridge \emph{(underwater)} & the 101 query--positive pairs in the second half of eiffel\_gt.npy \citep{eiffeltower} \\
 \bottomrule
 \end{tabular}%
 }
