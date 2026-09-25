@@ -42,7 +42,7 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 
 \subsection{Implementation details}
 \label{app:impl}
-All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $1{,}024$ dimensions by whitened PCA. The ablations were run before the descriptor was halved and are reported at $2{,}048$: the calibration of $\tau$ and $\theta$ (\S\ref{app:calib}), the component ablation (\S\ref{app:components}), the older backbones (\S\ref{app:oldbackbones}), the coarse ranking of \S\ref{app:coarsegrid} and the timings of \S\ref{app:cost}. Halving the descriptor costs $0.1$ mean R@1 on the standard group and nothing on the cross-environment group, so none of those comparisons turns on it. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
+All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $1{,}024$ dimensions by whitened PCA. The ablations were run before the descriptor was halved and are reported at $2{,}048$: the calibration of $\tau$ and $\theta$ (\S\ref{app:calib}), the older backbones (\S\ref{app:oldbackbones}), the coarse ranking of \S\ref{app:coarsegrid} and the timings of \S\ref{app:cost}. Halving the descriptor costs $0.1$ mean R@1 on the standard group and nothing on the cross-environment group, so none of those comparisons turns on it. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
 
 \subsection{Calibration of $\tau$ and $\theta$}
 \label{app:calib}
@@ -302,12 +302,12 @@ Benchmark & second moment & weighted second moment & $+$ \textsc{MaxSim} & $+$ w
 \multicolumn{5}{l}{\emph{Standard VPR benchmarks}} \\
 Pitts250k & 82.3 & 92.3 & 93.8 & \textbf{95.7} \\
 Pitts30k & 79.4 & 89.4 & 91.0 & \textbf{92.5} \\
-Tokyo 24/7 & 87.3 & 87.0 & 96.8 & \textbf{97.5} \\
+Tokyo 24/7 & 87.3 & 87.0 & 96.8 & \textbf{97.1} \\
 MSLS-val & 34.9 & 76.1 & 85.4 & \textbf{89.0} \\
-Nordland & 23.5 & 58.4 & 76.1 & \textbf{83.0} \\
+Nordland & 23.5 & 58.4 & 76.1 & \textbf{82.3} \\
 St Lucia & 79.6 & 95.2 & 99.0 & \textbf{99.0} \\
 Oxford & 97.4 & 90.0 & 99.5 & \textbf{99.0} \\
-AmsterTime & 31.4 & 47.5 & 67.3 & \textbf{68.1} \\
+AmsterTime & 31.4 & 47.5 & 67.3 & \textbf{68.2} \\
 \midrule
 \multicolumn{5}{l}{\emph{Cross-environment VPR benchmarks}} \\
 Hawkins & 67.8 & 42.4 & 67.8 & \textbf{67.0} \\
@@ -317,7 +317,7 @@ Gardens & 96.0 & 95.5 & 99.0 & \textbf{99.5} \\
 Baidu & 63.3 & 72.7 & 84.7 & \textbf{84.5} \\
 Nardo-Air & 71.8 & 77.5 & 84.5 & \textbf{83.1} \\
 Nardo-Air R & 78.9 & 95.8 & 85.9 & \textbf{94.4} \\
-VP-Air & 46.0 & 49.3 & 61.4 & \textbf{72.1} \\
+VP-Air & 46.0 & 49.3 & 61.4 & \textbf{72.2} \\
 Eiffel & 35.6 & 37.6 & 38.6 & \textbf{37.6} \\
 \bottomrule
 \end{tabular}}
@@ -399,7 +399,7 @@ Mid-Atlantic & 19.8 & 57.4 & 69.3 & 21.8 & 45.5 & 54.5 & 13.9 & 47.5 & 56.4 & 37
 \end{table}
 
 \begin{table}[H]
-\caption{Full version of Table~\ref{tab:w-signal}: Recall@1 of every patch importance signal on each benchmark, at $2{,}048$ dimensions. Bold is the best value in a row, underline the second best.}
+\caption{Full version of Table~\ref{tab:w-signal}: Recall@1 of every patch importance signal on each benchmark. Bold is the best value in a row, underline the second best.}
 \label{tab:w-signal-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{3.5pt}

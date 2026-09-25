@@ -4,8 +4,8 @@ import numpy as np, matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot 
 from matplotlib.patches import Patch
 plt.rcParams.update({"font.family":"Comic Sans MS","font.size":10,"font.weight":"bold","axes.labelweight":"bold","pdf.fonttype":42,"ps.fonttype":42})
 GRID,INK,MUTE="#E6E6E6","#2B2B2B","#9A9A9A"; C=["#B9C6D6","#C0736C","#2F7E96","#C0233A"]
-D=[("Pitts250k",82.3,92.3,93.8,95.7),("Pitts30k",79.4,89.4,91.0,92.5),("Tokyo 24/7",87.3,87.0,96.8,97.5),("MSLS-val",34.9,76.1,85.4,89.1),("Nordland",23.5,58.4,76.1,83.0),("St Lucia",79.6,95.2,99.0,99.0),("Oxford",97.4,90.1,99.5,99.0),("AmsterTime",31.4,47.5,67.3,68.1),
-   ("Hawkins",67.8,42.4,67.8,67.0),("Laurel",52.7,49.1,78.6,83.0),("17 Places",64.5,63.8,65.8,65.5),("Gardens",96.0,95.5,99.0,99.5),("Baidu",63.3,72.7,84.7,84.5),("Nardo-Air",71.8,77.5,84.5,83.1),("Nardo-Air R",78.9,95.8,85.9,94.4),("VP-Air",46.0,49.3,61.4,72.1),("Mid-Atlantic",35.6,37.6,38.6,37.6)]
+D=[("Pitts250k",82.3,92.3,93.8,95.7),("Pitts30k",79.4,89.4,91.0,92.5),("Tokyo 24/7",87.3,87.0,96.8,97.1),("MSLS-val",34.9,76.1,85.4,89.0),("Nordland",23.5,58.4,76.1,82.3),("St Lucia",79.6,95.2,99.0,99.0),("Oxford",97.4,90.1,99.5,99.0),("AmsterTime",31.4,47.5,67.3,68.2),
+   ("Hawkins",67.8,42.4,67.8,67.0),("Laurel",52.7,49.1,78.6,83.0),("17 Places",64.5,63.8,65.8,65.5),("Gardens",96.0,95.5,99.0,99.5),("Baidu",63.3,72.7,84.7,84.5),("Nardo-Air",71.8,77.5,84.5,83.1),("Nardo-Air R",78.9,95.8,85.9,94.4),("VP-Air",46.0,49.3,61.4,72.2),("Mid-Atlantic",35.6,37.6,38.6,37.6)]
 LAB=["second moment","+ weighted second moment","+ MaxSim","+ weighted MaxSim"]
 fig,ax=plt.subplots(figsize=(13.5,3.9)); x=np.arange(len(D)); bw=0.16
 for j in range(4):

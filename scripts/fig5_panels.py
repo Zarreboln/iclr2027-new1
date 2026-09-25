@@ -18,7 +18,7 @@ def clean(ax):
     for s in ("left","bottom"): ax.spines[s].set_color(MUTE)
     ax.tick_params(colors=INK,labelsize=9)
 # ---------------- (a) ----------------
-DS=["Nordland","VP-Air"]; V={"Nordland":[23.5,58.4,76.1,83.0],"VP-Air":[46.0,49.3,61.4,72.1]}
+DS=["Nordland","VP-Air"]; V={"Nordland":[23.5,58.4,76.1,82.3],"VP-Air":[46.0,49.3,61.4,72.2]}
 LAB=["second moment","+ weighted second moment","+ MaxSim","+ weighted MaxSim"]
 fig,ax=plt.subplots(figsize=(3.0,3.0)); x=np.arange(2); bw=0.56
 for k,ds in enumerate(DS):
