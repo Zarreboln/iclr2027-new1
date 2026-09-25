@@ -109,7 +109,9 @@ and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.78\textwidth]{figures/blocks_nordland.pdf}
-\caption{Similar patches and their weights on a Nordland pair (query left, retrieved image right). Colours mark groups of near-duplicate patches, grey patches have none; the heat maps show $w_i{=}1/n_i$, low on snow, sky and track, high on the sparse distinctive content. All benchmarks in Supplementary~\S\ref{app:patchvis}.}
+\caption{
+% Similar patches and their weights on a Nordland pair (query left, retrieved image right). Colour clusters indicate similar patches, while grey patches are sole; the heat maps show $w_i{=}1/n_i$ which is low on common snow, sky and track, high on the sparse distinctive content. More results are in Supplementary~\S\ref{app:patchvis}.
+Patch self-similarity weighting on a Nordland pair (query left, our rank-1 retrieval right). For each image: colour clusters indicate similar patches, and grey patches are more distinctive in the image. The heat maps show the resulting weight $w_i = 1/n_i$. Repetitive patches such as snow, sky and track falls into large clusters and receives low weight, while sparse, distinctive content receives high weight. More results are in Supplementary~\S\ref{app:patchvis}}
 \label{fig:blocks}
 \end{figure}
 
@@ -134,4 +136,4 @@ Reranking is performed between the query $Q$ and each of the $K$ shortlisted dat
 \begin{equation}\label{eq:stage2}
   s(Q,D_\ell)=\sum_{i=1}^{N} w_{Q,i}\;\ind[\,m_i>\theta\,]\;m_i ,
 \end{equation}
-which sums the weighted best matches of the query patches. The $K$ candidates are sorted by $s(Q,D_\ell)$, and the top-ranked one gives the location of the query.
+which sums the weighted best matches of the query patches. The $K$ candidates are sorted by $s(Q,D_\ell)$, and the top-ranked one gives the location of the query. All implementation details of the proposed method are provided in the Supplementary~\S\ref{app:impl}
