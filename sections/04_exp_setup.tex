@@ -62,7 +62,7 @@ Underwater & Mid-Atlantic Ridge \\
 % \paragraph{Against training-free methods.} Table~\ref{tab:breadth} compares the pipeline with every training-free method we are aware of on all 17 benchmarks. On the standard benchmarks, we lead the best prior training-free number on seven of the 8 benchmarks and are within $0.5$ of AnyLoc on Oxford, for a mean of $93.2$ against $80.3$ for EffoVPR-ZS; the largest margin is Nordland, $+38.1$, whose seasonal change no training-free method handled before. On the cross-environment benchmarks we are best or tied on all 9, $76.6$ against $69.5$ for AnyLoc, whose descriptor is $24\times$ larger than ours. Over all 17 benchmarks our mean of $84.4$ is $10.3$ points above the best prior training-free method. The frozen class token and GeM, which only pool, reach $51.5$ and $56.7$ on the standard benchmarks: the backbone supplies roughly half of the final number, and how its tokens are read supplies the rest.
 
 \begin{table}[!htb]
-\caption{Comparison against training-free baselines. R@1 (\%) on the 4 standard and 4 cross-environment benchmarks, with the mean over all 8 standard benchmarks, over all 9 cross-environment benchmarks, and over all 17 benchmarks; the full table is presented in Supplementary~\S\ref{app:trained-full}. $^{\dagger}$ indicates the two-stage methods. Best results are in \textbf{Bold} with second best in \underline{Underline}.}
+\caption{Comparison against training-free baselines. R@1 (\%) on the 4 standard and 4 cross-environment benchmarks, with the mean over all 8 standard benchmarks, over all 9 cross-environment benchmarks, and over all 17 benchmarks; the full table is presented in Supplementary~\S\ref{app:trained-full}. $^{\dagger}$ indicates the two-stage methods. Best results are in \textbf{Bold} with second best in \underline{Underline}. Ours$_{\mathrm{D2}}$ and Ours$_{\mathrm{D3}}$ use a frozen DINOv2 and DINOv3 backbone.}
 \label{tab:breadth}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
@@ -78,8 +78,8 @@ AnyLoc & 49152 & 87.7 & 82.9 & 23.9 & 37.8 & 72.1 & \underline{65.2} & 61.6 & 75
 EffoVPR-ZS$^{\dagger}$ & 1024 & 89.4 & 90.8 & 57.9 & 65.8 & 80.3 & 38.1 & 67.0 & 75.9 & 65.7 & 68.7 & 74.1 \\
 SegVLAD-PreT & 49152 & 86.7 & 94.3 & 26.3 & 62.4 & 75.4 & 56.8 & 26.8 & 78.5 & 69.8 & 55.2 & 64.7 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 1024 & \underline{92.5} & \underline{97.1} & \underline{82.3} & \underline{68.2} & \underline{90.3} & \textbf{67.0} & \textbf{83.0} & \textbf{84.5} & \underline{72.2} & \underline{76.3} & \underline{82.9} \\
-Ours\,\emph{v3}$^{\dagger}$ & 1024 & \textbf{93.7} & \textbf{98.4} & \textbf{96.0} & \textbf{73.6} & \textbf{93.2} & 61.0 & \underline{75.9} & \underline{83.5} & \textbf{77.7} & \textbf{76.6} & \textbf{84.4} \\
+Ours$_{\mathrm{D2}}$$^{\dagger}$ & 1024 & \underline{92.5} & \underline{97.1} & \underline{82.3} & \underline{68.2} & \underline{90.3} & \textbf{67.0} & \textbf{83.0} & \textbf{84.5} & \underline{72.2} & \underline{76.3} & \underline{82.9} \\
+Ours$_{\mathrm{D3}}$$^{\dagger}$ & 1024 & \textbf{93.7} & \textbf{98.4} & \textbf{96.0} & \textbf{73.6} & \textbf{93.2} & 61.0 & \underline{75.9} & \underline{83.5} & \textbf{77.7} & \textbf{76.6} & \textbf{84.4} \\
 \bottomrule
 \end{tabular}%
 }
@@ -93,7 +93,7 @@ Notably, PaSS is training-free and requires no annotated data, while all trained
 % \paragraph{Against trained methods.} On the standard benchmarks, the domain their supervision targets (Table~\ref{tab:trained}), our mean of $93.2$ edges the strongest of them, SAGE at $93.0$, with the best number on Tokyo 24/7, Nordland and AmsterTime. On the cross-environment benchmarks the thirteen trained methods above $80$ on the standard ones each give up $27$ to $40$ mean R@1, ours gives up $16.7$, and we take the best number on seven of the 9 benchmarks, $76.6$ against $65.1$ for MegaLoc. Over all 17 benchmarks we lead every trained method, by $6.8$ mean R@1 over MegaLoc. The margins are largest on the imagery furthest from the training corpora: $67.0$ against $38.1$ on Hawkins, $83.0$ against $60.7$ in Laurel Caverns and $77.7$ against $45.6$ on VP-Air. The cost moves from training to inference, and stays modest: with nothing trained beforehand, a query costs $47$\,ms on Pitts30k, $31.5$ of them the DINOv2 forward pass, within the $35$ to $67$\,ms of the two-stage baselines; Supplementary~\S\ref{app:cost} times both stages of every method.
 
 \begin{table}[!htb]
-\caption{Comparison against trained methods. R@1 (\%) on the 4 standard and 4 cross-environment benchmarks, with the mean over all 8 standard benchmarks, over all 9 cross-environment benchmarks, and over all 17 benchmarks; the full table is presented in Supplementary~\S\ref{app:trained-full}. $^{\dagger}$ indicates two-stage methods; $^{\ddag}$ indicates methods under inductive setting. Best results are in \textbf{Bold}, with second best in \underline{Underline}.}
+\caption{Comparison against trained methods. R@1 (\%) on the 4 standard and 4 cross-environment benchmarks, with the mean over all 8 standard benchmarks, over all 9 cross-environment benchmarks, and over all 17 benchmarks; the full table is presented in Supplementary~\S\ref{app:trained-full}. $^{\dagger}$ indicates two-stage methods; $^{\ddag}$ indicates methods under inductive setting. Best results are in \textbf{Bold}, with second best in \underline{Underline}. Ours$_{\mathrm{D2}}$ and Ours$_{\mathrm{D3}}$ use a frozen DINOv2 and DINOv3 backbone.}
 \label{tab:trained}
 \centering
 {\scriptsize\setlength{\tabcolsep}{2.4pt}\renewcommand{\arraystretch}{0.92}%
@@ -119,8 +119,8 @@ VLAD-BuFF & 4096 & 92.5 & 96.5 & 84.9 & 61.4 & 90.3 & 37.3 & 33.9 & 76.4 & 33.3 
 MegaLoc & 8448 & \underline{94.1} & 96.5 & 94.3 & 62.5 & 91.7 & 37.3 & 55.4 & 79.4 & 45.6 & 65.1 & 77.6 \\
 SAGE$^\ddag$ & 8448 & \textbf{94.7} & 97.8 & 95.1 & 66.0 & \underline{93.0} & 27.1 & 46.4 & 74.6 & 39.1 & 60.0 & 75.5 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 1024 & 92.5 & 97.1 & 82.3 & \underline{68.2} & 90.3 & \textbf{67.0} & \textbf{83.0} & \textbf{84.5} & \underline{72.2} & \underline{76.3} & \underline{82.9} \\
-Ours\,\emph{v3}$^{\dagger}$ & 1024 & 93.7 & \textbf{98.4} & \textbf{96.0} & \textbf{73.6} & \textbf{93.2} & \underline{61.0} & \underline{75.9} & \underline{83.5} & \textbf{77.7} & \textbf{76.6} & \textbf{84.4} \\
+Ours$_{\mathrm{D2}}$$^{\dagger}$ & 1024 & 92.5 & 97.1 & 82.3 & \underline{68.2} & 90.3 & \textbf{67.0} & \textbf{83.0} & \textbf{84.5} & \underline{72.2} & \underline{76.3} & \underline{82.9} \\
+Ours$_{\mathrm{D3}}$$^{\dagger}$ & 1024 & 93.7 & \textbf{98.4} & \textbf{96.0} & \textbf{73.6} & \textbf{93.2} & \underline{61.0} & \underline{75.9} & \underline{83.5} & \textbf{77.7} & \textbf{76.6} & \textbf{84.4} \\
 \bottomrule
 \end{tabular}%
 }
@@ -183,7 +183,7 @@ VLAD-BuFF & 37.3\dlt{+23.7} & 33.9\dlt{+33.0} & 64.5\dlt{+1.0} & 96.5\dlt{+3.0} 
 \begin{tabular}[t]{@{}c@{}}\includegraphics[height=0.305\textwidth]{figures/fig_components.pdf}\\[-1pt]{\footnotesize (a)}\end{tabular}\hfill
 \begin{tabular}[t]{@{}c@{}}\includegraphics[height=0.305\textwidth]{figures/fig_energy_one.pdf}\\[-1pt]{\footnotesize (b)}\end{tabular}\hfill
 \begin{tabular}[t]{@{}c@{}}\includegraphics[height=0.305\textwidth]{figures/fig_maxsim_w_stack.pdf}\\[-1pt]{\footnotesize (c)}\end{tabular}
-\caption{(a) R@1 as one component is added at a time, in the configuration of the main tables; the top of each bar is the Ours \emph{v2} entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}, numbers in Supplementary~\S\ref{app:components}. (b) The first stage: for a Pitts30k query that is mostly sky and blank wall, the share of its energy captured by the $k$ strongest directions of $F^{\top}F$ (unweighted) and $S_C{=}F^{\top}WF$ (weighted); the wall concentrates the unweighted moment, and $w$ spreads it back (all benchmarks in Supplementary~\S\ref{app:energy-full}). (c) The second stage, on the Nordland pair of Figure~\ref{fig:blocks}: the twenty-four query patches with the largest contribution $c_i$ to the score without $w$ ($c_i{=}m_i$, top) and with it ($c_i{=}w_i m_i$, bottom), each line joining the patch to its best match in the retrieved image; colour is the match strength $m_i$ as the bar shows (all benchmarks in Supplementary~\S\ref{app:maxsim-full}).}
+\caption{(a) R@1 as one component is added at a time, in the configuration of the main tables; the top of each bar is the Ours$_{\mathrm{D2}}$ entry of Tables~\ref{tab:breadth} and~\ref{tab:trained}, numbers in Supplementary~\S\ref{app:components}. (b) The first stage: for a Pitts30k query that is mostly sky and blank wall, the share of its energy captured by the $k$ strongest directions of $F^{\top}F$ (unweighted) and $S_C{=}F^{\top}WF$ (weighted); the wall concentrates the unweighted moment, and $w$ spreads it back (all benchmarks in Supplementary~\S\ref{app:energy-full}). (c) The second stage, on the Nordland pair of Figure~\ref{fig:blocks}: the twenty-four query patches with the largest contribution $c_i$ to the score without $w$ ($c_i{=}m_i$, top) and with it ($c_i{=}w_i m_i$, bottom), each line joining the patch to its best match in the retrieved image; colour is the match strength $m_i$ as the bar shows (all benchmarks in Supplementary~\S\ref{app:maxsim-full}).}
 \label{fig:components}
 \end{figure}
 
