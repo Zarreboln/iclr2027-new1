@@ -50,36 +50,12 @@ Both thresholds are calibrated once on SF-XL val, a split that appears in no res
 
 The gate of Eq.~(\ref{eq:stage2}) keeps a query patch when its best match $m_i$ exceeds $\theta$: the likelihood that a match is genuine rather than accidental increases with $m_i$, so a fixed threshold is the Bayes-optimal rule.
 
-\begin{table}[H]
-\caption{Calibration of $\tau$ on SF-XL val; $\tau{=}0$ is unweighted. We fix $\tau{=}0.5$.}
-\label{tab:cal-tau}
+\begin{figure}[H]
 \centering
-{\footnotesize\setlength{\tabcolsep}{3.4pt}
-\begin{tabular}{lccccccccccc}
-\toprule
-$\tau$  & 0 & 0.10 & 0.20 & 0.30 & 0.35 & 0.40 & 0.45 & 0.50 & 0.55 & 0.60 & 0.70\\
-\midrule
-R@1  & 82.09 & 87.36 & 89.09 & 89.40 & 90.05 & 90.34 & 90.50 & \textbf{90.82} & 90.61 & 90.50 & 89.95\\
-R@5  & 88.06 & 92.87 & 94.13 & 94.41 & 94.41 & 94.59 & 94.41 & 94.60 & \textbf{94.66} & 94.53 & 94.35\\
-R@10  & 90.24 & 94.39 & 95.28 & 95.42 & 95.62 & 95.70 & 95.74 & \textbf{95.80} & 95.77 & 95.68 & 95.58\\
-\bottomrule
-\end{tabular}}
-\end{table}
-\begin{table}[H]
-\caption{Calibration of $\theta$ on SF-XL val at $\tau{=}0.5$, one shortlist throughout. We fix $\theta{=}0.65$.}
-\label{tab:cal-t2}
-\centering
-{\footnotesize\setlength{\tabcolsep}{3.4pt}
-\begin{tabular}{lccccccccccc}
-\toprule
-$\theta$  & 0 & 0.20 & 0.30 & 0.40 & 0.50 & 0.55 & 0.60 & 0.65 & 0.70 & 0.75 & 0.80\\
-\midrule
-\ \ R@1  & 86.95 & 86.91 & 85.21 & 81.96 & 84.77 & 87.50 & 89.74 & \textbf{90.76} & 90.28 & 88.56 & 83.90\\
-\ \ R@5  & 91.92 & 91.88 & 90.66 & 88.81 & 91.04 & 92.93 & 94.16 & \textbf{94.45} & 94.35 & 93.61 & 90.72\\
-\ \ R@10  & 93.47 & 93.37 & 92.45 & 91.34 & 93.14 & 94.58 & 95.40 & \textbf{95.70} & \textbf{95.70} & 94.95 & 93.10\\
-\bottomrule
-\end{tabular}}
-\end{table}
+\includegraphics[width=\textwidth]{figures/fig_calib.pdf}
+\caption{Calibration on SF-XL val. We fix $\tau{=}0.5$ and $\theta{=}0.65$, marked by the star.}
+\label{fig:calib}
+\end{figure}
 
 \FloatBarrier
 
@@ -483,7 +459,7 @@ It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-
 \end{equation}
 Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarising is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a distinctiveness built on them needs a larger exponent to match.
 
-\paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat S$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in Eq.~(\ref{eq:demo}). Table~\ref{tab:residual} measures the residual $r_i=|(\hat S\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across 8 benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
+\paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat S$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in Eq.~(\ref{eq:demo}). Table~\ref{tab:residual} measures the residual $r_i=|(\hat S\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across 8 benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Figure~\ref{fig:calib} reflects.
 \begin{table}[H]
 \caption{Residual $r_i=|(\hat S\mathbf w)_i-1|$ of the democratic condition, over the tokens of up to 200 database images per benchmark. The last two columns give the share of tokens within $0.2$ and $0.5$ of one.}
 \label{tab:residual}
