@@ -45,7 +45,6 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $1{,}024$ dimensions by whitened PCA. The ablations were run before the descriptor was halved and are reported at $2{,}048$: the calibration of $\tau$ and $\theta$ (\S\ref{app:calib}), the component ablation (\S\ref{app:components}), the older backbones (\S\ref{app:oldbackbones}), the patch importance signals (Table~\ref{tab:w-signal} and \S\ref{app:recallk}), the coarse ranking of \S\ref{app:coarsegrid} and the timings of \S\ref{app:cost}. Halving the descriptor costs $0.1$ mean R@1 on the standard group and nothing on the cross-environment group, so none of those comparisons turns on it. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
 
 \subsection{Calibration of $\tau$ and $\theta$}
-\label{app:hyper}
 \label{app:calib}
 Both thresholds are calibrated once on SF-XL val, a split that appears in no result table, and fixed for every benchmark.
 
@@ -272,15 +271,6 @@ Ours & DeiT-S & \textbf{49.2} & \underline{45.5} & 57.9 & 45.5 & 72.5 & \textbf{
 \end{table}
 
 \FloatBarrier
-
-\subsection{Matched-backbone comparison as a radar chart}
-\label{app:radar}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.62\textwidth]{figures/fig_backbone_radar.pdf}
-\caption{Matched-backbone comparison on all 17 benchmarks: Table~\ref{tab:perdataset} as a radar chart.}
-\label{fig:backbone}
-\end{figure}
 
 \subsection{Component ablation on all benchmarks}
 \label{app:components}

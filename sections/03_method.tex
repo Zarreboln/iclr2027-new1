@@ -104,7 +104,7 @@ where $\ind[\cdot]$ is the indicator function. The weight of patch $p_i$ is then
   w_i=\frac{1}{n_i},
   \qquad\text{where}\quad n_i=\sum_{j=1}^{N}\hat S_{ij},
 \end{equation}
-and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to $p_i$, that is, the nonzero entries remaining in row $i$ of $\hat S$ after thresholding. Since $w_i$ is the reciprocal of $n_i$, a patch that recurs frequently across the image (large $n_i$) receives a small weight, while a distinctive patch with few or no similar patches (small $n_i$) receives a large weight, up to $w_i{=}1$, reflecting its higher importance (Figure~\ref{fig:blocks}). The weights of an image are collected in $\mathbf w=[w_1,\dots,w_N]$ and applied in the coarse-to-fine ranking described below.
+and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to $p_i$, that is, the nonzero entries remaining in row $i$ of $\hat S$ after thresholding. Since $w_i$ is the reciprocal of $n_i$, a patch that recurs frequently across the image (large $n_i$) receives a small weight, while a distinctive patch with few or no similar patches (small $n_i$) receives a large weight, up to $w_i{=}1$, reflecting its higher importance (Figure~\ref{fig:blocks}). The weights of an image are collected in $\mathbf w=[w_1,\dots,w_N]$ and applied in the coarse-to-fine ranking described below; Supplementary~\S\ref{app:ridge} derives $w_i{=}1/n_i$ from the democratic-aggregation condition.
 
 \begin{figure}[!htb]
 \centering
