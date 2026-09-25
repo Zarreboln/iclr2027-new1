@@ -42,7 +42,7 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 
 \subsection{Implementation details}
 \label{app:impl}
-All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $1{,}024$ dimensions by whitened PCA. The ablations were run before the descriptor was halved and are reported at $2{,}048$: the calibration of $\tau$ and $\theta$ (\S\ref{app:calib}), the component ablation (\S\ref{app:components}), the older backbones (\S\ref{app:oldbackbones}), the patch importance signals (Table~\ref{tab:w-signal} and \S\ref{app:recallk}), the coarse ranking of \S\ref{app:coarsegrid} and the timings of \S\ref{app:cost}. Halving the descriptor costs $0.1$ mean R@1 on the standard group and nothing on the cross-environment group, so none of those comparisons turns on it. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
+All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $1{,}024$ dimensions by whitened PCA. The ablations were run before the descriptor was halved and are reported at $2{,}048$: the calibration of $\tau$ and $\theta$ (\S\ref{app:calib}), the component ablation (\S\ref{app:components}), the older backbones (\S\ref{app:oldbackbones}), the coarse ranking of \S\ref{app:coarsegrid} and the timings of \S\ref{app:cost}. Halving the descriptor costs $0.1$ mean R@1 on the standard group and nothing on the cross-environment group, so none of those comparisons turns on it. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
 
 \subsection{Calibration of $\tau$ and $\theta$}
 \label{app:calib}
@@ -282,7 +282,7 @@ Full version of Figure~\ref{fig:components}(a).
 \label{fig:components-full}
 \end{figure}
 \begin{table}[H]
-\caption{Numbers of Figure~\ref{fig:components-full}. The two second-moment columns are the raw descriptors $F^{\top}F$ and $F^{\top}WF$; the \textsc{MaxSim} column uses uniform weights.}
+\caption{Numbers of Figure~\ref{fig:components-full}. The two second-moment columns are the raw descriptors $F^{\top}F$ and $F^{\top}WF$; the \textsc{MaxSim} column applies no weighting.}
 \label{tab:components}
 \centering
 {\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.05}
@@ -398,28 +398,28 @@ Mid-Atlantic & 19.8 & 57.4 & 69.3 & 21.8 & 45.5 & 54.5 & 13.9 & 47.5 & 56.4 & 37
 \toprule
 Benchmark & \textsc{MaxSim} & rapid sp. & cross-ref. & IDF & norm & attention & centrality & self-sim. \\
 \midrule
-Pitts250k & 89.2 & 90.5 & 72.9 & 83.2 & 90.3 & \textbf{95.7} & 94.0 & \underline{95.7} \\
+Pitts250k & 89.2 & 90.5 & 72.9 & 83.2 & 90.3 & \textbf{95.7} & \underline{94.0} & \textbf{95.7} \\
 Pitts30k & 86.4 & 87.3 & 63.3 & 79.4 & 87.7 & \textbf{93.0} & 90.9 & \underline{92.5} \\
-Tokyo 24/7 & \textbf{99.0} & 95.6 & 59.0 & 94.3 & 97.8 & 96.5 & \underline{97.8} & 97.5 \\
+Tokyo 24/7 & \textbf{99.0} & 95.6 & 59.0 & 94.3 & \underline{97.8} & 96.5 & \underline{97.8} & 97.1 \\
 MSLS-val & 60.4 & 66.4 & 26.5 & 41.1 & 71.2 & 80.7 & \underline{81.8} & \textbf{89.0} \\
-Nordland & 59.0 & 72.8 & 3.8 & 41.5 & 52.8 & \underline{74.2} & 72.2 & \textbf{83.0} \\
-St Lucia & 98.3 & 95.2 & 28.2 & 79.8 & \underline{99.7} & 98.1 & \textbf{99.7} & 99.1 \\
-Oxford & \textbf{100.0} & 99.5 & 30.9 & 100.0 & 99.5 & 96.3 & \underline{100.0} & 99.0 \\
-AmsterTime & 60.5 & 54.3 & 15.0 & 39.6 & 64.3 & 68.1 & \textbf{68.9} & \underline{68.1} \\
+Nordland & 59.0 & 72.8 & 3.8 & 41.5 & 52.8 & \underline{74.2} & 72.2 & \textbf{82.3} \\
+St Lucia & 98.3 & 95.2 & 28.2 & 79.8 & \textbf{99.7} & 98.1 & \textbf{99.7} & \underline{99.0} \\
+Oxford & \textbf{100.0} & \underline{99.5} & 30.9 & \textbf{100.0} & \underline{99.5} & 96.3 & \textbf{100.0} & 99.0 \\
+AmsterTime & 60.5 & 54.3 & 15.0 & 39.6 & 64.3 & 68.1 & \textbf{68.9} & \underline{68.2} \\
 \midrule
-Hawkins & \underline{67.8} & 37.3 & 22.9 & \textbf{72.9} & 67.8 & 39.0 & 57.6 & 67.0 \\
-Laurel & 75.0 & 46.4 & 46.4 & 80.4 & 75.9 & 64.3 & \underline{80.4} & \textbf{83.0} \\
-17 Places & \textbf{65.8} & 64.8 & 62.3 & 65.3 & 65.8 & \underline{65.8} & 65.5 & 65.5 \\
-Gardens & \underline{99.0} & 98.5 & 85.0 & 99.0 & 99.0 & 98.0 & 99.0 & \textbf{99.5} \\
-Baidu & 84.3 & 79.7 & 42.7 & 82.3 & \underline{84.3} & 81.9 & 83.5 & \textbf{84.5} \\
-Nardo-Air & 87.3 & 64.8 & 47.9 & 88.7 & \underline{90.1} & 87.3 & \textbf{90.1} & 83.1 \\
-Nardo-Air R & 94.4 & 95.8 & 67.6 & 83.1 & 95.8 & \textbf{95.8} & \underline{95.8} & 94.4 \\
-VP-Air & 61.2 & 41.2 & 22.7 & 59.3 & 61.2 & \underline{71.8} & 69.3 & \textbf{72.1} \\
+Hawkins & \underline{67.8} & 37.3 & 22.9 & \textbf{72.9} & \underline{67.8} & 39.0 & 57.6 & 67.0 \\
+Laurel & 75.0 & 46.4 & 46.4 & \underline{80.4} & 75.9 & 64.3 & \underline{80.4} & \textbf{83.0} \\
+17 Places & \textbf{65.8} & 64.8 & 62.3 & 65.3 & \textbf{65.8} & \textbf{65.8} & \underline{65.5} & \underline{65.5} \\
+Gardens & \underline{99.0} & 98.5 & 85.0 & \underline{99.0} & \underline{99.0} & 98.0 & \underline{99.0} & \textbf{99.5} \\
+Baidu & \underline{84.3} & 79.7 & 42.7 & 82.3 & \underline{84.3} & 81.9 & 83.5 & \textbf{84.5} \\
+Nardo-Air & 87.3 & 64.8 & 47.9 & \underline{88.7} & \textbf{90.1} & 87.3 & \textbf{90.1} & 83.1 \\
+Nardo-Air R & \underline{94.4} & \textbf{95.8} & 67.6 & 83.1 & \textbf{95.8} & \textbf{95.8} & \textbf{95.8} & \underline{94.4} \\
+VP-Air & 61.2 & 41.2 & 22.7 & 59.3 & 61.2 & \underline{71.8} & 69.3 & \textbf{72.2} \\
 Mid-Atlantic & 33.7 & \underline{39.6} & 4.0 & 33.7 & 34.7 & \textbf{41.6} & 37.6 & 37.6 \\
 \midrule
-mean (8) & 81.6 & 82.7 & 37.5 & 69.9 & 82.9 & 87.8 & \underline{88.2} & \textbf{90.5} \\
+mean (8) & 81.6 & 82.7 & 37.5 & 69.9 & 82.9 & 87.8 & \underline{88.2} & \textbf{90.3} \\
 mean (9) & 74.3 & 63.1 & 44.6 & 73.8 & 75.0 & 71.7 & \underline{75.4} & \textbf{76.3} \\
-mean (17) & 77.7 & 72.3 & 41.2 & 72.0 & 78.7 & 79.3 & \underline{81.4} & \textbf{83.0} \\
+mean (17) & 77.7 & 72.3 & 41.2 & 72.0 & 78.7 & 79.3 & \underline{81.4} & \textbf{82.9} \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -443,7 +443,7 @@ inverse document frequency & 79.4 & 87.5 & 90.7 & 39.6 & 59.0 & 65.6 & 41.5 & 53
 token norm & 87.7 & 92.9 & 94.2 & 64.3 & 85.4 & 89.5 & 52.8 & 67.2 & 73.5 \\
 class-token attention & 93.0 & 96.7 & 98.0 & 68.1 & 89.4 & 92.0 & 74.2 & 84.2 & 87.5 \\
 patch-graph centrality & 90.9 & 95.0 & 96.4 & 68.9 & 88.5 & 91.8 & 72.2 & 82.6 & 86.4 \\
-\textbf{self-similarity (ours)} & 92.5 & 96.9 & 97.9 & 68.1 & 87.3 & 91.1 & 83.0 & 89.9 & 92.1 \\
+\textbf{self-similarity (ours)} & 92.5 & 96.8 & 97.8 & 68.2 & 87.5 & 91.3 & 82.3 & 89.9 & 92.1 \\
 \bottomrule
 \end{tabular}}
 \end{table}
