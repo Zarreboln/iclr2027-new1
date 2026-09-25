@@ -12,12 +12,12 @@ Dataset & Ground truth \\
 \midrule
 \multicolumn{2}{l}{\emph{Standard VPR benchmarks}} \\
 \midrule
-Pitts30k & UTM $\le 25$\,m, NetVLAD's pitts30k\_test.mat split \\
-Pitts250k & UTM $\le 25$\,m \\
-Tokyo 24/7 & filename UTM $\le 25$\,m, the 315-query subset \\
+Pitts30k & UTM $\le 25$\,m, the pitts30k\_test.mat split of \citet{netvlad} \\
+Pitts250k & UTM $\le 25$\,m, the pitts250k\_test.mat split of \citet{netvlad} \\
+Tokyo 24/7 & filename UTM $\le 25$\,m, the 315-query subset of \citet{netvlad} \\
 MSLS-val & filename UTM $\le 25$\,m, the 740-query subset of \citet{patchnetvlad} \\
-Nordland & $\pm 10$ frames \\
-St Lucia & filename UTM $\le 25$\,m \\
+Nordland & $\pm 10$ frames, the test split of \citet{vgbench} \\
+St Lucia & filename UTM $\le 25$\,m, the test split of \citet{vgbench} \\
 Oxford RobotCar & the .mat's own posDistThr $=16$\,m, the vehicular split of \citet{anyloc} \\
 AmsterTime & old\_X$\leftrightarrow$new\_X \\
 \midrule
@@ -30,8 +30,8 @@ Hawkins \emph{(subterranean)} & horizontal camera pose $\le 8$\,m \\
 Laurel Caverns \emph{(subterranean)} & horizontal camera pose $\le 8$\,m \\
 17 Places \emph{(indoor)} & ground\_truth\_new.npy of the \citet{anyloc} release \\
 Baidu Mall \emph{(indoor)} & horizontal camera pose $\le 10$\,m \\
-Gardens Point \emph{(day/night)} & gardens\_gt.npy, day-right against night-right \\
-Mid-Atlantic Ridge \emph{(underwater)} & the 101 query--positive pairs in the second half of eiffel\_gt.npy \citep{eiffeltower} \\
+Gardens Point \emph{(day/night)} & gardens\_gt.npy of the \citet{anyloc} release, day-right against night-right \\
+Mid-Atlantic Ridge \emph{(underwater)} & the 101 query--positive pairs in the second half of eiffel\_gt.npy \citep{eiffeltower}, as released by \citet{anyloc} \\
 \bottomrule
 \end{tabular}%
 }
