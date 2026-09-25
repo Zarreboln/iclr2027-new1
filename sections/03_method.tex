@@ -74,7 +74,7 @@
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{figures/method_fig_ppt.png}
-\caption{Overview of the proposed method. Each image is partitioned into patches, whose features are extracted by a frozen vision encoder, and the patch similarity (PS) template is applied in three forms. PS-1 computes the self-similarity of each image, which gives the weight of every patch; features and weights are computed once and stored for both stages. PS-2 pools the weighted patch features into a second-moment matrix, reduced by whitened PCA to one descriptor per image, and coarse ranking shortlists the $K$ nearest database images. PS-3 performs weighted \textsc{MaxSim} matching between the query and each shortlisted image, and reranking sorts the shortlist by the matching score.}
+\caption{Overview of the proposed method. Each image is partitioned into patches, whose features are extracted by a frozen vision encoder, and the patch similarity (PS) template is applied in three forms. PS-1 computes the self-similarity of each image, which gives the weight of every patch; features and weights are computed once and stored for both stages. PS-2 pools the weighted patch features into a second-moment matrix, reduced by whitened PCA (WPCA) to one descriptor per image, and coarse ranking shortlists the $K$ nearest database images. PS-3 performs weighted \textsc{MaxSim} matching between the query and each shortlisted image, and reranking sorts the shortlist by the matching score.}
 \label{fig:method}
 \end{figure}
 
