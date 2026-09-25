@@ -25,13 +25,18 @@ To address this data-dependency challenge, training-free VPR methods have recent
 
 % \textcolor{red}{
 % \noindent Our contributions are summarized as follows:
-\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=3pt]
+% \begin{itemize}[leftmargin=*,itemsep=1pt,topsep=3pt]
 % \item \textcolor{blue}{We remove the reliance of VPR on annotated data and propose \method{}, a simple and effective training-free pipeline.}
 % \item \textcolor{blue}{We derive a training-free, image-adaptive patch weighting scheme from within-image self-similarity, suppressing repetitive visual patterns without place-specific supervision.}
 % \item \textcolor{blue}{We reuse the same patch interaction space across both retrieval stages: its pooled second-order statistics provide a compact coarse representation, while its row-wise maxima provide fine-grained candidate-specific matching.}
 % \item We achieve strong results on street-level imagery and beyond it under one fixed configuration, reaching $93.2$ mean Recall@$1$ on eight standard VPR benchmarks, on par with supervised systems trained on tens of millions of labels, and $76.6$ on nine cross-environment benchmarks where the strongest of those systems attains $65.1$. As a plug-in module, our second-stage rule further improves ten existing pipelines, by $+5.6$ and $+9.7$ R@1 when it replaces an existing fine-ranker and by $+9.1$ to $+17.8$ when it is added to a single-stage method.
-\item  We remove the reliance of VPR on annotated data and propose \method{}, a training-free pipeline. It only requires a feature extractor for patch features, followed by a series of patch-similarity computations for VPR.   
-\item We conduct a comprehensive evaluation on 17 benchmarks, on which the proposed \method{} achieves state-of-the-art results 
-% \item We achieve strong results on street-level imagery and beyond it under one fixed configuration, reaching $93.2$ mean Recall@$1$ on eight standard VPR benchmarks, on par with supervised systems trained on tens of millions of labels, and $76.6$ on nine cross-environment benchmarks where the strongest of those systems attains $65.1$. As a plug-in module, our second-stage rule further improves ten existing pipelines, by $+5.6$ and $+9.7$ R@1 when it replaces an existing fine-ranker and by $+9.1$ to $+17.8$ when it is added to a single-stage method.
-\end{itemize}
+% \end{itemize}
 % }
+\textcolor{red}{
+\begin{itemize}
+\item We identify a trade-off in existing VPR methods: trained methods learn environment-specific features from millions of annotated samples, yet generalise poorly to cross-environment settings; while prior training-free methods avoid this annotation cost and exploit pretrained vision models for better generalisation, they still fall short of strong accuracy on standard benchmarks.
+\item We propose \method{}, a simple and effective training-free VPR pipeline built solely on patch similarity. Using only frozen patch features, \method{} performs self-similarity for patch importance, weighted second-moment pooling for coarse ranking, and cross-image patch similarity for reranking, obtaining balanced, matchable patch evidence both within and across images.
+\item Through comprehensive evaluation on 17 benchmarks, we show that \method{} achieves state-of-the-art results on both standard and cross-environment VPR benchmarks, outperforming the best training-free baselines by \textbf{+13\%} and \textbf{+7.1\%} respectively, and even surpassing the best trained baselines, which rely on tens of millions of annotated samples.
+\item We show that the proposed reranking module is broadly applicable: it can be plugged into existing VPR methods to improve their generalisation, boosting their performance by \textbf{+5.6\%} to \textbf{+17.8\%} on cross-environment benchmarks.
+\end{itemize}
+}
