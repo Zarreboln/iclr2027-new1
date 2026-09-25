@@ -42,7 +42,7 @@ Mid-Atlantic Ridge \emph{(underwater)} & eiffel\_gt[101:] & the Eiffel Tower dee
 
 \subsection{Implementation details}
 \label{app:impl}
-All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $2{,}048$ dimensions by whitened PCA; $1{,}024$ dimensions give similar results. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
+All experiments share one configuration. The backbone is a frozen DINOv3 for our best results and DINOv2 for the \emph{v2} rows; its value-facet tokens at $672$px (DINOv2) or $768$px (DINOv3) are reduced to $C{=}512$ channels by PCA. The coarse descriptor $S_C$ is reduced to $1{,}024$ dimensions by whitened PCA. The ablations were run before the descriptor was halved and are reported at $2{,}048$: the calibration of $\tau$ and $\theta$ (\S\ref{app:calib}), the component ablation (\S\ref{app:components}), the older backbones (\S\ref{app:oldbackbones}), the patch importance signals (Table~\ref{tab:w-signal} and \S\ref{app:recallk}), the coarse ranking of \S\ref{app:coarsegrid} and the timings of \S\ref{app:cost}. Halving the descriptor costs $0.1$ mean R@1 on the standard group and nothing on the cross-environment group, so none of those comparisons turns on it. We set $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}) and a shortlist of $K{=}\min(1000,|\mathcal{D}|)$.
 
 \subsection{Calibration of $\tau$ and $\theta$}
 \label{app:hyper}
@@ -123,14 +123,14 @@ Ours\,\emph{v2} & DINOv2 & 31.5 & 0.2 & \textbf{15.5} & 47.2 \\
 Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & Nordland & St Lucia & Oxford & AmsterTime & & mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Training-free}} \\
-CLS token & 1024 & 80.3 & 78.7 & 46.0 & 37.8 & 15.9 & 81.5 & 25.6 & 45.8 & & 51.5 \\
-GeM & 1024 & 80.4 & 78.5 & 69.8 & 36.0 & 15.0 & 74.2 & 71.7 & 27.9 & & 56.7 \\
-AnyLoc & 49152 & 87.1 & 87.7 & 82.9 & 61.9 & 23.9 & 96.2 & \textbf{99.5} & 37.8 & & 72.1 \\
-EffoVPR-ZS$^{\dagger}$ & 1024 & 93.4 & 89.4 & 90.8 & 70.3 & 57.9 & 97.8 & 77.0 & 65.8 & & 80.3 \\
-SegVLAD-PreT & 49152 & 86.0 & 86.7 & 94.3 & 76.6 & 26.3 & 97.1 & 73.8 & 62.4 & & 75.4 \\
+CLS token & 1024 & 80.3 & 78.7 & 46.0 & 37.8 & 15.9 & 81.5 & 25.6 & 45.8 &  & 51.5 \\
+GeM & 1024 & 80.4 & 78.5 & 69.8 & 36.0 & 15.0 & 74.2 & 71.7 & 27.9 &  & 56.7 \\
+AnyLoc & 49152 & 87.1 & 87.7 & 82.9 & 61.9 & 23.9 & 96.2 & \textbf{99.5} & 37.8 &  & 72.1 \\
+EffoVPR-ZS$^{\dagger}$ & 1024 & 93.4 & 89.4 & 90.8 & 70.3 & 57.9 & 97.8 & 77.0 & 65.8 &  & 80.3 \\
+SegVLAD-PreT & 49152 & 86.0 & 86.7 & 94.3 & 76.6 & 26.3 & 97.1 & 73.8 & 62.4 &  & 75.4 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & \underline{95.7} & \underline{92.5} & \underline{97.5} & \underline{89.0} & \underline{83.0} & \underline{99.1} & \underline{99.0} & \underline{68.1} & & \underline{90.5} \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{89.3} & \textbf{96.6} & \textbf{99.7} & \underline{99.0} & \textbf{73.6} & & \textbf{93.3} \\
+Ours\,\emph{v2}$^{\dagger}$ & 1024 & \underline{95.7} & \underline{92.5} & \underline{97.1} & \underline{89.0} & \underline{82.3} & \underline{99.0} & \underline{99.0} & \underline{68.2} &  & \underline{90.3} \\
+Ours\,\emph{v3}$^{\dagger}$ & 1024 & \textbf{96.1} & \textbf{93.7} & \textbf{98.4} & \textbf{89.3} & \textbf{96.0} & \textbf{99.7} & \underline{99.0} & \textbf{73.6} &  & \textbf{93.2} \\
 \midrule\midrule
 \multicolumn{12}{l}{\emph{Cross-environment VPR benchmarks}} \\
 \end{tabular}%
@@ -149,8 +149,8 @@ AnyLoc & 49152 & \underline{65.2} & 61.6 & 65.0 & 95.5 & 75.2 & 76.1 & 85.9 & 66
 EffoVPR-ZS$^{\dagger}$ & 1024 & 38.1 & 67.0 & \textbf{65.5} & \underline{97.5} & 75.9 & \underline{83.1} & 88.7 & 65.7 & \underline{36.6} & 68.7 \\
 SegVLAD-PreT & 49152 & 56.8 & 26.8 & 64.8 & 91.5 & 78.5 & 45.1 & 40.9 & 69.8 & 22.8 & 55.2 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & \underline{83.1} & \underline{94.4} & \underline{72.1} & \textbf{37.6} & \underline{76.3} \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \textbf{97.2} & \textbf{77.6} & \textbf{37.6} & \textbf{76.6} \\
+Ours\,\emph{v2}$^{\dagger}$ & 1024 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & \underline{83.1} & \underline{94.4} & \underline{72.2} & \textbf{37.6} & \underline{76.3} \\
+Ours\,\emph{v3}$^{\dagger}$ & 1024 & 61.0 & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \textbf{97.2} & \textbf{77.7} & \textbf{37.6} & \textbf{76.6} \\
 \bottomrule
 \end{tabular}%
 }
@@ -166,24 +166,24 @@ Ours\,\emph{v3}$^{\dagger}$ & 2048 & 61.0 & \underline{75.9} & \underline{65.3} 
 Method & Dim & Pitts250k & Pitts30k & Tokyo24/7 & MSLS-val & Nordland & St Lucia & Oxford & AmsterTime & & mean \\
 \midrule
 \multicolumn{12}{l}{\emph{Trained or fine-tuned}} \\
-NetVLAD & 32768 & 81.5 & 82.1 & 54.9 & 53.1 & 6.4 & 49.9 & 34.6 & 20.6 & & 47.9 \\
-SFRS & 4096 & 90.7 & 70.9 & 85.4 & 59.3 & 8.8 & 58.6 & 29.3 & 19.3 & & 52.8 \\
-CosPlace & 2048 & 92.2 & 90.9 & 87.3 & 87.7 & 63.0 & \underline{99.9} & 79.1 & 49.7 & & 81.2 \\
-MixVPR & 4096 & 94.6 & 91.6 & 86.3 & 88.0 & 76.6 & 99.6 & 90.6 & 40.9 & & 83.5 \\
-EigenPlaces & 2048 & 94.1 & 92.5 & 93.0 & 89.1 & 63.6 & 99.5 & 89.5 & 48.9 & & 83.8 \\
-R2Former$^{\dagger}$ & 256 & 93.2 & 91.1 & 88.6 & 89.7 & 60.5 & 99.7 & 92.7 & 29.5 & & 80.6 \\
-SALAD & 8448 & 95.1 & 92.4 & 94.6 & 92.2 & 86.5 & \textbf{100.0} & 97.9 & 58.4 & & 89.6 \\
-CricaVPR$^\ddag$ & 10752 & 94.6 & 91.8 & 90.2 & 89.2 & 80.5 & 99.8 & 98.4 & 49.0 & & 86.7 \\
-SelaVPR$^{\dagger}$ & 1024 & 95.7 & 92.8 & 94.0 & 90.8 & 85.2 & 99.8 & 99.0 & 50.3 & & 88.5 \\
-BoQ & 12288 & \underline{96.6} & 93.7 & \underline{98.1} & 93.8 & 90.6 & \textbf{100.0} & \underline{99.5} & 63.0 & & 91.9 \\
-CliqueMining & 8448 & 95.2 & 92.6 & 96.8 & \underline{94.2} & \underline{95.9} & \textbf{100.0} & 98.4 & 57.7 & & 91.3 \\
-SuperVLAD$^\ddag$ & 3072 & 95.2 & 92.6 & 93.7 & 91.5 & 79.2 & \underline{99.9} & \textbf{100.0} & 54.7 & & 88.3 \\
-VLAD-BuFF & 4096 & 95.6 & 92.5 & 96.5 & 92.4 & 84.9 & \textbf{100.0} & 99.0 & 61.4 & & 90.3 \\
-MegaLoc & 8448 & 96.4 & \underline{94.1} & 96.5 & 91.0 & 94.3 & \textbf{100.0} & 99.0 & 62.5 & & 91.7 \\
-SAGE$^\ddag$ & 8448 & \textbf{96.8} & \textbf{94.7} & 97.8 & \textbf{94.5} & 95.1 & \underline{99.9} & \underline{99.5} & 66.0 & & \underline{93.0} \\
+NetVLAD & 32768 & 81.5 & 82.1 & 54.9 & 53.1 & 6.4 & 49.9 & 34.6 & 20.6 &  & 47.9 \\
+SFRS & 4096 & 90.7 & 70.9 & 85.4 & 59.3 & 8.8 & 58.6 & 29.3 & 19.3 &  & 52.8 \\
+CosPlace & 2048 & 92.2 & 90.9 & 87.3 & 87.7 & 63.0 & \underline{99.9} & 79.1 & 49.7 &  & 81.2 \\
+MixVPR & 4096 & 94.6 & 91.6 & 86.3 & 88.0 & 76.6 & 99.6 & 90.6 & 40.9 &  & 83.5 \\
+EigenPlaces & 2048 & 94.1 & 92.5 & 93.0 & 89.1 & 63.6 & 99.5 & 89.5 & 48.9 &  & 83.8 \\
+R2Former$^{\dagger}$ & 256 & 93.2 & 91.1 & 88.6 & 89.7 & 60.5 & 99.7 & 92.7 & 29.5 &  & 80.6 \\
+SALAD & 8448 & 95.1 & 92.4 & 94.6 & 92.2 & 86.5 & \textbf{100.0} & 97.9 & 58.4 &  & 89.6 \\
+CricaVPR$^\ddag$ & 10752 & 94.6 & 91.8 & 90.2 & 89.2 & 80.5 & 99.8 & 98.4 & 49.0 &  & 86.7 \\
+SelaVPR$^{\dagger}$ & 1024 & 95.7 & 92.8 & 94.0 & 90.8 & 85.2 & 99.8 & 99.0 & 50.3 &  & 88.5 \\
+BoQ & 12288 & \underline{96.6} & 93.7 & \underline{98.1} & 93.8 & 90.6 & \textbf{100.0} & \underline{99.5} & 63.0 &  & 91.9 \\
+CliqueMining & 8448 & 95.2 & 92.6 & 96.8 & \underline{94.2} & \underline{95.9} & \textbf{100.0} & 98.4 & 57.7 &  & 91.3 \\
+SuperVLAD$^\ddag$ & 3072 & 95.2 & 92.6 & 93.7 & 91.5 & 79.2 & \underline{99.9} & \textbf{100.0} & 54.7 &  & 88.3 \\
+VLAD-BuFF & 4096 & 95.6 & 92.5 & 96.5 & 92.4 & 84.9 & \textbf{100.0} & 99.0 & 61.4 &  & 90.3 \\
+MegaLoc & 8448 & 96.4 & \underline{94.1} & 96.5 & 91.0 & 94.3 & \textbf{100.0} & 99.0 & 62.5 &  & 91.7 \\
+SAGE$^\ddag$ & 8448 & \textbf{96.8} & \textbf{94.7} & 97.8 & \textbf{94.5} & 95.1 & \underline{99.9} & \underline{99.5} & 66.0 &  & \underline{93.0} \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & 95.7 & 92.5 & 97.5 & 89.0 & 83.0 & 99.1 & 99.0 & \underline{68.1} & & 90.5 \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & 96.1 & 93.7 & \textbf{98.4} & 89.3 & \textbf{96.6} & 99.7 & 99.0 & \textbf{73.6} & & \textbf{93.3} \\
+Ours\,\emph{v2}$^{\dagger}$ & 1024 & 95.7 & 92.5 & 97.1 & 89.0 & 82.3 & 99.0 & 99.0 & \underline{68.2} &  & 90.3 \\
+Ours\,\emph{v3}$^{\dagger}$ & 1024 & 96.1 & 93.7 & \textbf{98.4} & 89.3 & \textbf{96.0} & 99.7 & 99.0 & \textbf{73.6} &  & \textbf{93.2} \\
 \midrule\midrule
 \multicolumn{12}{l}{\emph{Cross-environment VPR benchmarks}} \\
 \end{tabular}%
@@ -212,8 +212,8 @@ VLAD-BuFF & 4096 & 37.3 & 33.9 & 64.5 & 96.5 & 76.4 & 57.7 & 88.7 & 33.3 & 27.7 
 MegaLoc & 8448 & 37.3 & 55.4 & 64.8 & 95.5 & 79.4 & \underline{85.9} & 81.7 & 45.6 & \textbf{40.6} & 65.1 \\
 SAGE$^\ddag$ & 8448 & 27.1 & 46.4 & 64.0 & 93.5 & 74.6 & \underline{85.9} & 84.5 & 39.1 & 24.8 & 60.0 \\
 \midrule
-Ours\,\emph{v2}$^{\dagger}$ & 2048 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.1} & \underline{37.6} & \underline{76.3} \\
-Ours\,\emph{v3}$^{\dagger}$ & 2048 & \underline{61.0} & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \underline{97.2} & \textbf{77.6} & \underline{37.6} & \textbf{76.6} \\
+Ours\,\emph{v2}$^{\dagger}$ & 1024 & \textbf{67.0} & \textbf{83.0} & \textbf{65.5} & \textbf{99.5} & \textbf{84.5} & 83.1 & 94.4 & \underline{72.2} & \underline{37.6} & \underline{76.3} \\
+Ours\,\emph{v3}$^{\dagger}$ & 1024 & \underline{61.0} & \underline{75.9} & \underline{65.3} & \textbf{99.5} & \underline{83.5} & \textbf{91.5} & \underline{97.2} & \textbf{77.7} & \underline{37.6} & \textbf{76.6} \\
 \bottomrule
 \end{tabular}%
 }
@@ -342,13 +342,13 @@ Benchmark & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 \\
 \midrule
 \multicolumn{7}{l}{\emph{Standard VPR benchmarks}} \\
 Pitts250k & 95.7 & 98.7 & 99.3 & 96.1 & 99.0 & 99.5 \\
-Pitts30k & 92.5 & 96.9 & 97.9 & 93.7 & 97.2 & 98.1 \\
-Tokyo 24/7 & 97.5 & 99.7 & 100.0 & 98.4 & 99.7 & 100.0 \\
-MSLS-val & 89.0 & 94.2 & 95.4 & 89.3 & 95.1 & 96.1 \\
-Nordland & 83.0 & 89.9 & 92.1 & 96.6 & 98.6 & 99.1 \\
+Pitts30k & 92.5 & 96.9 & 97.9 & 93.7 & 97.3 & 98.1 \\
+Tokyo 24/7 & 97.1 & 99.7 & 100.0 & 98.4 & 99.7 & 100.0 \\
+MSLS-val & 89.0 & 94.2 & 95.4 & 89.3 & 95.1 & 96.0 \\
+Nordland & 82.3 & 89.9 & 92.1 & 96.0 & 98.2 & 98.7 \\
 St Lucia & 99.0 & 99.7 & 99.8 & 99.7 & 99.9 & 99.9 \\
 Oxford & 99.0 & 100.0 & 100.0 & 99.0 & 100.0 & 100.0 \\
-AmsterTime & 68.1 & 87.4 & 91.1 & 73.6 & 92.3 & 94.6 \\
+AmsterTime & 68.2 & 87.4 & 91.1 & 73.6 & 92.3 & 94.6 \\
 \midrule
 \multicolumn{7}{l}{\emph{Cross-environment VPR benchmarks}} \\
 Hawkins & 67.0 & 94.1 & 98.3 & 61.0 & 92.4 & 99.2 \\
@@ -358,7 +358,7 @@ Gardens & 99.5 & 100.0 & 100.0 & 99.5 & 100.0 & 100.0 \\
 Baidu & 84.5 & 93.2 & 96.0 & 83.5 & 93.5 & 96.3 \\
 Nardo-Air & 83.1 & 98.6 & 100.0 & 91.5 & 100.0 & 100.0 \\
 Nardo-Air R & 94.4 & 100.0 & 100.0 & 97.2 & 100.0 & 100.0 \\
-VP-Air & 72.1 & 80.1 & 83.6 & 77.6 & 84.4 & 86.7 \\
+VP-Air & 72.2 & 80.1 & 83.6 & 77.7 & 84.5 & 86.7 \\
 Mid-Atlantic & 37.6 & 65.3 & 87.1 & 37.6 & 65.3 & 90.1 \\
 \bottomrule
 \end{tabular}}
@@ -377,10 +377,10 @@ Benchmark & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 & R@1 & R@5 & R@10 & R@1 & R@5 &
 \midrule
 \multicolumn{13}{l}{\emph{Standard VPR benchmarks}} \\
 Pitts250k & 96.2 & 99.0 & 99.5 & 96.8 & 99.3 & 99.7 & 96.1 & 99.0 & 99.6 & 96.1 & 99.0 & 99.5 \\
-Pitts30k & 93.3 & 97.0 & 97.8 & 94.4 & 97.5 & 98.2 & 93.6 & 97.1 & 98.1 & 93.7 & 97.2 & 98.1 \\
+Pitts30k & 93.3 & 97.0 & 97.8 & 94.4 & 97.5 & 98.2 & 93.6 & 97.1 & 98.1 & 93.7 & 97.3 & 98.1 \\
 Tokyo 24/7 & 97.8 & 99.7 & 100.0 & 98.7 & 100.0 & 100.0 & 98.1 & 98.7 & 99.4 & 98.4 & 99.7 & 100.0 \\
-MSLS-val & 89.0 & 96.1 & 97.4 & 91.9 & 96.8 & 97.4 & 93.5 & 97.2 & 98.2 & 89.3 & 95.1 & 96.1 \\
-Nordland & 91.0 & 96.6 & 98.0 & 94.3 & 97.6 & 98.5 & 94.8 & 98.1 & 98.8 & 96.6 & 98.6 & 99.1 \\
+MSLS-val & 89.0 & 96.1 & 97.4 & 91.9 & 96.8 & 97.4 & 93.5 & 97.2 & 98.2 & 89.3 & 95.1 & 96.0 \\
+Nordland & 91.0 & 96.6 & 98.0 & 94.3 & 97.6 & 98.5 & 94.8 & 98.1 & 98.8 & 96.0 & 98.2 & 98.7 \\
 St Lucia & 99.9 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 99.7 & 99.9 & 99.9 \\
 Oxford & 94.2 & 99.5 & 100.0 & 99.0 & 100.0 & 100.0 & 99.0 & 100.0 & 100.0 & 99.0 & 100.0 & 100.0 \\
 AmsterTime & 64.3 & 87.2 & 90.6 & 68.2 & 89.7 & 92.6 & 60.4 & 82.1 & 86.9 & 73.6 & 92.3 & 94.6 \\
@@ -393,14 +393,14 @@ Gardens & 95.5 & 99.5 & 100.0 & 98.5 & 99.5 & 100.0 & 95.0 & 99.5 & 100.0 & 99.5
 Baidu & 64.4 & 80.5 & 86.7 & 71.7 & 84.1 & 89.6 & 68.6 & 83.2 & 88.4 & 83.5 & 93.5 & 96.3 \\
 Nardo-Air & 78.9 & 100.0 & 100.0 & 84.5 & 100.0 & 100.0 & 76.1 & 100.0 & 100.0 & 91.5 & 100.0 & 100.0 \\
 Nardo-Air R & 87.3 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 90.1 & 100.0 & 100.0 & 97.2 & 100.0 & 100.0 \\
-VP-Air & 42.6 & 59.6 & 67.5 & 49.8 & 67.3 & 75.0 & 47.2 & 66.1 & 74.0 & 77.6 & 84.4 & 86.7 \\
+VP-Air & 42.6 & 59.6 & 67.5 & 49.8 & 67.3 & 75.0 & 47.2 & 66.1 & 74.0 & 77.7 & 84.5 & 86.7 \\
 Mid-Atlantic & 19.8 & 57.4 & 69.3 & 21.8 & 45.5 & 54.5 & 13.9 & 47.5 & 56.4 & 37.6 & 65.3 & 90.1 \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
 \begin{table}[H]
-\caption{Full version of Table~\ref{tab:w-signal}: Recall@1 of every patch importance signal on each benchmark, in the configuration of the main tables; the self-similarity column is the Ours \emph{v2} row of Tables~\ref{tab:breadth-full} and~\ref{tab:trained-full}. Bold indicates the best value and underline the second best in each row.}
+\caption{Full version of Table~\ref{tab:w-signal}: Recall@1 of every patch importance signal on each benchmark, in the configuration of the main tables at $2{,}048$ dimensions; the self-similarity column is the Ours \emph{v2} row at $2{,}048$ dimensions. Bold indicates the best value and underline the second best in each row.}
 \label{tab:w-signal-full}
 \centering
 {\scriptsize\setlength{\tabcolsep}{3.5pt}
