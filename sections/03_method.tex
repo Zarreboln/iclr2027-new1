@@ -45,7 +45,7 @@
 % \label{fig:blocks}
 % \end{figure}
 % 
-% \subsection{Coarse-to-Fine Ranking}
+% \subsection{Coarse Ranking and Reranking}
 % \label{sec:coarse_to_fine_ranking}
 % As discussed in \S\ref{sec:related}, VPR is essentially a retrieval task \citep{netvlad,anyloc}. We adopt the classical coarse-to-fine ranking pipeline \citep{patchnetvlad,r2former,selavpr}, and achieve highly competitive results even against methods trained on millions of annotated samples. More specifically, second-order pooling of the weighted patch features gives a coarse ranking, and patch-to-patch \textsc{MaxSim} matching gives the fine ranking.  % CHEN-CHECK: his green note says this repeats the overview; see the note.
 % 
@@ -59,7 +59,7 @@
 % As $S_C$ is high-dimensional, we follow \citep{bcnn,mpncov} and flatten it, $\ell_2$-normalize it and apply PCA to obtain a compact descriptor $\mathbf g=\rho(S_C)$ for efficient large-scale search; the normalization makes the scale of $\mathbf w$ immaterial.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
 % Denoting the query and the $m$-th database descriptors by $\mathbf g_Q$ and $\mathbf g_{D_m}$, coarse ranking sorts all database images by $\mathbf g_Q^{\top}\mathbf g_{D_m}$, and the top-$K$ images are passed to reranking.
 % 
-% \paragraph{Fine Ranking (PS-3).}
+% \paragraph{Reranking (PS-3).}
 % \label{sec:core}
 % Fine ranking compares the query with each of the $K$ shortlisted database images at the patch level. Given the query $Q$ and a candidate $D_m$, the PS template with $A=Q$ and $B=D_m$ gives the cross-image table $S(Q,D_m)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_m)_{ij}$ is the similarity between query patch $p_i$ and candidate patch $p_j$. Let $m_i=\max_j S(Q,D_m)_{ij}$ denote the best match of query patch $p_i$ in the candidate, $w_{Q,i}$ its weight from PS-1 \eqref{eq:weight}, and $\theta$ a confidence threshold on the match. The fine-ranking score $s(Q,D_m)$, a scalar read from the table $S(Q,D_m)$, adds up the best matches of the query patches,
 % \begin{equation}\label{eq:stage2}
@@ -113,7 +113,7 @@ and $n_i$ counts the patches, including $p_i$ itself, that are highly similar to
 \label{fig:blocks}
 \end{figure}
 
-\subsection{Coarse-to-Fine Ranking}
+\subsection{Coarse Ranking and Reranking}
 \label{sec:coarse_to_fine_ranking}
 % Chen's original opening of 3.3 (kept for the record, replaced 2026-09-23 because it repeated the overview):
 % As discussed in \S\ref{sec:related}, VPR is essentially a retrieval task \citep{netvlad,anyloc}. We adopt the classical coarse-to-fine ranking pipeline \citep{patchnetvlad,r2former,selavpr}, and achieve highly competitive results even against methods trained on millions of annotated samples. More specifically, second-order pooling of the weighted patch features gives a coarse ranking, and patch-to-patch \textsc{MaxSim} matching gives the fine ranking.
@@ -128,9 +128,9 @@ During coarse ranking, the query is compared with the whole database $\mathcal D
 As $S_C$ is high-dimensional, we apply $\ell_2$ normalisation and whitened PCA, denoted $\rho$, to obtain a compact descriptor $\mathbf g=\rho(S_C)$ for efficient large-scale search.  % CHEN-CHECK: bcnn and mpncov are in the bib but not yet Scholar-checked.
 Denoting the query and the $\ell$-th database descriptors by $\mathbf g_Q$ and $\mathbf g_{D_\ell}$, coarse ranking sorts all database images by $\mathbf g_Q^{\top}\mathbf g_{D_\ell}$, and the top-$K$ images are passed to reranking.
 
-\paragraph{Fine Ranking (PS-3).}
+\paragraph{Reranking (PS-3).}
 \label{sec:core}
-Fine ranking is performed between the query $Q$ and each of the $K$ shortlisted database images $D_\ell$ (\S\ref{sec:prelim}) via patch-to-patch \textsc{MaxSim} matching \citep{chamfer}. Setting $A=Q$ and $B=D_\ell$ in Eq.~(\ref{eq:p2ps}) gives the cross-image similarity $S(Q,D_\ell)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_\ell)_{ij}$ is the similarity between query patch $p_i$ and database patch $p_j$. Let $m_i=\max_j S(Q,D_\ell)_{ij}$ be the best match of query patch $p_i$, $w_{Q,i}$ its weight from PS-1, and $\theta$ a similarity threshold, fixed at $0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}): a query patch whose best match falls below $\theta$ has no counterpart in the candidate and is discarded. The reranking score $s(Q,D_\ell)$ is defined as
+Reranking is performed between the query $Q$ and each of the $K$ shortlisted database images $D_\ell$ (\S\ref{sec:prelim}) via patch-to-patch \textsc{MaxSim} matching \citep{chamfer}. Setting $A=Q$ and $B=D_\ell$ in Eq.~(\ref{eq:p2ps}) gives the cross-image similarity $S(Q,D_\ell)\in\mathbb R^{N\times N}$, whose entry $S(Q,D_\ell)_{ij}$ is the similarity between query patch $p_i$ and database patch $p_j$. Let $m_i=\max_j S(Q,D_\ell)_{ij}$ be the best match of query patch $p_i$, $w_{Q,i}$ its weight from PS-1, and $\theta$ a similarity threshold, fixed at $0.65$ for all benchmarks (Supplementary~\S\ref{app:calib}): a query patch whose best match falls below $\theta$ has no counterpart in the candidate and is discarded. The reranking score $s(Q,D_\ell)$ is defined as
 \begin{equation}\label{eq:stage2}
   s(Q,D_\ell)=\sum_{i=1}^{N} w_{Q,i}\;\ind[\,m_i>\theta\,]\;m_i ,
 \end{equation}
