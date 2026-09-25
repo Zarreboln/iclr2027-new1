@@ -5,8 +5,27 @@
 
 \subsection{Experimental setup}
 \label{sec:setup}
-\noindent\begin{minipage}[t]{0.585\textwidth}
-\vspace{0pt}
+\begin{table}[!htb]
+\caption{The 17 benchmarks with their data type.}
+\label{tab:datasets}
+\centering
+{\footnotesize\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.1}%
+\begin{tabular}{@{}ll@{\hspace{2.2em}}ll@{}}
+\toprule
+\multicolumn{2}{@{}l}{\emph{Standard VPR benchmarks}} & \multicolumn{2}{l@{}}{\emph{Cross-environment VPR benchmarks}} \\
+\cmidrule(r){1-2}\cmidrule(l){3-4}
+Data types & Benchmarks & Data types & Benchmarks \\
+\midrule
+Viewpoint & Pitts30k, Pitts250k & Indoor & 17 Places, Baidu Mall \\
+Illumination & Tokyo 24/7 & & Gardens Point \\
+Season, weather & MSLS-val & Aerial & VP-Air, Nardo-Air \\
+Railway, seasons & Nordland & & Nardo-Air R (rotated) \\
+Route repetition & St Lucia, Oxford RobotCar & Subterranean & Hawkins, Laurel Caverns \\
+Long-term change & AmsterTime & Underwater & Mid-Atlantic Ridge \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
 % \paragraph{Datasets.} We evaluate on 17 benchmarks, in two groups in Table~\ref{tab:datasets}, i.e., 8 standard VPR benchmarks, the seven street-level benchmarks that form the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS) plus the Nordland railway, and 9 cross-environment benchmarks, the suite of \citet{anyloc}. Supplementary~\S\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.
 
 \textcolor{red}{Chen: \paragraph{Datasets.} We evaluate our methods against a wide range of VPR methods on 17 benchmarks in two groups as shown in Table~\ref{tab:datasets}. There are 8 standard VPR benchmarks: the 7 street-level benchmarks that form the domain of the corpora VPR methods are trained on (GSV-Cities, SF-XL, MSLS) plus the Nordland railway, and 9 cross-environment benchmarks, the suite of \citet{anyloc}. Supplementary~\S\ref{app:protocol} gives splits, ground-truth tolerances and the conventions on which published numbers differ.}
@@ -22,35 +41,6 @@ The second group consists of 9 cross-environment localisation benchmarks~\citep{
 \textcolor{red}{Chen: In this paper, a frozen DINOv2 \citep{dinov2} or DINOv3 \citep{dinov3} is applied as feature extractor. We set the threshold $\tau{=}0.5$ and $\theta{=}0.65$ for all benchmarks. All details are provided in the Supplementary~\S\ref{app:impl}.}
 
 \paragraph{Evaluation metrics.} We report Recall@1 (R@1) under the standard protocol \citep{netvlad,patchnetvlad}: a query counts as localised if the top-ranked database image lies within the tolerance of its benchmark, following the order of Table~\ref{tab:datasets}. For the standard benchmarks this is $25$\,m, except Nordland ($\pm10$ frames), Oxford RobotCar ($16$\,m) and AmsterTime (the paired present-day image); for the cross-environment benchmarks it is the provided correspondences or pose thresholds (Supplementary~\S\ref{app:protocol}).
-\end{minipage}\hspace{0.015\textwidth}%
-\begin{minipage}[t]{0.40\textwidth}
-\vspace{0pt}
-\centering
-\captionof{table}{The 17 benchmarks with their data type.}
-\label{tab:datasets}
-{\scriptsize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.15}%
-\begin{tabular}{@{}ll@{}}
-\toprule
-Data types & Benchmarks \\
-\midrule
-\multicolumn{2}{@{}l}{\emph{Standard VPR benchmarks}} \\
-Viewpoint & Pitts30k, Pitts250k \\
-Illumination & Tokyo 24/7 \\
-Season, weather & MSLS-val \\
-Railway, seasons & Nordland \\
-Route repetition & St Lucia, Oxford RobotCar \\
-Long-term change & AmsterTime \\
-\midrule
-\multicolumn{2}{@{}l}{\emph{Cross-environment VPR benchmarks}} \\
-Indoor & 17 Places, Baidu Mall \\
- & Gardens Point \\
-Aerial & VP-Air, Nardo-Air \\
- & Nardo-Air R (rotated) \\
-Subterranean & Hawkins, Laurel Caverns \\
-Underwater & Mid-Atlantic Ridge \\
-\bottomrule
-\end{tabular}}
-\end{minipage}
 
 \subsection{Comparison with state-of-the-art}
 \label{sec:sota}
