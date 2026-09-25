@@ -1,10 +1,10 @@
 \section{Conclusion}
 In this paper, we present a two-stage VPR pipeline that reads two tables of patch similarity and nothing else, one within an image and one between the pair being compared. We challenge the necessity of settling what counts in an image with data other than that image, whether a place-labelled corpus or a saliency prior that pre-training produced for another question. By asking instead that every scene element count once, whatever share of the frame it occupies, we obtain each patch's distinctiveness as the inverse of its multiplicity within the image. We introduce a scoring rule computed from the pair being matched, which improves existing pipelines when it replaces or is added to their own.
 
-Reaching the highest mean across the seventeen benchmarks we report under one fixed configuration, and adopting a stronger backbone by loading it, our approach offers a route to place recognition that needs no place label at any point.
+Reaching the highest mean across the 17 benchmarks we report under one fixed configuration, and adopting a stronger backbone by loading it, our approach offers a route to place recognition that needs no place label at any point.
 
 \subsection*{AI use statement}
-(Required; does not count toward the page limit.) We used generative AI to assist with drafting/editing text and organizing related work. We did not use it to generate results, run experiments, or produce data. All claims, derivations, and numbers were produced and verified by the authors, who take responsibility for the final content.
+(Required; does not count toward the page limit.) We used generative AI to assist with drafting/editing text and organising related work. We did not use it to generate results, run experiments, or produce data. All claims, derivations, and numbers were produced and verified by the authors, who take responsibility for the final content.
 
 \subsection*{Reproducibility statement}
 Training-free: no place labels, and no training set outside the deployment database. \S\ref{sec:method} states the method in full, including every fixed constant. Code, the derivation of $w$, and per-benchmark protocols (splits, GT thresholds, pool sizes) will be released.

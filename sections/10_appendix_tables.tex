@@ -433,7 +433,7 @@ mean (17) & 77.7 & 72.3 & 41.2 & 72.0 & 78.7 & 79.3 & \underline{81.4} & \textbf
 \end{table}
 
 \begin{table}[H]
-\caption{Three benchmarks of Table~\ref{tab:w-signal-full} with Recall@1, 5 and 10.}
+\caption{Recall@1, 5 and 10 on 3 benchmarks of Table~\ref{tab:w-signal-full}.}
 \label{tab:recallk-signal}
 \centering
 {\scriptsize\setlength{\tabcolsep}{3.5pt}
@@ -461,7 +461,7 @@ patch-graph centrality & 90.9 & 95.0 & 96.4 & 68.9 & 88.5 & 91.8 & 72.2 & 82.6 &
 \section{Analysis}
 \subsection{Derivation of the patch weights}
 \label{app:ridge}
-Stack the $\ell_2$-normalized tokens of one image row-wise as $F$ and write $S(F,F)=FF^{\top}$, the within-image table of \S\ref{sec:prelim}. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $S(F,F)\,\mathbf w=\mathbf 1$. With $N\gg C$ the matrix $S(F,F)=FF^{\top}$ has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat S=\ind[\,S(F,F)>\tau\,]$ instead.
+Stack the $\ell_2$-normalised tokens of one image row-wise as $F$ and write $S(F,F)=FF^{\top}$, the within-image table of \S\ref{sec:prelim}. The condition of \citet{democratic} asks that every token contribute equally to its image, which \citet{gmp} write as $S(F,F)\,\mathbf w=\mathbf 1$. With $N\gg C$ the matrix $S(F,F)=FF^{\top}$ has rank at most $C$, so $\mathbf 1$ lies outside its range and the system has no exact solution; \citet{gmp} add a ridge term and solve iteratively. We impose the condition on the thresholded matrix $\hat S=\ind[\,S(F,F)>\tau\,]$ instead.
 
 Under the burst model an element seen $n$ times yields $n$ patches near-duplicate of one another and of nothing else, so $\hat S$ is block diagonal with one all-ones block per element: $\hat S=\bigoplus_{k=1}^{m}J_{n_k}$ with $J_n$ the $n\times n$ all-ones matrix. The system decouples, and block $k$ reads
 \begin{equation}\label{eq:block}
@@ -481,7 +481,7 @@ It is also where \citet{gmp}'s ridge term goes in the limit: $(J_n+\lambda I)^{-
   \qquad\text{and}\qquad
   w_i=\frac{1}{n_i}\quad\text{with}\quad n_i=\sum_{j=1}^{N}\hat S_{ij} .
 \end{equation}
-Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarizing is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a distinctiveness built on them needs a larger exponent to match.
+Only the threshold does not follow from the model: one number, $\tau{=}0.5$, fixed for every backbone and dataset. Binarising is the modelling step, and it is also what fixes the exponent at one: frozen ViT tokens occupy a narrow cone \citep{modalitygap,anisotropy}, so the raw row sums are two to three times less dispersed within an image than the thresholded counts, and a distinctiveness built on them needs a larger exponent to match.
 
 \paragraph{Beyond the block model.} The block model asks that thresholded similarity be transitive: if patch $i$ resembles $j$ and $j$ resembles $k$, then $i$ resembles $k$. Real images break this in three ways. Gradual content, sky shading from bright to dark or a wall receding in perspective, forms a chain in which neighbours clear $\tau$ but the two ends do not, so $\hat S$ is banded rather than block-diagonal and patches in the middle of the chain receive a smaller $w$ than the rule intends. A patch on the boundary of two elements, a window frame against its wall, clears $\tau$ with both, so its $n_i$ counts both blocks and the row sums of its neighbours no longer reach one. And a few pairs inside one element fall just below $\tau$ under a change of lighting or a partial occlusion, splitting the element into overlapping sub-blocks with slightly different $n_i$. In all three cases $w_i=1/n_i$ still decreases with the amount of similar content around patch $i$, which is the property both stages rely on; what is lost is only the exact equality in Eq.~(\ref{eq:demo}). Table~\ref{tab:residual} measures the residual $r_i=|(\hat S\mathbf w)_i-1|$ on real images: its mean is $0.22$ to $0.27$ across 8 benchmarks, half of all tokens satisfy the condition to within $0.2$ and about nine in ten to within $0.5$, with the aerial and underwater sets, whose imagery is the most uniform, furthest from the model. The threshold trades the two failure modes against each other, a higher $\tau$ splitting elements and a lower one merging them through chains and boundary patches, which is what the sweep in Table~\ref{tab:cal-tau} reflects.
 \begin{table}[H]
@@ -508,7 +508,7 @@ Mid-Atlantic Ridge & 65 & 0.26 & 0.23 & 44\% & 88\% \\
 
 \FloatBarrier
 
-\subsection{Why the second moment factorizes}
+\subsection{Why the second moment factorises}
 \label{app:factorize}
 The coarse descriptor of \S\ref{sec:global} compares two images through $\langle S_C(Q),S_C(D)\rangle=\sum_{i,j} w_{Q,i}\,w_{D,j}\,S(Q,D)_{ij}^{2}$, where $w_{D,j}$ is the weight of database patch $j$: a contraction of the cross-similarity table from both sides, $\sum_{i,j} w_{Q,i}w_{D,j}\,\sigma(S_{ij})$ with $S=S(Q,D)$ and $\sigma(u)=u^{2}$ applied entrywise. The same regrouping holds for any monomial $\sigma(u)=u^{\gamma}$: the entrywise power $S^{\circ\gamma}$ equals $Q^{[\gamma]}\big(D^{[\gamma]}\big)^{\top}$, where $Q^{[\gamma]}$ is the row-wise Kronecker power whose $i$-th row is $\mathbf q_i^{\otimes\gamma}$. The contraction therefore becomes one inner product of width $C^{\gamma}$ between two vectors, each computed from a single image. At $\gamma{=}1$ that vector is the weighted mean of the tokens, the first-order instance of a VLAD-style descriptor; at $\gamma{=}2$ it is the weighted second moment $S_C$ we deploy.
 
